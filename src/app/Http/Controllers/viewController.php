@@ -15,14 +15,29 @@ class viewController extends Controller
         return view('oType/oType');
     }
     
+    public function addObject()
+    {
+        return view('oType/addObject');
+    }
+    
     public function rtype()
     {
         return view('rtype/rtype');
     }
     
+    public function addRtype()
+    {
+        return view('rtype/addRtype');
+    }
+    
     public function database()
     {
         return view('data/database');
+    }
+    
+    public function addDB()
+    {
+        return view('data/addDB');
     }
     
     public function datasource()
@@ -53,5 +68,10 @@ class viewController extends Controller
     public function safemanage()
     {
         return view('safemanage');
+    }
+    
+    public function template()
+    {
+        return view('template');
     }
 }

@@ -1,4 +1,4 @@
-@extends('template') @section('content')
+ <?php $__env->startSection('content'); ?>
 <div class="row-content am-cf">
       <div class="row">
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
@@ -14,13 +14,13 @@
                       <div class="am-g">
                          <div class="am-u-sm-12 am-u-md-12 am-u-lg-1">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                              	<a   href="{{ asset('/database/addDB')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建任务</a>
+                              	<a   href="<?php echo e(asset('/database/addDB')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建任务</a>
 							  </div>
                           </div>
                           
                           <div class="am-u-sm-12 am-u-md-12 am-u-lg-8">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                              	<a   href="{{ asset('/database/addDB')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>一键添加</a>
+                              	<a   href="<?php echo e(asset('/database/addDB')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>一键添加</a>
 							  </div>
                           </div>
                           
@@ -34,12 +34,12 @@
                             </div>
                         </div>
                         
-						{{-- 条件搜索，目前只能点击搜索才进行搜索，以后可以加入Enter键快速搜索 --}}
+						
                         <script type="text/javascript">
                             function search() {
 
                                 var value = document.getElementById('search').value;
-                                var str1 = "{{asset('entity/search')}}";
+                                var str1 = "<?php echo e(asset('entity/search')); ?>";
                                 var url = str1 + '/' + value;
                                 window.location.href= url;
                             }
@@ -72,10 +72,11 @@
                         </table>
                      </div>                                
 
-        		{{-- 版权所有，有没有无所谓，另外，暂时去掉了分页，以后再加--}}
+        		
 
 			</div>
 		</div>
 	</div>
 </div>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('template', \Illuminate\Support\Arr::except(get_defined_vars(), array('__data', '__path')))->render(); ?>

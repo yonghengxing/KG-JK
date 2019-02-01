@@ -32,12 +32,32 @@ Route::get('/otype', 'viewController@otype');
 Route::get('/otype/addObject', 'viewController@addObject');
 Route::get('/rtype', 'viewController@rtype');
 Route::get('/rtype/addRtype', 'viewController@addRtype');
-Route::get('/database', 'viewController@database');
-Route::get('/database/addDB', 'viewController@addDB');
-Route::get('/datasource', 'viewController@datasource');
 Route::get('/taskallocation', 'viewController@taskallocation');
+Route::get('/taskallocation/addtask', 'viewController@addtask');
 Route::get('/taskhis', 'viewController@taskhis');
 Route::get('/safemanage', 'viewController@safemanage');
+
+/**
+ * 图谱相关操作
+ * @date: 2018年1月14日 下午17:21:16
+ * @author: liudanqi
+ */
+Route::get('/schemagraph', 'viewController@schemagraph');
+Route::get('/datagraph', 'viewController@datagraph');
+Route::get('/taskgraph', 'viewController@taskgraph');
+Route::get('/searchgraph', 'viewController@searchgraph');
+Route::get('/checkgraph', 'viewController@checkgraph');
+Route::get('/export', 'viewController@export');
+
+// /**
+//  * 数据配置相关操作
+//  * @date: 2018年1月14日 下午17:21:16
+//  * @author: liudanqi
+//  */
+// Route::get('/database', 'viewController@database');
+// Route::get('/database/new', 'viewController@newDB');
+// Route::get('/datasource', 'viewController@datasource');
+// Route::get('/datasource/new', 'viewController@newDS');
 
 /**
  * 融合配置相关操作
@@ -45,6 +65,7 @@ Route::get('/safemanage', 'viewController@safemanage');
  * @author: liudanqi
  */
 Route::get('/fuse/ontologyfus', 'viewController@ontologyfus');
+Route::get('/fuse/ontologymap/fusmap', 'viewController@fusmap');
 Route::get('/fuse/ontologymap', 'viewController@ontologymap');
 
 
@@ -96,3 +117,32 @@ Route::get('/relationType/info/{tid}', 'RelationTypeController@relationType_info
 Route::post('/relationType/info/{tid}', 'RelationTypeController@relationType_info_do');
 Route::get('/relationType/search/{text?}', 'RelationTypeController@relationType_search');
 
+/**
+ * Excel相关导入
+ */
+Route::get('/excel/export','ExcelController@export');
+Route::get('/excel/import','ExcelController@import');
+
+/**
+ * 数据库和数据源的相关操作
+ */
+Route::get('/database/new', 'DatabaseController@addDB');
+Route::post('/addDB_do', 'DatabaseController@addDB_do');
+Route::get('/addDB_do', 'DatabaseController@addDB_do');
+Route::get('/database', 'DatabaseController@database');
+Route::get('/datasource', 'DatabaseController@datasource');
+Route::get('/datasource/new', 'DatabaseController@add_dbSrc');
+Route::post('/database/getDB/{select_type}', 'DatabaseController@getDB');
+Route::post('/database/getDBtableMsg/{select_type}', 'DatabaseController@getDBtableMsg');
+Route::post('/addDBSrc_do', 'DatabaseController@addDBSrc_do');
+
+
+//数据库连接
+Route::get('/database/db_connect','DatabaseController@db_connect');
+
+
+
+//Excel导出 
+Route::get('/excel/export','Member\MemberController@export')->name('/excel/export'); 
+//Excel导入 
+Route::get('/excel/import','Member\MemberController@import')->name('/excel/import');

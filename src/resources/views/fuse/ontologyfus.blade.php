@@ -13,7 +13,7 @@
                      <div class="widget-body  am-fr">
                       <div class="am-g">
                           
-                           <div  class="am-u-sm-12 am-u-md-3 am-u-end">
+                           <div  class="am-u-sm-12 am-u-md-push-9 am-u-md-3">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                                     <input type="text" name= "searchText" class="am-form-field "  value="">
                                       <span class="am-input-group-btn">

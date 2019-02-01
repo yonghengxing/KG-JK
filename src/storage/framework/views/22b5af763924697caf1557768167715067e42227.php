@@ -1,25 +1,19 @@
-@extends('template') @section('content')
-
- <div class="row-content am-cf">
+ <?php $__env->startSection('content'); ?>
+<div class="row-content am-cf">
       <div class="row">
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                      <div class="am-cf">
-                         <strong class="am-text-primary am-text-lg">动态知识图谱 /数据配置</strong> /
-              			 <small>数据库</small>
+                         <strong class="am-text-primary am-text-lg">动态知识图谱 /数据注入</strong> /
+              			 <small>任务历史</small>
                      </div>
                      
                      <hr/>
                      
                      <div class="widget-body  am-fr">
                       <div class="am-g">
-                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
-                              <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                              	<a   href="{{ asset('/database/addDB')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加数据库</a>
-							  </div>
-                          </div>
                           
-                           <div  class="am-u-sm-12 am-u-md-3 am-u-end">
+                           <div  class="am-u-sm-12 am-u-md-push-9 am-u-md-3">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                                     <input type="text" name= "searchText" class="am-form-field "  value="">
                                       <span class="am-input-group-btn">
@@ -29,12 +23,12 @@
                             </div>
                         </div>
                         
-						{{-- 条件搜索，目前只能点击搜索才进行搜索，以后可以加入Enter键快速搜索 --}}
+						
                         <script type="text/javascript">
                             function search() {
 
                                 var value = document.getElementById('search').value;
-                                var str1 = "{{asset('entity/search')}}";
+                                var str1 = "<?php echo e(asset('entity/search')); ?>";
                                 var url = str1 + '/' + value;
                                 window.location.href= url;
                             }
@@ -49,17 +43,12 @@
                         <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
                             <thead>
                                 <tr>
-                                    <th>名称</th>
-                                    <th>数据库类型</th>
-                                    <th>IP地址</th>
-                                    <th>端口</th>
-                                    <th>数据库</th>
-                                    <th>用户名</th>
-                                    <th>密码</th>
-                                    <th>创建时间</th>
-                                    <th>创建人</th>
-                                    <th>更新时间</th>
-                                    <th>更新人</th>
+                                    <th>序号</th>
+                                    <th>任务名称</th>
+                                    <th>开始时间</th>
+                                    <th>结束时间</th>
+                                    <th>执行者</th>
+                                    <th>运行状态</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -69,10 +58,11 @@
                         </table>
                      </div>                                
 
-        		{{-- 版权所有，有没有无所谓，另外，暂时去掉了分页，以后再加--}}
+        		
 
 			</div>
 		</div>
 	</div>
 </div>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('template', \Illuminate\Support\Arr::except(get_defined_vars(), array('__data', '__path')))->render(); ?>

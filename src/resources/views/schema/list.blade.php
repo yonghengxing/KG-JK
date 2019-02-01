@@ -90,14 +90,6 @@
                         </table>
                      </div>                                
 
-        		{{-- 版权所有，有没有无所谓，另外，暂时去掉了分页，以后再加--}}
-        		<div class="globalFooter___1cM92">
-        			<div class="copyright___1ZP5c">
-        				<div>
-        					Copyright<i class="anticon anticon-copyright"></i>2018 Corporation All Rights Reserved.
-        				</div>
-        			</div>
-        		</div>
 			</div>
 		</div>
 	</div>

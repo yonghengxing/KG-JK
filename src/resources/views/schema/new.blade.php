@@ -11,11 +11,10 @@
 		var str = '<div class="am-form-group" index="'+
 					compIndex+'" id="Attr1"> <label for="schema-attribute'+
 					compIndex+'" class="am-u-sm-3 am-form-label" >属性('+
-					compIndex+') /  Attribute</label><div class="am-u-sm-9"> <input type="text" id="schema-attribute'+
-					compIndex+'" placeholder="属性('+
-					compIndex+')"> <small>输入属性名称</small> </div> </div>';
+					compIndex+') </label><div class="am-u-sm-6 am-u-end"> <input type="text" id="schema-attribute'+
+					compIndex+'" placeholder="请输入属性('+
+					compIndex+')名称"> </div> </div>';
 
-	    alert(str);
 		$("#showArri").append(str);
 
 	}
@@ -36,37 +35,29 @@
                  <form class="am-form am-form-horizontal ">
                  	<input type="hidden" name="_token" value="{{ csrf_token() }}" />
                     <div class="am-form-group">
-                      <label for="schema-name" class="am-u-sm-3 am-form-label">本体名称 / Name</label>
-                      <div class="am-u-sm-9">
-                        <input type="text" id="schema-name" placeholder="本体名称 / Name">
-                        <small>输入本体名称</small>
+                      <label for="schema-name" class="am-u-sm-3 am-form-label">本体名称</label>
+                      <div class="am-u-sm-6 am-u-end">
+                        <input type="text" id="schema-name" placeholder="输入本体名称">
                       </div>
                     </div>
                     
                     <div class="widget-body am-fr" id="showArri">
                         <div class="am-form-group" index="1" id="Attr1">
-                          <label for="schema-attribute1" class="am-u-sm-3 am-form-label" >属性(1) /  Attribute</label>
-                          <div class="am-u-sm-9">
-                            <input type="text" id="schema-attribute1" placeholder="属性(1)">
-                            <small>输入属性名称</small>
+                          <label for="schema-attribute1" class="am-u-sm-3 am-form-label" >属性(1)</label>
+                          <div class="am-u-sm-6 am-u-end">
+                            <input type="text" id="schema-attribute1" placeholder="输入属性(1)名称">
                           </div>
                         </div>
                      </div>
                      
-                    <div class="am-form-group">
-                     <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
-                          <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                    			<button type="button" onclick="addArri();" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加属性</button>
-    					  </div>
-                    </div>
-                    </div>
                     
         			<div class="am-form-group">
 						<div class="am-u-sm-9 am-u-sm-push-3">
+						<button type="button" onclick="addArri();" class="am-btn am-btn-default am-btn-secondary">添加属性</button>
 						<button type="submit"
-							class="am-btn am-btn-primary tpl-btn-bg-color-success ">保存</button>
+							class="am-btn am-btn-success tpl-btn-bg-color-success ">保存</button>
 						<button type="submit"
-							class="am-btn am-btn-primary tpl-btn-bg-color-success" onclick="history.go(-1);">取消</button>
+							class="am-btn am-btn-danger tpl-btn-bg-color-success" onclick="history.go(-1);">取消</button>
 						</div>
 					</div>
             	</form>

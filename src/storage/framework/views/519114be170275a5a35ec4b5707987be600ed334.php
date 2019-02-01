@@ -11,6 +11,7 @@
 <meta http-equiv="Cache-Control" content="no-siteapp" />
 <meta name="apple-mobile-web-app-title" content="波形管理" />
 
+
 <link rel="icon" type="image/png"
 	href="<?php echo e(asset('assets/i/favicon.png')); ?>">
 <link rel="apple-touch-icon-precomposed"
@@ -19,7 +20,13 @@
 <link rel="stylesheet"
 	href="<?php echo e(asset('assets/css/amazeui.datatables.min.css')); ?>" />
 <link rel="stylesheet" href="<?php echo e(asset('assets/css/app.css')); ?>">
+
+<link rel="stylesheet" type="text/css" href="<?php echo e(asset('assets/css/jquery.fonticonpicker.min.css')); ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo e(asset('assets/css/fontello.css')); ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo e(asset('assets/themes/bootstrap-theme/jquery.fonticonpicker.bootstrap.min.css')); ?>"/>
+
 <script src="<?php echo e(asset('assets/js/jquery.min.js')); ?>"></script>
+<script src="<?php echo e(asset('assets/js/jquery.fonticonpicker.min.js')); ?>"></script>
 <script src="<?php echo e(asset('assets/js/echarts.min.js')); ?>"></script>
 
 </head>
@@ -78,71 +85,93 @@
 					
 				<li class="sidebar-nav-link"><a href="javascript:;"
 					class="sidebar-nav-sub-title"> <i
-						class="am-icon-users sidebar-nav-link-logo"></i> 本体配置 <span
+						class="am-icon-tags sidebar-nav-link-logo"></i> 本体配置 <span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
 					<ul class="sidebar-nav sidebar-nav-sub">
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/schema/list')); ?>"> <span
-								class="am-icon-list sidebar-nav-link-logo"></span> 本体类型
+								class="am-icon-align-left sidebar-nav-link-logo"></span> 本体类型
 						</a></li>
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/entity/list')); ?>"> <span
-								class="am-icon-plus sidebar-nav-link-logo"></span> 实体类型
+								class="am-icon-align-right sidebar-nav-link-logo"></span> 实体类型
 						</a></li>
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/relationType/list')); ?>"> <span
-								class="am-icon-list sidebar-nav-link-logo"></span> 关系类型
+								class="am-icon-align-center sidebar-nav-link-logo"></span> 关系类型
 						</a></li>
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/relation/list')); ?>"> <span
-								class="am-icon-list sidebar-nav-link-logo"></span> 关系维护
+								class="am-icon-cogs sidebar-nav-link-logo"></span> 关系维护
 						</a></li>
+						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/schemagraph')); ?>"> <span
+                              class="am-icon-picture-o sidebar-nav-link-logo"></span>查看图谱
+                        </a></li>						
 					</ul></li>
 					
 				<li class="sidebar-nav-link"><a href="javascript:;"
 					class="sidebar-nav-sub-title"> <i
-						class="am-icon-users sidebar-nav-link-logo"></i> 数据配置 <span
+						class="am-icon-database sidebar-nav-link-logo"></i> 数据配置 <span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
 					<ul class="sidebar-nav sidebar-nav-sub">
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/database')); ?>"> <span
-								class="am-icon-list sidebar-nav-link-logo"></span> 数据库
+								class="am-icon-table sidebar-nav-link-logo"></span> 数据库
 						</a></li>
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('datasource')); ?>"> <span
-								class="am-icon-plus sidebar-nav-link-logo"></span> 数据源
+								class="am-icon-file-text sidebar-nav-link-logo"></span> 数据源
 						</a></li>
+						
 					</ul></li>
 					
 				<li class="sidebar-nav-link"><a href="javascript:;"
 					class="sidebar-nav-sub-title"> <i
-						class="am-icon-users sidebar-nav-link-logo"></i> 融合配置 <span
+						class="am-icon-folder-open sidebar-nav-link-logo"></i> 融合配置 <span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
 					<ul class="sidebar-nav sidebar-nav-sub">
-						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/database')); ?>"> <span
-								class="am-icon-list sidebar-nav-link-logo"></span> 本体映射
+						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/fuse/ontologymap')); ?>"> <span
+								class="am-icon-arrows-h sidebar-nav-link-logo"></span> 本体映射
 						</a></li>
-						<li class="sidebar-nav-link"><a href="<?php echo e(asset('datasource')); ?>"> <span
-								class="am-icon-plus sidebar-nav-link-logo"></span> 关系映射
-						</a></li>
-						<li class="sidebar-nav-link"><a href="<?php echo e(asset('')); ?>"> <span
-								class="am-icon-plus sidebar-nav-link-logo"></span> 本体融合
+						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/datagraph')); ?>"> <span
+								class="am-icon-dot-circle-o sidebar-nav-link-logo"></span> 图谱融合
 						</a></li>
 					</ul></li>	
 					
 				<li class="sidebar-nav-link"><a href="javascript:;"
 					class="sidebar-nav-sub-title"> <i
-						class="am-icon-users sidebar-nav-link-logo"></i> 数据注入<span
+						class="am-icon-circle-o-notch sidebar-nav-link-logo"></i> 数据注入<span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
 					<ul class="sidebar-nav sidebar-nav-sub">
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('taskallocation')); ?>"> <span
-								class="am-icon-list sidebar-nav-link-logo"></span> 任务配置
+								class="am-icon-tasks sidebar-nav-link-logo"></span> 任务配置
 						</a></li>
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('taskhis')); ?>"> <span
-								class="am-icon-plus sidebar-nav-link-logo"></span> 任务历史
+								class="am-icon-file sidebar-nav-link-logo"></span> 任务历史
 						</a></li>
+						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/taskgraph')); ?>"> <span
+                               class="am-icon-picture-o sidebar-nav-link-logo"></span>查看图谱
+                        </a></li>
 					</ul></li>
+					
+					 <li class="sidebar-nav-link"><a href="javascript:;"
+                            class="sidebar-nav-sub-title"> <i
+                                    class="am-icon-eye sidebar-nav-link-logo"></i>图谱展示<span
+                                    class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                    </a>
+                        <ul class="sidebar-nav sidebar-nav-sub">
+                                <li class="sidebar-nav-link"><a href="<?php echo e(asset('/checkgraph')); ?>"> <span
+                                                class="am-icon-binoculars sidebar-nav-link-logo"></span>图谱查看
+                                </a></li>
+                                <li class="sidebar-nav-link"><a href="<?php echo e(asset('/searchgraph')); ?>"> <span
+                                                class="am-icon-search sidebar-nav-link-logo"></span>图谱查询
+                                </a></li>
+                                <li class="sidebar-nav-link"><a href="<?php echo e(asset('/export')); ?>"> <span
+                                      class="am-icon-search sidebar-nav-link-logo"></span>导入导出
+                                </a></li>
+                        </ul></li>
+		
 
 				<li class="sidebar-nav-link"><a href="<?php echo e(asset('safemanage')); ?>"> 
-					<i class="am-icon-home sidebar-nav-link-logo"></i>安全管理</a></li>					
+					<i class="am-icon-warning sidebar-nav-link-logo"></i>安全管理</a></li>					
 			</ul>
 		</div>
 		

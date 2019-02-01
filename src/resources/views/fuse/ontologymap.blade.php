@@ -14,7 +14,7 @@
                       <div class="am-g">
                           <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                              	<a   href="{{ asset('/entity/new')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加映射</a>
+                              	<a   href="{{ asset('/fuse/ontologymap/fusmap')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加映射</a>
 							  </div>
                           </div>
                           

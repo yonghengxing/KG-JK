@@ -32,22 +32,32 @@ class viewController extends Controller
     
     public function database()
     {
-        return view('data/database');
+        return view('database/list');
     }
     
-    public function addDB()
+    public function newDB()
     {
-        return view('data/addDB');
+        return view('database/new');
+    }
+    
+    public function newDS()
+    {
+        return view('datasource/new');
     }
     
     public function datasource()
     {
-        return view('data/datasource');
+        return view('datasource/list');
     }
     
     public function ontologymap()
     {
         return view('fuse/ontologymap');
+    }
+    
+    public function fusmap()
+    {
+        return view('fuse/fusmap');
     }
     
     public function ontologyfus()
@@ -64,6 +74,11 @@ class viewController extends Controller
     {
         return view('task/taskhis');
     }
+        
+    public function addtask()
+    {
+        return view('task/addtask');
+    }
     
     public function safemanage()
     {
@@ -73,5 +88,35 @@ class viewController extends Controller
     public function template()
     {
         return view('template');
+    }
+    
+    public function schemagraph()
+    {
+        return view('graph/schemagraph');
+    }
+    
+    public function datagraph()
+    {
+        return view('graph/datagraph');
+    }
+    
+    public function taskgraph()
+    {
+        return view('graph/taskgraph');
+    }
+    
+    public function searchgraph()
+    {
+        return view('graph/searchgraph');
+    }
+    
+    public function checkgraph()
+    {
+        return view('graph/checkgraph');
+    }
+    
+    public function export()
+    {
+        return view('graph/export');
     }
 }

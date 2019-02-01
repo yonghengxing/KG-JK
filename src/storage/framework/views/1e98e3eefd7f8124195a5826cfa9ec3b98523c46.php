@@ -12,19 +12,13 @@
                      
                      <div class="widget-body  am-fr">
                       <div class="am-g">
-                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-1">
+                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                              	<a   href="<?php echo e(asset('/database/addDB')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建任务</a>
+                              	<a   href="<?php echo e(asset('/taskallocation/addtask')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建任务</a>
 							  </div>
                           </div>
                           
-                          <div class="am-u-sm-12 am-u-md-12 am-u-lg-8">
-                              <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                              	<a   href="<?php echo e(asset('/database/addDB')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>一键添加</a>
-							  </div>
-                          </div>
-                          
-                           <div  class="am-u-sm-12 am-u-md-3 am-u-end">
+                          <div  class="am-u-sm-12 am-u-md-3 am-u-end">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                                     <input type="text" name= "searchText" class="am-form-field "  value="">
                                       <span class="am-input-group-btn">

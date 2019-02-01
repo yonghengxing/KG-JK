@@ -60,4 +60,3 @@ Route::get('/issue/list', 'IssueController@issue_list');
 
 
 
-

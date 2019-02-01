@@ -15,7 +15,7 @@
                       <div class="am-g">
                          <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                              	<a   href="<?php echo e(asset('/database/addDB')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建数据源</a>
+                              	<a   href="<?php echo e(asset('/datasource/addDS')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建数据源</a>
 							  </div>
                           </div>
                           

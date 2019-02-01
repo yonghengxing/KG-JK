@@ -708,7 +708,7 @@ class DatabaseController extends Controller{
             //dd($table_num);
             //选中的sheet表的内容
             $data_content_selected = $data_content[$table_num];
-            dd($data_content_selected,$data_content);
+//             dd($data_content_selected,$data_content);
            
             $index = 0;
             $table_head;
@@ -723,7 +723,7 @@ class DatabaseController extends Controller{
             //要导入的数据库的内容
             $data_content_real ;
             if(isset($data_content_selected[1])){
-                for($i = 0;$i<count($data_content);$i++){
+                for($i = 0;$i<count($data_content_selected);$i++){
                     for($j = 0;$j<count($table_head);$j++){
                         if(isset($items[$j])){
                             $aaa = str_replace('（', '', $items[$j]);
@@ -749,7 +749,7 @@ class DatabaseController extends Controller{
                     }
                 }
             }
-            dd($data_content_real);
+//             dd($data_content_real);
             
             //建立表结构
             $sql_create = "CREATE TABLE ".$DBtable."(`me_id` int(255) NOT NULL COMMENT '主键ID',";

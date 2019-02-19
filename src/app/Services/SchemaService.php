@@ -22,4 +22,10 @@ class SchemaService extends BaseService
         return $schemas;
 
     }
+
+    function deleteAutoDatabase(){
+        $ret = $this->model->where('isauto','1')->delete();
+
+        return $ret;
+    }
 }

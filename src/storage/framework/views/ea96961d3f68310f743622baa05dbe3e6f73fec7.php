@@ -10,7 +10,7 @@
                  
                  <hr/>
                  
-                 <form class="am-form am-form-horizontal ">
+                 <form class="am-form am-form-horizontal " action="<?php echo e(asset('relationType/info')); ?>/<?php echo e($relationType->tid); ?>" method="post" >
                  	<input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>" />
                  	<div class="am-form-group">
                       <label for="ontoDisplayName" class="am-u-sm-3 am-form-label">类型名称 / Name</label>
@@ -23,7 +23,7 @@
                     <div class="am-form-group">
                       <label for="ontoDisplayName" class="am-u-sm-3 am-form-label">图标 / Icon</label>
                       <div class="am-u-sm-9">
-                        <input type="text" id="ontoDisplayName"  name="icon" value="<?php echo e($relationType->icon); ?>">
+                        <input type="text" id="ontoDisplayName"  name="mytext" value="<?php echo e($relationType->icon); ?>">
                         <small>请选择图标</small>
                       </div>
                     </div>  
@@ -32,7 +32,7 @@
 						<div class="am-u-sm-9 am-u-sm-push-3">
 						<button type="submit"
 							class="am-btn am-btn-primary tpl-btn-bg-color-success ">保存</button>
-						<button type="submit"
+						<button type="button"
 							class="am-btn am-btn-primary tpl-btn-bg-color-success" onclick="history.go(-1);">取消</button>
 						</div>
 					</div> 

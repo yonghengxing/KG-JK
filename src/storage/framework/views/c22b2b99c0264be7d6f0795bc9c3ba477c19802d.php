@@ -18,7 +18,7 @@
 					compIndex + '" class="am-u-sm-1 am-form-label" >属性值</label> <div class="am-u-sm-4 am-u-end"> <input type="text" id="attribute-value'+
 					compIndex + '" placeholder="请输入属性值"> </div> </div>';
 
-// 	    alert(str);
+
 		$("#showArri").append(str);
 
 	}
@@ -40,26 +40,45 @@
                     <div class="am-form-group">
                       <label for="entityname" class="am-u-sm-3 am-form-label">实体名称：</label>
                       <div class="am-u-sm-6 am-u-end">
-                        <input type="text" id="entityname" placeholder="输入实体名称">
+                        <input type="text" name="entitylabel" placeholder="输入实体名称">
                       </div>
                     </div>     
                  
                     <div class="am-form-group">
-                      <label for="schema-name" class="am-u-sm-3 am-form-label">本体名称 / Name</label>
-                      <div class="am-u-sm-9 ">
-                        <select data-am-selected="{searchBox: 1}" style="display: none;" id="schema-name" name="schema-name">
-                			<option value="schema-name1" selected = "selected">本体名称1</option>
-                			<option value="schema-name2">本体名称2</option>
-                        </select>
-                     </div>
+					   <label for="schema-name" class="am-u-sm-3 am-form-label">本体类型 / Name</label>
+					   <div class="am-u-sm-9 ">
+						  <select data-am-selected="{searchBox: 1}"  id="stype" name="stype">
+							  <option value=""></option>
+							     <?php $__currentLoopData = $schemas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schema): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								    <option value="<?php echo e($schema->sid); ?>"><?php echo e($schema->stype); ?></option>
+							     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+						  </select>
+					   </div>
                     </div>
-                    
+					 <script type="text/javascript">
+                         $(function(){
+                             $("#stype").change(function(){
+                                 var value = $(this).val();
+                                 var str1 = "<?php echo e(asset('entity/new')); ?>";
+                                 var url = str1 + '/' + value;
+                                 window.location.href= url;
+                             });
+                         })
+					 </script>
+
+
+
                     <div id="showArri">
                         <div class="am-form-group" index="1" id="Attr1">
-                          <label for="attribute-value1" class="am-u-sm-3 am-form-label" >属性(1)的值</label>
-                          <div class="am-u-sm-6 am-u-end">
-                            <input type="text" id="attribute-value1" placeholder="请输入属性值">
-                          </div>
+							<label for="attribute-name2" class="am-u-sm-2 am-form-label" >属性(1)名称：</label>
+							<div class="am-u-sm-4">
+								<input type="text" id="attribute-name2" placeholder="请输入属性(1)名称">
+							</div>
+							<label for="attribute-value1" class="am-u-sm-1 am-form-label" >属性值</label>
+                          	<div class="am-u-sm-4 am-u-end">
+								<input type="text" id="attribute-value1" placeholder="请输入属性值">
+                            </div>
                         </div>
                      </div>
                     
@@ -68,7 +87,7 @@
 						<button type="button" onclick="addArri();" class="am-btn am-btn-default am-btn-secondary">添加属性</button>
 						<button type="submit"
 							class="am-btn am-btn-success tpl-btn-bg-color-success ">保存</button>
-						<button type="submit"
+						<button type="button"
 							class="am-btn am-btn-danger tpl-btn-bg-color-success" onclick="history.go(-1);">取消</button>
 						</div>
 					</div>

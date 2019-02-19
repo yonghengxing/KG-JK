@@ -27,19 +27,19 @@
                             <tbody>
 									<tr class="gradeX">
 										<td>
-                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="startentity" name="startentity">
-                                                <?php if(isset($entities)): ?>
-                                                    <?php $__currentLoopData = $entities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $entity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option value="<?php echo e($entity->eid); ?>"><?php echo e($entity->entitylabel); ?></option>
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="startentity" name="fromvertex">
+                                                <?php if(isset($schemas)): ?>
+                                                    <?php $__currentLoopData = $schemas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schema): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($schema->sid); ?>"><?php echo e($schema->slabel); ?></option>
                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 <?php endif; ?>
                                             </select>
                                         </td>
                                         <td>
-                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="endentity" name="endentity">
-                                                <?php if(isset($entities)): ?>
-                                                    <?php $__currentLoopData = $entities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $entity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option value="<?php echo e($entity->eid); ?>"><?php echo e($entity->entitylabel); ?></option>
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="endentity" name="tovertex">
+                                                <?php if(isset($schemas)): ?>
+                                                    <?php $__currentLoopData = $schemas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schema): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($schema->sid); ?>"><?php echo e($schema->slabel); ?></option>
                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 <?php endif; ?>
                                             </select>
@@ -48,7 +48,7 @@
                                             <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationType" name="relationType">
                                                 <?php if(isset($relationTypes)): ?>
                                                     <?php $__currentLoopData = $relationTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $relationType): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                         <option value="<?php echo e($relationType->tid); ?>"><?php echo e($relationType->relationlabel); ?></option>
+                                                         <option value="<?php echo e($relationType->tid); ?>"><?php echo e($relationType->rlabel); ?></option>
                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                  <?php endif; ?>
                                             </select>

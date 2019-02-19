@@ -13,15 +13,21 @@
                      
                      <div class="widget-body  am-fr">
                          <div class="am-g">
-                             <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
-                                  <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                                  	<a   href="<?php echo e(asset('/schema/new')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加本体类型</a>
-    							  </div>
-                              </div>
-                              
-                          	<div  class="am-u-sm-12 am-u-md-3 am-u-end">
+                             <div class="am-u-sm-4 ">
+								 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+									 <a   href="<?php echo e(asset('/schema/new')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加本体类型</a>
+								 </div>
+							 </div>
+
+							 <div class="am-u-sm-2 ">
+								 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+									 <a   href="<?php echo e(asset('/schema/auto')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 自动生成本体</a>
+								 </div>
+							 </div>
+
+                          	<div  class="am-u-sm-4 ">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                                    <input type="text" name= "searchText" class="am-form-field "  value="">
+                                    <input type="text" name= "searchText" id="searchText" class="am-form-field "  value="<?php if(isset($text)): ?><?php echo e($text); ?><?php endif; ?>">
                                       <span class="am-input-group-btn">
                                         <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"  onclick="search()" type="submit"></button>
                                       </span>
@@ -33,15 +39,12 @@
 						<script type="text/javascript">
 							function search() {
 
-                                var value = document.getElementById('search').value;
+                                var value = document.getElementById('searchText').value;
                                 var str1 = "<?php echo e(asset('schema/search')); ?>";
                                 var url = str1 + '/' + value;
                                 window.location.href= url;
                             }
-                            
-                            function clearText() {
-                                document.getElementById('search').value = "";
-                            }
+
 						</script>
 					</div>
 					
@@ -50,6 +53,7 @@
                             <thead>
                                 <tr>
 									<th>本体类型</th>
+									<th>本体标识</th>
 									<th>创建时间</th>
 									<th>创建人</th>
 									<th>更新时间</th>
@@ -61,7 +65,8 @@
 								<?php if(isset($schemas)): ?>
 									<?php $__currentLoopData = $schemas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schema): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 									<tr class="gradeX">
-										<td><?php echo e($schema->stype); ?></td>
+										<td><?php echo e($schema->sname); ?></td>
+										<td><?php echo e($schema->slabel); ?></td>
 										<td><?php echo e($schema->created_at); ?></td>
 										<td><?php echo e($schema->createname); ?></td>
 										<td><?php echo e($schema->updated_at); ?></td>
@@ -70,7 +75,6 @@
 											<div class="operation___3s32S">
 												<span><a href="<?php echo e(asset('/schema/info')); ?>/<?php echo e($schema->sid); ?>">编辑</a></span>
 												<span><a href="<?php echo e(asset('/schema/delete')); ?>/<?php echo e($schema->sid); ?>" onclick="return del()">删除</a></span>
-												<span><a href="<?php echo e(asset('/schema/copy')); ?>/<?php echo e($schema->sid); ?>">复制</a></span>
 											</div>
 											
 											<script>

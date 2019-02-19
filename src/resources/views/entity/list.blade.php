@@ -63,13 +63,13 @@
                             <tbody>
                                 @if (isset($entities))
                                     @foreach($entities as $entity)
-									                                        <tr class="ant-table-row  ant-table-row-level-0">
+                                        <tr class="ant-table-row  ant-table-row-level-0">
 
                                             <td>
-                                                {{ $entity->showname }}
+                                                {{ $entity->entitylabel }}
                                             </td>
                                             <td>
-                                                {{ $entity->entityname }}
+                                                {{ $entity->stype }}
                                             </td>
                                             <td>
                                                 {{ $entity->icon }}
@@ -92,9 +92,9 @@
                                             </td>
                                             <td>
                                                 <div class="operation___3s32S">
-                                                    <span><a href="{{asset('/entity/info')}}/{{$entity->sid}}">编辑</a></span>
-                                                    <span><a href="{{asset('/entity/delete')}}/{{$entity->sid}}" onclick="return del()">删除</a></span>
-                                                    <span><a href="{{asset('/entity/copy')}}/{{$entity->sid}}">复制</a></span>
+                                                    <span><a href="{{asset('/entity/info')}}/{{$entity->eid}}">编辑</a></span>
+                                                    <span><a href="{{asset('/entity/delete')}}/{{$entity->eid}}" onclick="return del()">删除</a></span>
+
                                                 </div>
 
                                                 <script>

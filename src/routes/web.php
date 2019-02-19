@@ -74,6 +74,7 @@ Route::get('/fuse/ontologymap', 'viewController@ontologymap');
  */
 Route::get('/schema/list', 'SchemaController@schema_list');
 Route::get('/schema/new', 'SchemaController@schema_new');
+Route::get('/schema/auto', 'SchemaController@schema_new_auto');
 Route::post('/schema/new', 'SchemaController@schema_new_do');
 Route::get('/schema/delete/{sid}', 'SchemaController@schema_delete');
 Route::get('/schema/info/{sid}', 'SchemaController@schema_info');
@@ -86,6 +87,7 @@ Route::get('/schema/search/{text?}', 'SchemaController@schema_search');
  */
 Route::get('/entity/list', 'EntityController@entity_list');
 Route::get('/entity/new', 'EntityController@entity_new');
+Route::get('/entity/new/{sid}', 'EntityController@entity_new_select');
 Route::post('/entity/new', 'EntityController@entity_new_do');
 Route::get('/entity/delete/{eid}', 'EntityController@entity_delete');
 Route::get('/entity/info/{eid}', 'EntityController@entity_info');
@@ -100,6 +102,7 @@ Route::get('/entity/search/{text?}', 'EntityController@entity_search');
 Route::get('/relation/list', 'RelationController@relation_list');
 Route::get('/relation/new', 'RelationController@relation_new');
 Route::post('/relation/new', 'RelationController@relation_new_do');
+Route::get('/relation/auto', 'RelationController@relation_new_auto');
 Route::get('/relation/delete/{rid}', 'RelationController@relation_delete');
 Route::get('/relation/info/{rid}', 'RelationController@relation_info');
 Route::post('/relation/info/{rid}', 'RelationController@relation_info_do');

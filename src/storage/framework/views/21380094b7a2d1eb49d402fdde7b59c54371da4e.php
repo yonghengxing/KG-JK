@@ -20,7 +20,7 @@
                               
                           	<div  class="am-u-sm-12 am-u-md-3 am-u-end">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                                    <input type="text" name= "searchText" class="am-form-field "  value="">
+                                    <input type="text" name= "searchText" id="searchText" class="am-form-field "  value="<?php if(isset($text)): ?><?php echo e($text); ?><?php endif; ?>">
                                       <span class="am-input-group-btn">
                                         <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"  onclick="search()" type="submit"></button>
                                       </span>
@@ -31,15 +31,12 @@
                         <script type="text/javascript">
                             function search() {
 
-                                var value = document.getElementById('search').value;
+                                var value = document.getElementById('searchText').value;
                                 var str1 = "<?php echo e(asset('relationType/search')); ?>";
                                 var url = str1 + '/' + value;
                                 window.location.href= url;
                             }
 
-                            function clearText() {
-                                document.getElementById('search').value = "";
-                            }
                         </script>
 					</div>
 					
@@ -47,8 +44,8 @@
                         <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
                             <thead>
                                 <tr>
-                                    <th>关系类型</th>
-                                    <th>图标</th>
+                                    <th>关系名称</th>
+                                    <th>关系标识</th>
                                     <th>创建时间</th>
                                     <th>创建人</th>
                                     <th>更新时间</th>
@@ -61,11 +58,11 @@
                                     <?php $__currentLoopData = $relationTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $relationType): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 									<tr class="gradeX">
 										<td>
-                                                <?php echo e($relationType->relationlabel); ?>
+                                                <?php echo e($relationType->rname); ?>
 
                                             </td>
                                             <td>
-                                                <?php echo e($relationType->icon); ?>
+                                                <?php echo e($relationType->rlabel); ?>
 
                                             </td>
                                             <td>

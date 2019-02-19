@@ -12,17 +12,23 @@
                      
                      <div class="widget-body  am-fr">
                      	<div class="am-g">
-                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                               	<a   href="<?php echo e(asset('/relation/new')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建实体关系</a>
 							  </div>
                           </div>
+
+							<div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+								<div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+									<a   href="<?php echo e(asset('/relation/auto')); ?>" class="am-btn am-btn-default am-btn-success"></span>生成模型</a>
+								</div>
+							</div>
                           
                       	<div  class="am-u-sm-12 am-u-md-3 am-u-end">
                             <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                                <input type="text" name= "searchText" class="am-form-field "  value="">
+                                <input type="text" name= "searchText" id="searchText" class="am-form-field "  value="<?php if(isset($text)): ?><?php echo e($text); ?><?php endif; ?>">
                                   <span class="am-input-group-btn">
-                                    <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"  onclick="search()" type="submit"></button>
+                                    <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"  onclick="search()" type="button"></button>
                                   </span>
                             </div>
                         </div>
@@ -32,14 +38,10 @@
 						<script type="text/javascript">
 							function search() {
 
-                                var value = document.getElementById('search').value;
-                                var str1 = "<?php echo e(asset('schema/search')); ?>";
+                                var value = document.getElementById('searchText').value;
+                                var str1 = "<?php echo e(asset('relation/search')); ?>";
                                 var url = str1 + '/' + value;
                                 window.location.href= url;
-                            }
-                            
-                            function clearText() {
-                                document.getElementById('search').value = "";
                             }
 						</script>
 					</div>

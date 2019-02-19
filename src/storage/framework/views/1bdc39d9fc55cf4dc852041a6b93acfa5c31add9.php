@@ -1,7 +1,7 @@
  <?php $__env->startSection('content'); ?>
 
 <script type="text/javascript">
-	var compIndex = 1;
+	var compIndex = "<?php echo e($num); ?>";
 	function addArri()
  	{
 		compIndex++;
@@ -9,11 +9,10 @@
 		var str = '<div class="am-form-group" index="'+
 					compIndex+'" id="Attr1"> <label for="schema-attribute'+
 					compIndex+'" class="am-u-sm-3 am-form-label" >属性('+
-					compIndex+') /  Attribute</label><div class="am-u-sm-9"> <input type="text" id="schema-attribute'+
+					compIndex+') /  Attribute</label><div class="am-u-sm-9"> <input name="properties[]" type="text" id="schema-attribute'+
 					compIndex+'" placeholder="属性('+
 					compIndex+')"> <small>输入属性名称</small> </div> </div>';
 
-	    alert(str);
 		$("#showArri").append(str);
 
 	}
@@ -29,23 +28,31 @@
                  </div>
                  
                  <hr/>
-                 
-                 
-                 <form class="am-form tpl-form-border-form  tpl-form-border-br" action="<?php echo e(asset('/schema/info')); ?>/<?php echo e($schema->id); ?>" method="post" onsubmit="">
+
+
+                 <form class="am-form tpl-form-border-form  tpl-form-border-br" action="<?php echo e(asset('/schema/info')); ?>/<?php echo e($schema->sid); ?>" method="post" >
 					<input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>" />
 					<div class="am-form-group">
                         <label  class="am-u-sm-3 am-form-label">本体名称<span class="tpl-form-line-small-title">Name</span></label>
                         <div class="am-u-sm-9">
-                             <input type="text" class="tpl-form-input" id="comp_name"  name="comp_name" placeholder="请输入组件的名称" value="<?php echo e($schema->stype); ?>">
+                             <input type="text" class="tpl-form-input" id="comp_name"  name="sname" placeholder="请输入本体类型" value="<?php echo e($schema->sname); ?>">
                         </div>
                     </div>
+
+					 <div class="am-form-group">
+						 <label for="schema-name" class="am-u-sm-3 am-form-label">本体标识</label>
+						 <div class="am-u-sm-6 am-u-end">
+							 <input type="text" id="schema-name" name="slabel" placeholder="输入标识，仅限英文" value="<?php echo e($schema->slabel); ?>">
+						 </div>
+					 </div>
                     
                      <div class="widget-body am-fr" id="showArri">
                      	<?php for($i = 1; $i <= $num; $i++): ?>
                         <div class="am-form-group" index="1" id="Attr1">
                           <label for="schema-attribute1" class="am-u-sm-3 am-form-label" >属性(<?php echo e($i); ?>) /  Attribute</label>
                           <div class="am-u-sm-9">
-                            <input type="text" id="schema-attribute1" placeholder="请输入属性名称" value="<?php echo e($properties[$i-1]); ?>"/>
+
+                            <input type="text" id="schema-attribute1" placeholder="请输入属性名称" name="properties[]" value="<?php echo e($properties[$i-1]); ?>"/>
                             <small>输入属性名称</small>
                           </div>
                         </div>
@@ -64,7 +71,7 @@
 						<div class="am-u-sm-9 am-u-sm-push-3">
 						<button type="submit"
 							class="am-btn am-btn-primary tpl-btn-bg-color-success ">保存</button>
-						<button type="submit"
+						<button type="button"
 							class="am-btn am-btn-primary tpl-btn-bg-color-success" onclick="history.go(-1);">取消</button>
 						</div>
 					</div>

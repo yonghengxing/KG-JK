@@ -7,9 +7,12 @@
  */
 
 namespace App\Http\Controllers;
+use App\Models\ParameterJson;
+use App\Models\Schema;
+use App\Services\ParameterJsonService;
 use Illuminate\Routing\Controller as BaseController;
 
-use App\Models\Schema;
+
 use App\Services\SchemaService;
 
 use Illuminate\Http\Request;
@@ -21,10 +24,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class SchemaController extends BaseController
 {
-    function __construct(SchemaService $schemaService)
+    function __construct(SchemaService $schemaService,ParameterJsonService $parameterJsonService)
     {
         // $this->middleware('auth');
         $this->schemaService = $schemaService;
+        $this->parameterJsonService = $parameterJsonService;
 
     }
 
@@ -55,26 +59,93 @@ class SchemaController extends BaseController
         return view('schema/new');
     }
 
+
+    public function schema_new_auto(){
+
+        // 获取配置文件的数据库名称
+//         $databasename = config("database.connections.mysql")['database'];
+        $databasename = "iscas_itechs_dbout";
+        // 获取数据库下所有的表名称
+        $tablesql = "select table_name,table_comment  from information_schema.tables where table_type='base table' and table_schema=?  ";
+        $tablenames = \DB::select($tablesql,[$databasename]);
+        $data = array();
+        $attribute = array();
+       $ret =  $this->schemaService->deleteAutoDatabase();
+       foreach ($tablenames as $tablename){
+            // 遍历每个表，获取表的字段名，类型和是否主键;  暂且将所有类型转换为string;
+            $sql = "select column_name,data_type ,IF(column_key='PRI','t','f') as pri
+                from information_schema.columns 
+                where table_name=?";
+            $fields = \DB::select($sql,[$tablename->table_name]);
+
+            // 按所指定格式组织数据结构
+            $property = array();
+            foreach ($fields as $value) {
+
+                if($value->pri == 't')
+                    $property[$value->column_name] = "string;primary_id";
+                else
+                    $property[$value->column_name] = "string";
+            }
+
+            // 将一个个schema单独存入数据库中
+            $mSchema = new Schema();
+            $mSchema->sname = $tablename->table_comment;
+            $mSchema->slabel = $tablename->table_name;
+            $mSchema->isauto = '1';
+            $mSchema->property = json_encode($property);
+            $ret = $this->schemaService->append($mSchema);
+
+
+
+            $attribute['attribute'] = $property;
+            $data[$tablename->table_name] = $attribute;
+
+        }
+
+//        $result['vertex'] = $data;
+//        $resultjson =json_encode($result);
+//
+//
+//
+//        $mParameterJson = new ParameterJson();
+//        $mParameterJson->parameterjson = $resultjson;
+//        $mParameterJson->flag = 'vertex';
+//        $ret = $this->parameterJsonService->append($mParameterJson);
+
+        return redirect()->action('SchemaController@schema_list');
+
+    }
+
     /**
      * 新建本体数据处理
      * 此处应该有处理属性集的操作
      */
     public function schema_new_do(Request $request)
     {
-       // $compName = $request->get("comp_name");
-       // $compDesc = $request->get("comp_desc");
-        //$compType = $request->get("comp_type");
-        //$groupId = $request->get("group_id");
+
+        $sname = $request->input('sname');
+        $slabel= $request->input('slabel');
+
+        $properties =$request->input('iskey');
+        $labels = $request->input('labels');
+        $kv = array_combine($labels,$properties);
+
+        foreach ($kv as $key=>$value){
+            if($value == '1')
+                $kv[$key] = "string;primary_id";
+            else
+                $kv[$key]= "string";
+        }
+
         $mSchema = new Schema();
-        $mSchema->stype = "人物";
-        $mSchema->property = "";
+        $mSchema->sname = $sname;
+        $mSchema->slabel = $slabel;
+
+        $mSchema->property = json_encode($kv);
 
         $ret = $this->schemaService->append($mSchema);
-        if ($ret) {
-            return view('schema/list', compact("ret"));
-        } else {
-            return view('schema/list', compact("ret"));
-        }
+        return redirect()->action('SchemaController@schema_list');
     }
 
     /**
@@ -84,7 +155,13 @@ class SchemaController extends BaseController
      */
     public function schema_info($sid){
         $schema = $this->schemaService->getById($sid);
-        return view('schema/info', compact("schema"));
+
+        $kv = json_decode($schema->property,true);
+        $properties = array_keys($kv);
+
+        $num = count($properties);
+
+        return view('schema/info', compact("schema","properties","num"));
     }
 
     /**
@@ -93,20 +170,30 @@ class SchemaController extends BaseController
      */
     public function schema_info_do($sid,Request $request)
     {
-      //  $mSchema = $request->get("comp_name");
-      //  $mSchema = $request->get("comp_desc");
-      //  $mSchema = $request->get("comp_type");
+        $sname = $request->input('sname');
+        $slabel= $request->input('slabel');
+
+        $properties = array_filter($request->input('properties'));
+
+
+
         $mSchema = $this->schemaService->getById($sid);
-        $mSchema->stype = "人物";
-        $mSchema->property = "";
-        $updateRet = $this->schemaService->update($mSchema);
-        if (!$updateRet){
-            $msg = "编辑本体错误！";
-            return view('message', compact("msg"));
-        } else {
-            $msg = "编辑本体成功！";
-            return view('message', compact("msg"));
+
+        $mSchema->sname = $sname;
+        $mSchema->slabel = $slabel;
+        $key = array_search('string;primary_id',json_decode($mSchema->property,true));
+        $resultpro =array();
+        foreach ($properties as $value) {
+                if($value == $key)
+                    $resultpro[$value] = "string;primary_id";
+                else
+                    $resultpro[$value]= "string";
         }
+
+        $mSchema->property = json_encode($resultpro);
+        $updateRet = $this->schemaService->update($mSchema);
+
+        return redirect()->action('SchemaController@schema_list');
     }
     /**
      * 通过ID删除本体

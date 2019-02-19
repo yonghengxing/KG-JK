@@ -27,19 +27,19 @@
                             <tbody>
 									<tr class="gradeX">
 										<td>
-                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="startentity" name="startentity">
-                                                @if (isset($entities))
-                                                    @foreach($entities as $entity)
-                                                        <option value="{{ $entity->eid }}">{{ $entity->entitylabel }}</option>
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="startentity" name="fromvertex">
+                                                @if (isset($schemas))
+                                                    @foreach($schemas as $schema)
+                                                        <option value="{{ $schema->sid }}">{{ $schema->slabel }}</option>
                                                     @endforeach
                                                 @endif
                                             </select>
                                         </td>
                                         <td>
-                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="endentity" name="endentity">
-                                                @if (isset($entities))
-                                                    @foreach($entities as $entity)
-                                                        <option value="{{ $entity->eid }}">{{ $entity->entitylabel }}</option>
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="endentity" name="tovertex">
+                                                @if (isset($schemas))
+                                                    @foreach($schemas as $schema)
+                                                        <option value="{{ $schema->sid }}">{{ $schema->slabel }}</option>
                                                     @endforeach
                                                 @endif
                                             </select>
@@ -48,7 +48,7 @@
                                             <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationType" name="relationType">
                                                 @if (isset($relationTypes))
                                                     @foreach($relationTypes as $relationType)
-                                                         <option value="{{ $relationType->tid }}">{{ $relationType->relationlabel }}</option>
+                                                         <option value="{{ $relationType->tid }}">{{ $relationType->rlabel }}</option>
                                                     @endforeach
                                                  @endif
                                             </select>

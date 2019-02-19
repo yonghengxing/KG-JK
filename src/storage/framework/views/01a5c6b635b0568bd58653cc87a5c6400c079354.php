@@ -63,14 +63,14 @@
                             <tbody>
                                 <?php if(isset($entities)): ?>
                                     <?php $__currentLoopData = $entities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $entity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-									                                        <tr class="ant-table-row  ant-table-row-level-0">
+                                        <tr class="ant-table-row  ant-table-row-level-0">
 
                                             <td>
-                                                <?php echo e($entity->showname); ?>
+                                                <?php echo e($entity->entitylabel); ?>
 
                                             </td>
                                             <td>
-                                                <?php echo e($entity->entityname); ?>
+                                                <?php echo e($entity->stype); ?>
 
                                             </td>
                                             <td>
@@ -100,9 +100,9 @@
                                             </td>
                                             <td>
                                                 <div class="operation___3s32S">
-                                                    <span><a href="<?php echo e(asset('/entity/info')); ?>/<?php echo e($entity->sid); ?>">编辑</a></span>
-                                                    <span><a href="<?php echo e(asset('/entity/delete')); ?>/<?php echo e($entity->sid); ?>" onclick="return del()">删除</a></span>
-                                                    <span><a href="<?php echo e(asset('/entity/copy')); ?>/<?php echo e($entity->sid); ?>">复制</a></span>
+                                                    <span><a href="<?php echo e(asset('/entity/info')); ?>/<?php echo e($entity->eid); ?>">编辑</a></span>
+                                                    <span><a href="<?php echo e(asset('/entity/delete')); ?>/<?php echo e($entity->eid); ?>" onclick="return del()">删除</a></span>
+
                                                 </div>
 
                                                 <script>

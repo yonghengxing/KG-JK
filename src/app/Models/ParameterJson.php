@@ -2,19 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: huangfu
- * Date: 2018/12/28
- * Time: 15:06
+ * Date: 2019/1/22
+ * Time: 15:38
  */
-
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 
-
-class Entity extends Model
+class ParameterJson extends Model
 {
-    protected $table = 'entity';
+    protected $table = 'json';
 
     /**
      * Indicates if the model should be timestamped.
@@ -29,6 +28,6 @@ class Entity extends Model
      *
      * @var int
      */
-    protected $primaryKey = 'eid';
+    protected $primaryKey = 'aid';
 
 }

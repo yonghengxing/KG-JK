@@ -64,12 +64,25 @@ class RelationTypeController extends BaseController
     public function relationType_new_do(Request $request)
     {
 
-        $label = $request->input('relationType');
-        $icon = $request->input('icon');
+       $rname = $request->input('rname');
+        $rlabel = $request->input('rlabel');
         $mRelationType = new RelationType();
-        $mRelationType->relationlabel = $label;
-        $mRelationType->icon = $icon;
-        $ret = $this->relationTypeService->append($mRelationType);
+        $mRelationType->rlabel = $rlabel;
+        $mRelationType->rname = $rname;
+
+        $properties =$request->input('iskey');
+        $labels = $request->input('labels');
+        $kv = array_combine($labels,$properties);
+
+        foreach ($kv as $key=>$value){
+            if($value == '1')
+                $kv[$key] = "string;primary_id";
+            else
+                $kv[$key]= "string";
+        }
+        $mRelationType->property = json_encode($kv);        
+	
+	$ret = $this->relationTypeService->append($mRelationType);
         return redirect()->action('RelationTypeController@relationType_list');
     }
 
@@ -90,7 +103,7 @@ class RelationTypeController extends BaseController
     public function relationType_info_do($tid,Request $request)
     {
         $label = $request->input('relationType');
-        $icon = $request->input('icon');
+        $icon = $request->input('mytext');
         $mRelationType= $this->relationTypeService->getById($tid);
         $mRelationType->relationlabel = $label;
         $mRelationType->icon = $icon;

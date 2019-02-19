@@ -7,7 +7,9 @@
  */
 
 namespace App\Http\Controllers;
+use App\Models\ParameterJson;
 use App\Services\EntityService;
+use App\Services\ParameterJsonService;
 use App\Services\RelationTypeService;
 use App\Services\SchemaService;
 use Illuminate\Routing\Controller as BaseController;
@@ -24,7 +26,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class RelationController extends BaseController
 {
     function __construct(RelationService $relationService,SchemaService $schemaService,
-                         RelationTypeService $relationTypeService, EntityService $entityService)
+                         RelationTypeService $relationTypeService, EntityService $entityService,ParameterJsonService $parameterJsonService)
 
     {
         // $this->middleware('auth');
@@ -32,6 +34,7 @@ class RelationController extends BaseController
         $this->schemaService = $schemaService;
         $this->entityService= $entityService;
         $this->relationtTypeService= $relationTypeService;
+        $this->parameterJsonService= $parameterJsonService;
 
     }
 
@@ -60,31 +63,31 @@ class RelationController extends BaseController
     public function relation_new()
     {
         $relationTypes = $this->relationtTypeService->getAll();
-        $entities = $this->entityService->getAll();
+        $schemas = $this->schemaService->getAll();
 
-        return view('relation/new',compact('relationTypes','entities'));
+        return view('relation/new',compact('relationTypes','schemas'));
     }
 
     /**
      * 新建本体数据处理
      * 此处应该有处理属性集的操作
      */
-    public function relation_new_do(Request $request)
+  public function relation_new_do(Request $request)
     {
 
         $relationType = $request->post("relationType");
-        $typelabel =  $this->relationtTypeService->getById($relationType)->relationlabel;
+        $typelabel =  $this->relationtTypeService->getById($relationType)->rlabel;
 
-        $startentity = $request->post("startentity");
-        $startlabel  = $this->entityService->getById($startentity)->entitylabel;
+        $fromvertex = $request->post("fromvertex");
+        $startlabel  = $this->schemaService->getById($fromvertex)->slabel;
 
-        $endentity = $request->post("endentity");
-        $endlabel  = $this->entityService->getById($endentity)->entitylabel;
+        $tovertex = $request->post("tovertex");
+        $endlabel  = $this->schemaService->getById($tovertex)->slabel;
 
         $mRelation = new Relation();
         $mRelation->relationtype = $relationType;
-        $mRelation->startentity = $startentity;
-        $mRelation->endentity = $endentity;
+        $mRelation->fromvertex = $fromvertex;
+        $mRelation->tovertex = $tovertex;
         $mRelation->typelabel = $typelabel;
         $mRelation->startlabel = $startlabel;
         $mRelation->endlabel = $endlabel;
@@ -92,6 +95,47 @@ class RelationController extends BaseController
         $ret = $this->relationService->append($mRelation);
 
         return redirect()->action('RelationController@relation_list');
+    }
+
+    public function relation_new_auto(){
+
+        //获取edge的json
+        $edge =array();
+        $mRelations = $this->relationService->getAll();
+
+        foreach ($mRelations as $relation){
+
+            $property = array();
+            $property['from'] = $relation->startlabel;
+            $property['to'] = $relation->endlabel;
+            $edge[$relation->typelabel] = $property;
+
+        }
+        //获取vertex的json
+
+        $vertex = array();
+        $mSchemas = $this->schemaService->getAll();
+        foreach ($mSchemas as $schema){
+            $atti['attribute'] = json_decode($schema->property,true);
+            $vertex[$schema->slabel] = $atti;
+
+
+        }
+
+        $result['edge'] = $edge;
+        $result['vertex'] = $vertex;
+
+
+        $resultjson =json_encode($result);
+
+
+        $myjson = fopen("myjson.json", "w");
+        fwrite($myjson, $resultjson);
+        fclose($myjson);
+
+
+        return redirect()->action('RelationController@relation_list');
+
     }
 
     /**
@@ -103,9 +147,9 @@ class RelationController extends BaseController
         $relation = $this->relationService->getById($rid);
 
         $relationTypes = $this->relationtTypeService->getAll();
-        $entities = $this->entityService->getAll();
+        $schemas = $this->schemaService->getAll();
 
-        return view('relation/info', compact("relation","relationTypes","entities"));
+        return view('relation/info', compact("relation","relationTypes","schemas"));
     }
 
     /**
@@ -115,16 +159,17 @@ class RelationController extends BaseController
     public function relation_info_do($rid,Request $request)
     {
         $relationType = $request->post("relationType");
+        $fromvertex = $request->post("fromvertex");
+        $tovertex = $request->post("tovertex");
         $typelabel =  $this->relationtTypeService->getById($relationType)->relationlabel;
-        $startentity = $request->post("startentity");
-        $startlabel  = $this->entityService->getById($startentity)->entitylabel;
-        $endentity = $request->post("endentity");
-        $endlabel  = $this->entityService->getById($endentity)->entitylabel;
+        $startlabel  = $this->schemaService->getById($fromvertex)->slabel;
+        $endlabel  = $this->schemaService->getById($tovertex)->slabel;
+
 
         $mRelation= $this->relationService->getById($rid);
         $mRelation->relationtype = $relationType;
-        $mRelation->startentity = $startentity;
-        $mRelation->endentity = $endentity;
+        $mRelation->fromvertex = $fromvertex;
+        $mRelation->tovertex = $tovertex;
         $mRelation->typelabel = $typelabel;
         $mRelation->startlabel = $startlabel;
         $mRelation->endlabel = $endlabel;

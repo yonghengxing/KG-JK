@@ -5,7 +5,7 @@
                 <div class="widget am-cf">
                      <div class="am-cf">
                          <strong class="am-text-primary am-text-lg">动态知识图谱 /融合配置</strong> /
-              			 <small>本体融合</small>
+              			 <small>实体融合</small>
                      </div>
                      
                      <hr/>
@@ -43,7 +43,7 @@
                         <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
                             <thead>
                                 <tr>
-                                    <th>本体名称</th>
+                                    <th>实体名称</th>
                                     <th>融合状态</th>
                                     <th>创建者</th>
                                     <th>创建时间</th>

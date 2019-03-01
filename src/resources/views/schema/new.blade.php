@@ -11,30 +11,26 @@
 
         var str = ' <div class="am-form-group" index="'+
             compIndex +'" id="Attr'+
-            compIndex +'"> <label for="attribute-name'+
-            compIndex +'" class="am-u-sm-2 am-form-label" >属性('+
-            compIndex +')标识：</label> <div class="am-u-sm-4"> <input type="text" name="labels[]" id="attribute-name'+
-            compIndex +'" placeholder="请输入属性('+
-            compIndex +')标识"> </div> <label for="attribute-value'+
-            compIndex + '" class="am-u-sm-1 am-form-label" >字段属性</label> <div class="am-u-sm-4 am-u-end"> <input type="text"  name="properties[]" id="attribute-value'+
-            compIndex + '" placeholder="请输入字段属性"> </div> </div>';
+            compIndex +'"> <label for="labels-'+
+            compIndex +'" class="am-u-sm-3 am-form-label" >属性标识：</label> <div class="am-u-sm-3"> <input type="text" name="labels[]" id="labels-'+
+            compIndex +'" placeholder="请输入属性标识"> </div> <label for="iskey-'+
+            compIndex + '" class="am-u-sm-2 am-form-label" >是否主键</label> <div class="am-u-sm-2 am-u-end">' +
+            '<select data-am-selected="{searchBox: 1}"  id="iskey-'+
+            compIndex + '" " name="iskey[]">'+
+            '<option value="0">否</option>'+
+            '<option value="1">是</option> 	</select> </div> </div> </div>';
 
+		$("#showArri").append(str);
+	}
 
-        var str1 = ['<div class="am-form-group" index="1" id="Attr1">',
-            '<label for="attribute-name2" class="am-u-sm-3 am-form-label" >属性标识：</label>',
-            '<div class="am-u-sm-3">',
-            '<input type="text" id="attribute-name2" name="labels[]" placeholder="请输入属性标识">',
-            '</div>',
-            '<label for="attribute-value1" class="am-u-sm-3 am-form-label" >是否主键</label>',
-            '<div class="am-u-sm-3 ">',
-            '<select data-am-selected="{searchBox: 1}"  id="iskey" name="iskey[]">',
-            '<option value="0">否</option>',
-            '<option value="1">是</option>',
-            '</select>',
-            '</div>',
-            '</div>'].join("");
-		$("#showArri").append(str1);
-
+	function deleteArri()
+	{
+// 		debugger;
+		if(compIndex < 1){
+		return;
+		}
+		$("#Attr"+compIndex).remove();
+		compIndex--;
 	}
 </script>
 
@@ -44,42 +40,38 @@
             <div class="widget am-cf">
             
                  <div class="am-cf">
-                     <strong class="am-text-primary am-text-lg">动态知识图谱 /本体配置</strong> /
-          			 <small>本体类型</small>
+                     <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
+          			 <small>添加实体类型</small>
                  </div>
                  
                  <hr/>
                  
-                 <form class="am-form am-form-horizontal " action="{{asset('schema/new')}}" method="post" >
+                 <form class="am-form am-form-horizontal " action="{{asset('schema/new')}}" method="post" onsubmit="return checkForm()">
                  	<input type="hidden" name="_token" value="{{ csrf_token() }}" />
                     <div class="am-form-group">
-                      <label for="schema-name" class="am-u-sm-3 am-form-label">本体名称</label>
+                      <label for="schema-name" class="am-u-sm-3 am-form-label">实体名称</label>
                       <div class="am-u-sm-6 am-u-end">
-                        <input type="text" id="schema-name" name="sname" placeholder="输入本体名称">
+                        <input type="text" id="sname" name="sname" placeholder="输入实体名称">
                       </div>
                     </div>
 
 					 <div class="am-form-group">
-						 <label for="schema-name" class="am-u-sm-3 am-form-label">本体标识</label>
+						 <label for="schema-name" class="am-u-sm-3 am-form-label">实体标识</label>
 						 <div class="am-u-sm-6 am-u-end">
-							 <input type="text" id="schema-name" name="slabel" placeholder="输入标识，仅限英文">
+							 <input type="text" id="slabel" name="slabel" placeholder="输入标识，仅限英文">
 						 </div>
 					 </div>
                     
 
 					 <div id="showArri" class="am-g">
 						 <div class="am-form-group" index="1" id="Attr1">
-							 {{--<label for="attribute-name2" class="am-u-sm-2 am-form-label" >属性名称：</label>--}}
-							 {{--<div class="am-u-sm-2">--}}
-								 {{--<input type="text" id="attribute-name2" name="names[]" placeholder="请输入属性名称">--}}
-							 {{--</div>--}}
-							 <label for="attribute-name2" class="am-u-sm-3 am-form-label" >属性标识：</label>
+							 <label for="labels-2" class="am-u-sm-3 am-form-label" >属性标识：</label>
 							 <div class="am-u-sm-3">
-								 <input type="text" id="attribute-name2" name="labels[]" placeholder="请输入属性标识">
+								 <input type="text" id="labels-2" name="labels[]" placeholder="请输入属性标识">
 							 </div>
-							 <label for="attribute-value1" class="am-u-sm-3 am-form-label" >是否主键</label>
-							 <div class="am-u-sm-3 am-u-end ">
-									 <select data-am-selected="{searchBox: 1}"  id="iskey" name="iskey[]">
+							 <label for="iskey-1" class="am-u-sm-2 am-form-label" >是否主键</label>
+							 <div class="am-u-sm-2 am-u-end">
+									 <select data-am-selected="{searchBox: 1}"  id="iskey-1" name="iskey[]">
 										 <option value="0">否</option>
 										 <option value="1">是</option>
 									 </select>
@@ -92,12 +84,30 @@
 					 <div class="am-form-group">
 						<div class="am-u-sm-9 am-u-sm-push-3">
 						<button type="button" onclick="addArri();" class="am-btn am-btn-default am-btn-secondary">添加属性</button>
+						<button type="button" onclick="deleteArri();" class="am-btn am-btn-default am-btn-secondary">删除属性</button>
 						<button type="submit"
 							class="am-btn am-btn-success tpl-btn-bg-color-success ">保存</button>
 						<button type="button"
 							class="am-btn am-btn-danger tpl-btn-bg-color-success" onclick="history.go(-1);">取消</button>
 						</div>
 					</div>
+					
+					<script type="text/javascript">
+						function checkForm(){
+							var nameText = document.getElementById("sname").value;
+							if ( nameText == "" || nameText == null ){
+									alert("请输入实体名称！");
+									return false;
+							}
+							var slabelText = document.getElementById("slabel").value;
+							if ( slabelText == "" || slabelText == null ){
+									alert("请输入标识，仅限英文！");
+									return false;
+							}
+
+							return true;
+						}
+					</script>
             	</form>
 			</div>
 		</div>

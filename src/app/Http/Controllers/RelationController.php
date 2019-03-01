@@ -58,7 +58,7 @@ class RelationController extends BaseController
     }
 
     /**
-     * 新建本体页面
+     * 新建实体页面
      */
     public function relation_new()
     {
@@ -69,7 +69,7 @@ class RelationController extends BaseController
     }
 
     /**
-     * 新建本体数据处理
+     * 新建实体数据处理
      * 此处应该有处理属性集的操作
      */
   public function relation_new_do(Request $request)
@@ -129,9 +129,23 @@ class RelationController extends BaseController
         $resultjson =json_encode($result);
 
 
-        $myjson = fopen("myjson.json", "w");
+        $myjson = fopen("/home/fengbs/KGdata/my.json", "w");
         fwrite($myjson, $resultjson);
         fclose($myjson);
+      
+
+        $url = "http://192.168.15.62:5000/run_command";
+    
+        $opts = array(   
+          'http'=>array(   
+            'method'=>"GET",   
+            'timeout'=>1000,//s  
+           )   
+        );    
+    
+       
+        $data =  file_get_contents($url, false, stream_context_create($opts));
+        
 
 
         return redirect()->action('RelationController@relation_list');
@@ -180,7 +194,7 @@ class RelationController extends BaseController
 
     }
     /**
-     * 通过删除本体
+     * 通过删除实体
      */
     public function relation_delete($rid)
     {

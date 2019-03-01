@@ -52,10 +52,7 @@
                                     <th>名称</th>
                                     <th>数据库类型</th>
                                     <th>IP地址</th>
-                                    <th>端口</th>
-                                    <th>数据库</th>
-                                    <th>用户名</th>
-                                    <th>密码</th>
+                                    <th>数据库</th>                                                                        
                                     <th>创建时间</th>
                                     <th>创建人</th>
                                     <th>更新时间</th>
@@ -70,10 +67,7 @@
                                 <td>{{ $databaseMsg[$i]->name }}</td>
                                 <td>{{ $databaseMsg[$i]->type }}</td>
                                 <td>{{ $databaseMsg[$i]->IP }}</td>
-                                <td>{{ $databaseMsg[$i]->port }}</td>
                                 <td>{{ $databaseMsg[$i]->dbname }}</td>
-                                <td>{{ $databaseMsg[$i]->username }}</td>
-                                <td>{{ $databaseMsg[$i]->password }}</td>
                                 <td>{{ $databaseMsg[$i]->created_at }}</td>
                                 <td>{{ $databaseMsg[$i]->createdname }}</td>
                                 <td>{{ $databaseMsg[$i]->updated_at }}</td>

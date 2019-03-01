@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\SchemaService;
 use Illuminate\Routing\Controller as BaseController;
 
 use App\Models\Entity;
@@ -18,17 +17,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Schema;
 use Psy\Exception\RuntimeException;
 
 
 class EntityController extends BaseController
 {
-    function __construct(EntityService $entityService, SchemaService $schemaService)
+    function __construct(EntityService $entityService)
     {
         // $this->middleware('auth');
         $this->entityService = $entityService;
-        $this->schemaService = $schemaService;
 
     }
 
@@ -37,8 +34,6 @@ class EntityController extends BaseController
      * 显示所有的实体列表
      */
     public function entity_list(Request $request)
-
-
     {
 
         $mEntities = $this->entityService->getAll();
@@ -56,24 +51,38 @@ class EntityController extends BaseController
     /**
      * 新建实体页面
      */
-    public function entity_new(Request $request)
-{
-    $schemas = $this->schemaService->getAll();
-
-    return view('entity/new',compact('schemas'));
-}
-
-    public function entity_new_select(Request $request)
+    public function entity_new()
     {
-        $schemas = $this->schemaService->getAll();
-        $sid = $request->route("sid");
-
-        $schemaselected = $this->schemaService->getById($sid);
-        $properties = explode(",",$schemaselected->property);
-        $num = count($properties);
-        return view('entity/newselect',compact('schemas','schemaselected','properties','num'));
-
+        $url = "http://192.168.15.62:5000/run_command_load";
+    
+        $opts = array(
+          'http'=>array(
+            'method'=>"GET",
+            'timeout'=>10000000,//
+           )
+        );
+    
+        $data =  file_get_contents($url, false, stream_context_create($opts));
+        return redirect('fuse/ontologymap');
     }
+
+
+
+	public function add()
+    {
+        $url = "http://192.168.1.62:5000/run_command_load";
+        $opts = array(
+            'http'=>array(
+                'method'=>"GET",
+                'timeout'=>1000,//s
+            )
+        );
+        $data =  file_get_contents($url, false, stream_context_create($opts));
+        
+        return view('fuse/ontologymap');
+    }
+
+
 
     /**
      * 新建实体数据处理
@@ -81,22 +90,22 @@ class EntityController extends BaseController
      */
     public function entity_new_do(Request $request)
     {
-        $properties =$request->input('properties');
-        $labels = $request->input('labels');
-        $entitylabel = $request->input('entitylabel');
-        $sid = $request->post('stype');
-        $stype = $this->schemaService->getById($sid)->stype;
-
+        // $compName = $request->get("comp_name");
+        // $compDesc = $request->get("comp_desc");
+        //$compType = $request->get("comp_type");
+        //$groupId = $request->get("group_id");
         $mEntity= new Entity();
-        $mEntity->entitylabel = $entitylabel;
-        $mEntity->property = json_encode(array_combine($labels,$properties));
-        $mEntity->sid = $sid;
-        $mEntity->stype = $stype;
-
+        $mEntity->showname = "人物";
+        $mEntity->property = "";
 
         $ret = $this->entityService->append($mEntity);
-
-        return redirect()->action('EntityController@entity_list');
+        $msg = "数据库添加成功！";
+        if ($ret) {
+            return view('message', compact("msg"));
+        } else {
+            $msg = "数据库添加出错！";
+            return view('message', compact("msg"));
+        }
     }
 
     /**
@@ -105,35 +114,28 @@ class EntityController extends BaseController
      *
      */
     public function entity_info($eid){
-
         $entity = $this->entityService->getById($eid);
-        $properties = json_decode($entity->property,true);
-
-        $num = count($properties);
-        return view('entity/info', compact("entity","num","properties"));
+        return view('entity/info', compact("entity"));
     }
 
     /**
-     * 修改本体的数据处理
+     * 修改实体的数据处理
      * 此处应该有处理属性集的操作
      */
     public function entity_info_do($eid,Request $request)
     {
+        //  $mSchema = $request->get("comp_name");
+        //  $mSchema = $request->get("comp_desc");
+        //  $mSchema = $request->get("comp_type");
         $mEntity = $this->entityService->getById($eid);
         $mEntity->showname = "李三";
         $mEntity->property = "";
         $updateRet = $this->entityService->update($mEntity);
-        if (!$updateRet){
-            $msg = "编辑本体错误！";
-            return view('message', compact("msg"));
-        } else {
-            $msg = "编辑本体成功！";
-            return view('message', compact("msg"));
-        }
+        return redirect()->action('EntityController@entity_list');
     }
 
     /**
-     * 通过ID删除本体
+     * 通过ID删除实体
      */
     public function entity_delete($eid)
     {

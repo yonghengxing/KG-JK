@@ -4,8 +4,8 @@
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                      <div class="am-cf">
-                         <strong class="am-text-primary am-text-lg">动态知识图谱 /本体配置</strong> /
-              			 <small>本体类型</small>
+                         <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
+              			 <small>实体类型</small>
                      </div>
                      
                       <hr/>  
@@ -13,15 +13,15 @@
                      
                      <div class="widget-body  am-fr">
                          <div class="am-g">
-                             <div class="am-u-sm-4 ">
+                             <div class="am-u-sm-2 ">
 								 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-									 <a   href="<?php echo e(asset('/schema/new')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加本体类型</a>
+									 <a   href="<?php echo e(asset('/schema/new')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加实体类型</a>
 								 </div>
 							 </div>
 
 							 <div class="am-u-sm-2 ">
 								 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-									 <a   href="<?php echo e(asset('/schema/auto')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 自动生成本体</a>
+									 <a   href="<?php echo e(asset('/schema/auto')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 自动生成实体</a>
 								 </div>
 							 </div>
 
@@ -52,8 +52,8 @@
                         <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
                             <thead>
                                 <tr>
-									<th>本体类型</th>
-									<th>本体标识</th>
+									<th>实体类型</th>
+									<th>实体标识</th>
 									<th>创建时间</th>
 									<th>创建人</th>
 									<th>更新时间</th>
@@ -73,7 +73,7 @@
 										<td><?php echo e($schema->updatename); ?></td>
 										<td>
 											<div class="operation___3s32S">
-												<span><a href="<?php echo e(asset('/schema/info')); ?>/<?php echo e($schema->sid); ?>">编辑</a></span>
+												<span><a href="<?php echo e(asset('/schema/info')); ?>/<?php echo e($schema->sid); ?>">详情</a></span>
 												<span><a href="<?php echo e(asset('/schema/delete')); ?>/<?php echo e($schema->sid); ?>" onclick="return del()">删除</a></span>
 											</div>
 											

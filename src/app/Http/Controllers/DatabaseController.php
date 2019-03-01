@@ -52,7 +52,20 @@ class DatabaseController extends Controller{
     {
         return view('database/new');
     }
-    
+
+      public function showDB(Request $request)
+    {
+        //dd($request,$request->get("IP"),$request->get("amp;port"),$request->get("amp;dbname"),$request->get("amp;username"),$request->get("amp;password"));
+        $IP = $request->get("IP");
+        $port = $request->get("amp;port");
+        $dbname = $request->get("amp;dbname");
+        $username = $request->get("amp;username");
+        $password = $request->get("amp;password");
+        $type = $request->get("amp;type");
+        $name = $request->get("amp;name");
+        return view('database/show' , compact("IP","port","dbname","username","password","type","name"));
+    }
+
     public function addDB_do(Request $request)
     {
         $button = $request->get("button");
@@ -73,11 +86,17 @@ class DatabaseController extends Controller{
                         $username,
                         $password
                         );
+			$url = 'database/show?'.'IP='.$IP.'&port='.$port.'&dbname='.$dbname.'&username='.$username.'&password='.$password.'&type='.$type.'&name='.$name;
                 } catch (PDOException $ex) {
+		    $msg = 'database connection failed';
+	 	    $url = 'database/new';
+		    return view('error', compact("url","msg"));
                     echo 'database connection failed';
                     exit();
             }
-            echo '连接成功';
+		return view('success' , compact("url","IP","port","dbname","username","password","type","name"));
+
+            //echo '连接成功';
             }elseif ($type == 0){
                 $test1 = $descFile->isValid();
                 if ($test1 == true){
@@ -90,6 +109,16 @@ class DatabaseController extends Controller{
         
         //输入数据库信息
         if ($button =="save"){
+
+		$name = $request->get("name");
+            $type = $request->get("type");
+            $IP = $request->get("IP");
+            $port = $request->get("port");
+            $dbname = $request->get("dbname");
+            $username = $request->get("username");
+            $password = $request->get("password");
+
+
             if ($type == 1){
   
                 $typeName = "MySQL";
@@ -101,12 +130,17 @@ class DatabaseController extends Controller{
             $database->port = $port;
             $database->username = $username;
             $database->password = $password;
+	    $database->createdname = "admin";
+            $database->updatename = "admin";
             $databaseMsg = $database->save();
             }
             //提交Excel文件
             elseif ($type == 0){
-            
+
+
+	    $name = $request->get("DBID");            
             $typeName = "xsl";
+
             $test = $descFile->isValid();
             $time = time();
             $fileName = $descFile->getClientOriginalName();
@@ -128,7 +162,8 @@ class DatabaseController extends Controller{
             $database->type = $typeName;
             $database->dbname = $fileName;
             $database->IP = $tempPath;
-            
+            $database->createdname = "admin";
+            $database->updatename = "admin"; 
             $databaseMsg = $database->save();
             }
         }
@@ -275,7 +310,7 @@ class DatabaseController extends Controller{
         $plevel = $request->plevel;
         $database = $request->database;
         $DBtable = $request->DBtable;
-        $tablesource = $request->tablesource;
+        $tablesource = 1;
         $items = $request->items;
         $db_rules = $request->db_rules;
 
@@ -287,6 +322,7 @@ class DatabaseController extends Controller{
         
         $a = strpos($db_msg[0]->dbname,'.xls');
         $b = strpos($db_msg[0]->dbname,'.xlsx');
+	
         if ($a!=false or $b!=false){//Excel文件 
             
             //本地数据库连接
@@ -341,8 +377,6 @@ class DatabaseController extends Controller{
                             $bbb = str_replace('）', '',$aaa);
                             $ccc = strtolower($bbb);
                             $data_content_real[$i]["".$ccc] = $data_content_selected[$i]["".$ccc];
-                        }else{
-                            continue;
                         }
                     }
                 }
@@ -354,23 +388,19 @@ class DatabaseController extends Controller{
                             $bbb = str_replace('）', '',$aaa);
                             $ccc = strtolower($bbb);
                             $data_content_real[$i]["".$ccc] = $data_content[$i]["".$ccc];
-                        }else{
-                            continue;
                         }
                     }
                 }
             }
-            
+           
             //建立表结构
             $sql_create = "CREATE TABLE ".$DBtable."(`me_id` int(255) NOT NULL COMMENT '主键ID',";
             
             $index = 0;
             for($i = 0;$i<count($table_head);$i++){
                 if(isset($items[$i])){
-                    $sql_create = $sql_create."A".$index." MEDIUMTEXT  COMMENT '".$items[$i]."',";
+                    $sql_create = $sql_create.$items[$i]." MEDIUMTEXT  COMMENT '".$items[$i]."',";
                         $index++;
-                }else{
-                    continue;
                 }
             }
             $sql_create = substr($sql_create, 0, -1);
@@ -379,8 +409,7 @@ class DatabaseController extends Controller{
             $sql_create = $sql_create." ALTER TABLE ".$DBtable." MODIFY `me_id` int(255) NOT NULL AUTO_INCREMENT;";
             
             $statement = $pdo_me->prepare($sql_create);
-            $statement->execute();
-            
+            $statement->execute();            
             $results_create = $statement->fetchAll(PDO::FETCH_ASSOC);
             
             //插入数据
@@ -390,10 +419,8 @@ class DatabaseController extends Controller{
                 $sql_insert = "INSERT INTO ".$DBtable." (";
                 for($i = 0;$i<count($table_head);$i++){
                     if(isset($items[$i])){
-                        $sql_insert = $sql_insert."A".$index.',';
+                        $sql_insert = $sql_insert.$items[$i].',';
                         $index++;
-                    }else {
-                        continue;
                     }
                 }
                 $sql_insert = substr($sql_insert, 0, -1);
@@ -409,14 +436,10 @@ class DatabaseController extends Controller{
                                 
                                 $sql_insert = $sql_insert." ? ,";
                                 
-                            }else{
-                                continue;
                             }
                         }
                         $sql_insert = substr($sql_insert, 0, -1);
                         $sql_insert = $sql_insert."),";
-                    }else{
-                        continue;
                     }
 
                 }
@@ -437,12 +460,8 @@ class DatabaseController extends Controller{
                                 $jjj++;
                                 $iii[$i][$ccc] = $data_content_real[$i][$ccc];
                                 $statement->bindValue( $jjj, $iii[$i][$ccc] ,PDO::PARAM_STR);
-                            }else{
-                                continue;
                             }
                         }
-                    }else{
-                        continue;
                     }
                     
                 }
@@ -453,18 +472,44 @@ class DatabaseController extends Controller{
             }
             
             
+           //创建视图
+
+	    $sql = "select column_name from information_schema.columns where table_schema ='iscas_itechs_dbout' and table_name = '".$DBtable."'";
+            $statement = $pdo_me->prepare($sql);
+            $statement->execute();
             
+            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+		for($i=1;$i<count($results);$i++){
+                $view_create = "CREATE VIEW ".$DBtable."_".$results[$i]['column_name']." AS SELECT DISTINCT ".$results[$i]['column_name']." FROM ".$DBtable;
+                $statement = $pdo_me->prepare($view_create);
+                $statement->execute();
+            
+                $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
+            }
+		
+
             //在datasrc表中插入与db关联记录
             $kg_datasrc =new Kg_datasrc();
             $kg_datasrc->dataSource = $DBSrcName;
             $kg_datasrc->dbname	 = $database;
             $kg_datasrc->plevel	 = $plevel;
             $kg_datasrc->type	 = $tablesource;
+            $kg_datasrc->createdname = "admin";
+            $kg_datasrc->updatename = "admin";
             $kg_datasrc_save = $kg_datasrc->save();
             
 
 
-            
+           $url = "http://192.168.15.62:5000/run_command_dbout";
+            //$url = "http://192.168.1.62:5000/run_command_load";
+            $opts = array(
+                'http'=>array(
+                    'method'=>"GET",
+                    'timeout'=>1000,//s
+                )
+            );
+            $data =  file_get_contents($url, false, stream_context_create($opts));
             
         }else{
             /**
@@ -555,10 +600,8 @@ class DatabaseController extends Controller{
             $sql_insert = "INSERT INTO ".$DBtable." (";
             for($i = 0;$i<count($table_head);$i++){
                 if(isset($items[$i])){
-                    $sql_insert = $sql_insert."A".$index.',';
+                    $sql_insert = $sql_insert.$items[$i].',';
                     $index++;
-                }else {
-                    continue;
                 }
             }
             $sql_insert = substr($sql_insert, 0, -1);
@@ -569,14 +612,10 @@ class DatabaseController extends Controller{
                     for($j = 0;$j<count($table_head);$j++){
                         if(isset($items[$j])){
                             $sql_insert = $sql_insert." ? ,";
-                        }else{
-                            continue;
                         }
                     }
                     $sql_insert = substr($sql_insert, 0, -1);
                     $sql_insert = $sql_insert."),";
-                }else{
-                    continue;
                 }
             }
             $sql_insert = substr($sql_insert, 0, -1);
@@ -590,18 +629,31 @@ class DatabaseController extends Controller{
                             $jjj++;
                             $iii[$i][$items[$j]] = $results[$i][$items[$j]];
                             $statement->bindValue( $jjj, $iii[$i][$items[$j]] ,PDO::PARAM_STR);
-                        }else{
-                            continue;
                         }
                     }
-                }else{
-                    continue;
                 }
             }
             $statement->execute();
             $results_create = $statement->fetchAll(PDO::FETCH_ASSOC);
         }
         
+
+	//创建视图
+	$sql = "select column_name from information_schema.columns where table_schema ='iscas_itechs_dbout' and table_name = '".$DBtable."'";
+            $statement = $pdo_me->prepare($sql);
+            $statement->execute();
+            
+            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+	for($i=1;$i<count($results);$i++){
+                $view_create = "CREATE VIEW ".$DBtable."_".$results[$i]['column_name']." AS SELECT DISTINCT ".$results[$i]['column_name']." FROM ".$DBtable;
+                $statement = $pdo_me->prepare($view_create);
+                $statement->execute();
+            
+                $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+
         //dd(111);
         //在datasrc表中插入与db关联记录
         $kg_datasrc =new Kg_datasrc();
@@ -609,8 +661,21 @@ class DatabaseController extends Controller{
         $kg_datasrc->dbname	 = $database;
         $kg_datasrc->plevel	 = $plevel;
         $kg_datasrc->type	 = $tablesource;
+            $kg_datasrc->createdname = "admin";
+            $kg_datasrc->updatename = "admin";
         $kg_datasrc_save = $kg_datasrc->save();
     
+
+	  $url = "http://192.168.15.62:5000/run_command_dbout";
+        $opts = array(
+            'http'=>array(
+                'method'=>"GET",
+                'timeout'=>1000,//s
+            )
+        );
+        $data =  file_get_contents($url, false, stream_context_create($opts));
+
+
         }
         }elseif ($tablesource == 2){
             /**

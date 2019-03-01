@@ -30,7 +30,7 @@
                 <div class="widget am-cf">
 
                     <div class="am-cf">
-                        <strong class="am-text-primary am-text-lg">动态知识图谱 /本体配置</strong> /
+                        <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
                         <small>实体类型</small>
                     </div>
 
@@ -46,7 +46,7 @@
                         </div>
 
                         <div class="am-form-group">
-                            <label for="schema-name" class="am-u-sm-3 am-form-label">本体类型 / Name</label>
+                            <label for="schema-name" class="am-u-sm-3 am-form-label">实体类型 / Name</label>
                             <div class="am-u-sm-9 ">
                                 <select data-am-selected="{searchBox: 1}"  id="stype" name="stype">
                                     @if(isset($schemaselected))

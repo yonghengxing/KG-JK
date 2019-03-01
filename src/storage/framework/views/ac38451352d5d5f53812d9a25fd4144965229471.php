@@ -11,19 +11,17 @@
 </script> 
 
 <script>
-  var sepLine = ', u\'GET'; // 分割不同行
-  var sepLable = ': '; // 分割标签和值名
-  var sepVal = '\', '; // 分割输入
+  var sepLine = '；'; // 分割不同行
+  var sepLable = '，'; // 分割标签和值名
+  var sepVal = '、'; // 分割输入
 
-  var str = "{u'GET /query/connectivity/test': [], u'GET /query/connectivity/connection_mining': [u'A', u'k', u'B']}";
-
+  var str = "{value1，；value2，keyA、keyB、keyC}";
   str = str.replace('{', '').replace('}', '');
 
   var str1 = str.split(sepLine)[0];
   var str2 = str.split(sepLine)[1];
 
   $(function() {
-
     // 填入键值
     var lable1 = getLabel(str1);
     var lable2 = getLabel(str2);
@@ -33,17 +31,16 @@
     // 填入输入
     var vals1 = getValue(str1);
     var vals2 = getValue(str2);
-
+	debugger;
     addVals($('.line1-vals'), vals1);
+    debugger;
     addVals($('.line2-vals'), vals2);
+    debugger;
   });
 
   // 从一行的字符串里解析键值
   function getLabel(str) {
-
-	  str1 = str.substring(str.indexOf("/")+1,str.indexOf("':"));
-// 	  alert(str1);
-    return str1;
+    return str.split(sepLable)[0]
   }
   // 从一行的字符串里解析输入
   function getValue(str) {
@@ -57,8 +54,10 @@
     if (arr.length === 0) {
       return
     }
+Arr = arr;
     arr.map(function(item, index) {
       var html = '<span class="value-"' + index + '>' + item + '</span><input class="input-' + index + '" type="text">';
+      debugger;
       $dom.append(html);
     });
   }

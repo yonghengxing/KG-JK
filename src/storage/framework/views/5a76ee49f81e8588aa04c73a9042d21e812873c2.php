@@ -73,12 +73,12 @@
 					
 				<li class="sidebar-nav-link"><a href="javascript:;"
 					class="sidebar-nav-sub-title"> <i
-						class="am-icon-users sidebar-nav-link-logo"></i> 本体配置 <span
+						class="am-icon-users sidebar-nav-link-logo"></i> 实体配置 <span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
 					<ul class="sidebar-nav sidebar-nav-sub">
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/schema/list')); ?>"> <span
-								class="am-icon-list sidebar-nav-link-logo"></span> 本体类型
+								class="am-icon-list sidebar-nav-link-logo"></span> 实体类型
 						</a></li>
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/entity/list')); ?>"> <span
 								class="am-icon-plus sidebar-nav-link-logo"></span> 实体类型
@@ -112,13 +112,13 @@
 				</a>
 					<ul class="sidebar-nav sidebar-nav-sub">
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/database')); ?>"> <span
-								class="am-icon-list sidebar-nav-link-logo"></span> 本体映射
+								class="am-icon-list sidebar-nav-link-logo"></span> 实体映射
 						</a></li>
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('datasource')); ?>"> <span
 								class="am-icon-plus sidebar-nav-link-logo"></span> 关系映射
 						</a></li>
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('')); ?>"> <span
-								class="am-icon-plus sidebar-nav-link-logo"></span> 本体融合
+								class="am-icon-plus sidebar-nav-link-logo"></span> 实体融合
 						</a></li>
 					</ul></li>	
 					

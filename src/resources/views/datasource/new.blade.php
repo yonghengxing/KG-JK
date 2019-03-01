@@ -28,7 +28,7 @@ window.onload = function() {
                  
                  <hr/>
                  
-                 <form horizontal="true" class="am-form am-form-horizontal "action="{{ asset('/addDBSrc_do')}}" method="post" onsubmit="return checkForm()">
+                 <form horizontal="true" class="am-form am-form-horizontal "action="{{ asset('../../../kg/addDBSrc_do')}}" method="post" onsubmit="return checkForm()">
                  	<input type="hidden" name="_token" value="{{ csrf_token() }}" />
                  	
                  	<div class="am-form-group">
@@ -43,8 +43,8 @@ window.onload = function() {
                       <div class="am-u-sm-9 ">
                         <select data-am-selected="{searchBox: 1}" style="display: none;" id="plevel" name="plevel">
                         	<option name="plevel" value="0" selected="selected">选择保密等级</option>
-                			<option name="plevel" value="1">等级1</option>
-                			<option name="plevel" value="2">等级2</option>
+                			<option name="plevel" value="1">管理员</option>
+              
                         </select>
                      </div>
                     </div>
@@ -158,12 +158,7 @@ window.onload = function() {
                     <div class="am-form-group">
                     	<label class="am-u-sm-3 am-form-label">数据源类型</label>
                     	<div class="am-u-sm-9">
-                          <label class="am-radio-inline">
-                            <input type="radio" name="tablesource" value="1" checked>单表来源
-                          </label>
-                          <label class="am-radio-inline">
-                            <input type="radio" name="tablesource" value="2">多表来源
-                          </label>
+								单表来源
                         </div>
                     </div>
                     
@@ -174,23 +169,11 @@ window.onload = function() {
                               <label class="am-checkbox-inline">
                                 <input type="checkbox" value="option1"> 数据项1
                               </label>
-                              <label class="am-checkbox-inline">
-                                <input type="checkbox" value="option2"> 数据项2
-                              </label>
-                              <label class="am-checkbox-inline">
-                                <input type="checkbox" value="option3"> 数据项3
-                              </label>
-                              <label class="am-checkbox-inline">
-                                <input type="checkbox" value="option1"> 数据项1
-                              </label>
-                              <label class="am-checkbox-inline">
-                                <input type="checkbox" value="option2"> 数据项2
-                              </label>
                             </div>
                         </div>
                     </span>                    
                     
-                    <span id="id2" style="display: none;"> 
+                    <span id="id2" style="display: none;" > 
                         <div class="am-form-group">
     						<label for="db_rules" class="am-u-sm-3 am-form-label">数据库提取规则</label>
     						<div class="am-u-sm-9">

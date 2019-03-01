@@ -7,7 +7,8 @@
 		compIndex++;
 
 		var str = '<div class="am-form-group" index="'+
-					compIndex+'" id="Attr1"> <label for="schema-attribute'+
+					compIndex+'" id="Attr'+
+					compIndex+'"> <label for="schema-attribute'+
 					compIndex+'" class="am-u-sm-3 am-form-label" >属性('+
 					compIndex+') /  Attribute</label><div class="am-u-sm-9"> <input name="properties[]" type="text" id="schema-attribute'+
 					compIndex+'" placeholder="属性('+
@@ -15,6 +16,16 @@
 
 		$("#showArri").append(str);
 
+	}
+
+	function deleteArri()
+	{
+// 		debugger;
+		if(compIndex < 1){
+		return;
+		}
+		$("#Attr"+compIndex).remove();
+		compIndex--;
 	}
 </script>
 
@@ -24,7 +35,8 @@
             <div class="widget am-cf">
             
               	 <div class="am-cf">
-                     <strong class="am-text-primary am-text-lg">编辑本体类型</strong> /
+                     <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置 / 实体类型</strong> /
+                     <small>查看实体详情</small>
                  </div>
                  
                  <hr/>
@@ -33,17 +45,17 @@
                  <form class="am-form tpl-form-border-form  tpl-form-border-br" action="{{ asset('/schema/info')}}/{{$schema->sid}}" method="post" >
 					<input type="hidden" name="_token" value="{{ csrf_token() }}" />
 					<div class="am-form-group">
-                        <label  class="am-u-sm-3 am-form-label">本体名称<span class="tpl-form-line-small-title">Name</span></label>
+                        <label  class="am-u-sm-3 am-form-label">实体名称<span class="tpl-form-line-small-title">Name</span></label>
                         <div class="am-u-sm-9">
-                             <input type="text" class="tpl-form-input" id="comp_name"  name="sname" placeholder="请输入本体类型" value="{{ $schema->sname }}">
+                             {{ $schema->sname }}
                         </div>
                     </div>
 
 					 <div class="am-form-group">
-						 <label for="schema-name" class="am-u-sm-3 am-form-label">本体标识</label>
-						 <div class="am-u-sm-6 am-u-end">
-							 <input type="text" id="schema-name" name="slabel" placeholder="输入标识，仅限英文" value="{{$schema->slabel  }}">
-						 </div>
+						 <label for="schema-name" class="am-u-sm-3 am-form-label">实体标识</label>
+						 <div class="am-u-sm-9">
+                             {{$schema->slabel  }}
+                        </div>
 					 </div>
                     
                      <div class="widget-body am-fr" id="showArri">
@@ -51,28 +63,20 @@
                         <div class="am-form-group" index="1" id="Attr1">
                           <label for="schema-attribute1" class="am-u-sm-3 am-form-label" >属性({{ $i }}) /  Attribute</label>
                           <div class="am-u-sm-9">
-
-                            <input type="text" id="schema-attribute1" placeholder="请输入属性名称" name="properties[]" value="{{$properties[$i-1]}}"/>
-                            <small>输入属性名称</small>
+                             {{$properties[$i-1]}}
                           </div>
                         </div>
                         @endfor
-                     </div>
-                     
-                     <div class="am-form-group">
-                     <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
-                          <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                    			<button type="button" onclick="addArri();" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加属性</button>
-    					  </div>
-                    </div>
-                    </div>
+                     </div>                     
                     
                     <div class="am-form-group">
 						<div class="am-u-sm-9 am-u-sm-push-3">
+<!-- 			<button type="button" onclick="addArri();" class="am-btn am-btn-default am-btn-secondary" hidden>添加属性</button>
+						<button type="button" onclick="deleteArri();" class="am-btn am-btn-default am-btn-secondary" hidden>取消添加</button>
 						<button type="submit"
-							class="am-btn am-btn-primary tpl-btn-bg-color-success ">保存</button>
+							class="am-btn am-btn-success tpl-btn-bg-color-success ">保存</button> -->
 						<button type="button"
-							class="am-btn am-btn-primary tpl-btn-bg-color-success" onclick="history.go(-1);">取消</button>
+							class="am-btn am-btn-danger tpl-btn-bg-color-success" onclick="history.go(-1);">返回</button>
 						</div>
 					</div>
                     

@@ -13,11 +13,11 @@
                  <form class="am-form am-form-horizontal ">
                  	<input type="hidden" name="_token" value="{{ csrf_token() }}" />
                  	  <div class="am-form-group">
-                      <label for="schema" class="am-u-sm-1 am-form-label">本体</label>
+                      <label for="schema" class="am-u-sm-1 am-form-label">实体</label>
                       <div class="am-u-sm-5">
                         <select data-am-selected="{searchBox: 1}" style="display: none;" id=""schema"" name="schema">
-                			<option value="schema1" selected = "selected">本体1</option>
-                			<option value="schema2">本体2</option>
+                			<option value="schema1" selected = "selected">实体1</option>
+                			<option value="schema2">实体2</option>
                         </select>
                      </div>
                      

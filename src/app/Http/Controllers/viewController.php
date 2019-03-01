@@ -51,8 +51,27 @@ class viewController extends Controller
     }
     
     public function ontologymap()
-    {
-        return view('fuse/ontologymap');
+    {   
+        $file_list=[];
+        $filePath = "/home/fengbs/tigergraph/loadingData/";
+        $handler = opendir($filePath);
+
+        while(($filename = readdir($handler))!=false){
+            if($filename != '.' && $filename!='..'){
+                $file_list[] = $filename;
+
+            }
+        }
+
+        foreach ($file_list as $file) {
+            $schema = explode(".",$file)[0];
+            $data[$schema] = $file;
+
+        }
+        return view('fuse/ontologymap',compact('data'));
+
+
+        //return view('fuse/ontologymap');
     }
     
     public function fusmap()

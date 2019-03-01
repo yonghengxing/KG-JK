@@ -52,10 +52,7 @@
                                     <th>名称</th>
                                     <th>数据库类型</th>
                                     <th>IP地址</th>
-                                    <th>端口</th>
-                                    <th>数据库</th>
-                                    <th>用户名</th>
-                                    <th>密码</th>
+                                    <th>数据库</th>                                                                        
                                     <th>创建时间</th>
                                     <th>创建人</th>
                                     <th>更新时间</th>
@@ -70,10 +67,7 @@
                                 <td><?php echo e($databaseMsg[$i]->name); ?></td>
                                 <td><?php echo e($databaseMsg[$i]->type); ?></td>
                                 <td><?php echo e($databaseMsg[$i]->IP); ?></td>
-                                <td><?php echo e($databaseMsg[$i]->port); ?></td>
                                 <td><?php echo e($databaseMsg[$i]->dbname); ?></td>
-                                <td><?php echo e($databaseMsg[$i]->username); ?></td>
-                                <td><?php echo e($databaseMsg[$i]->password); ?></td>
                                 <td><?php echo e($databaseMsg[$i]->created_at); ?></td>
                                 <td><?php echo e($databaseMsg[$i]->createdname); ?></td>
                                 <td><?php echo e($databaseMsg[$i]->updated_at); ?></td>

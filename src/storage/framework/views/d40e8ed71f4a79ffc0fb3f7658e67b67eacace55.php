@@ -4,7 +4,7 @@
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                      <div class="am-cf">
-                         <strong class="am-text-primary am-text-lg">动态知识图谱 /本体配置</strong> /
+                         <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
               			 <small>关系维护</small>
                      </div>
                      
@@ -12,19 +12,19 @@
                      
                      <div class="widget-body  am-fr">
                      	<div class="am-g">
-                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                         <div class="am-u-sm-2 ">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                               	<a   href="<?php echo e(asset('/relation/new')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建实体关系</a>
 							  </div>
                           </div>
 
-							<div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+							<div class="am-u-sm-2 ">
 								<div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
 									<a   href="<?php echo e(asset('/relation/auto')); ?>" class="am-btn am-btn-default am-btn-success"></span>生成模型</a>
 								</div>
 							</div>
                           
-                      	<div  class="am-u-sm-12 am-u-md-3 am-u-end">
+                      	<div  class="am-u-sm-4 ">
                             <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                                 <input type="text" name= "searchText" id="searchText" class="am-form-field "  value="<?php if(isset($text)): ?><?php echo e($text); ?><?php endif; ?>">
                                   <span class="am-input-group-btn">

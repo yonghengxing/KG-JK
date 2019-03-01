@@ -23,5 +23,11 @@ class RelationService extends BaseService
         return $relations;
 
     }
+    
+    function deleteAutoRelation(){
+        $ret = $this->model->where('isauto','1')->delete();
+
+        return $ret;
+    }
 
 }

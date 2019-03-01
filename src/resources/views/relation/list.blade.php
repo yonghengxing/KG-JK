@@ -4,7 +4,7 @@
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                      <div class="am-cf">
-                         <strong class="am-text-primary am-text-lg">动态知识图谱 /本体配置</strong> /
+                         <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
               			 <small>关系维护</small>
                      </div>
                      
@@ -12,27 +12,27 @@
                      
                      <div class="widget-body  am-fr">
                      	<div class="am-g">
-                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                         <div class="am-u-sm-2 ">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                               	<a   href="{{ asset('/relation/new')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建实体关系</a>
 							  </div>
                           </div>
 
-							<div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+							<div class="am-u-sm-2 ">
 								<div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
 									<a   href="{{ asset('/relation/auto')}}" class="am-btn am-btn-default am-btn-success"></span>生成模型</a>
 								</div>
 							</div>
-                          
-                      	<div  class="am-u-sm-12 am-u-md-3 am-u-end">
-                            <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                                <input type="text" name= "searchText" id="searchText" class="am-form-field "  value="@if(isset($text)){{$text}}@endif">
-                                  <span class="am-input-group-btn">
+
+							<div  class="am-u-sm-4 "  style="display:none;">
+								<div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+									<input type="text" name= "searchText" id="searchText" class="am-form-field "  value="@if(isset($text)){{$text}}@endif">
+									<span class="am-input-group-btn">
                                     <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"  onclick="search()" type="button"></button>
                                   </span>
-                            </div>
-                        </div>
-                        </div>
+								</div>
+							</div>
+						</div>
 
 						{{-- 条件搜索，目前只能点击搜索才进行搜索，以后可以加入Enter键快速搜索 --}}
 						<script type="text/javascript">
@@ -104,23 +104,14 @@
 												</script>
 											</td>
 									</tr>
-									@endforeach
-								@endif
-                            </tbody>
-                        </table>
-                     </div>                                
-
-        		{{-- 版权所有，有没有无所谓，另外，暂时去掉了分页，以后再加--}}
-        		<div class="globalFooter___1cM92">
-        			<div class="copyright___1ZP5c">
-        				<div>
-        					Copyright<i class="anticon anticon-copyright"></i>2018 Corporation All Rights Reserved.
-        				</div>
-        			</div>
-        		</div>
+								@endforeach
+							@endif
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
 @stop

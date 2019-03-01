@@ -85,30 +85,7 @@
 					
 				<li class="sidebar-nav-link"><a href="javascript:;"
 					class="sidebar-nav-sub-title"> <i
-						class="am-icon-tags sidebar-nav-link-logo"></i> 本体配置 <span
-						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
-				</a>
-					<ul class="sidebar-nav sidebar-nav-sub">
-						<li class="sidebar-nav-link"><a href="{{ asset('/schema/list')}}"> <span
-								class="am-icon-align-left sidebar-nav-link-logo"></span> 本体类型
-						</a></li>
-						<li class="sidebar-nav-link"><a href="{{ asset('/entity/list')}}"> <span
-								class="am-icon-align-right sidebar-nav-link-logo"></span> 实体类型
-						</a></li>
-						<li class="sidebar-nav-link"><a href="{{ asset('/relationType/list')}}"> <span
-								class="am-icon-align-center sidebar-nav-link-logo"></span> 关系类型
-						</a></li>
-						<li class="sidebar-nav-link"><a href="{{ asset('/relation/list')}}"> <span
-								class="am-icon-cogs sidebar-nav-link-logo"></span> 关系维护
-						</a></li>
-						<li class="sidebar-nav-link"><a href="{{ asset('/schemagraph')}}"> <span
-                              class="am-icon-picture-o sidebar-nav-link-logo"></span>查看图谱
-                        </a></li>						
-					</ul></li>
-					
-				<li class="sidebar-nav-link"><a href="javascript:;"
-					class="sidebar-nav-sub-title"> <i
-						class="am-icon-database sidebar-nav-link-logo"></i> 数据配置 <span
+						class="am-icon-database sidebar-nav-link-logo"></i> 外部数据库配置 <span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
 					<ul class="sidebar-nav sidebar-nav-sub">
@@ -123,19 +100,46 @@
 					
 				<li class="sidebar-nav-link"><a href="javascript:;"
 					class="sidebar-nav-sub-title"> <i
-						class="am-icon-folder-open sidebar-nav-link-logo"></i> 融合配置 <span
+						class="am-icon-tags sidebar-nav-link-logo"></i> 实体配置 <span
+						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+				</a>
+					<ul class="sidebar-nav sidebar-nav-sub">
+						<li class="sidebar-nav-link"><a href="{{ asset('/schema/list')}}"> <span
+								class="am-icon-align-left sidebar-nav-link-logo"></span> 实体类型定义
+						</a></li>
+						<li class="sidebar-nav-link" hidden><a href="{{ asset('/entity/list')}}"> <span
+								class="am-icon-align-right sidebar-nav-link-logo"></span> 实体类型
+						</a></li>
+						<li class="sidebar-nav-link"><a href="{{ asset('/relationType/list')}}"> <span
+								class="am-icon-align-center sidebar-nav-link-logo"></span> 关系类型定义
+						</a></li>
+						<li class="sidebar-nav-link"><a href="{{ asset('/relation/list')}}"> <span
+								class="am-icon-cogs sidebar-nav-link-logo"></span> 关系维护
+						</a></li>
+						<li class="sidebar-nav-link"><a href="{{ asset('/schemagraph')}}"> <span
+                              class="am-icon-picture-o sidebar-nav-link-logo"></span>模型查看
+                        </a></li>						
+					</ul></li>
+					
+					
+				<li class="sidebar-nav-link"><a href="javascript:;"
+					class="sidebar-nav-sub-title"> <i
+						class="am-icon-folder-open sidebar-nav-link-logo"></i> 数据映射 <span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
 					<ul class="sidebar-nav sidebar-nav-sub">
 						<li class="sidebar-nav-link"><a href="{{ asset('/fuse/ontologymap')}}"> <span
-								class="am-icon-arrows-h sidebar-nav-link-logo"></span> 本体映射
+								class="am-icon-arrows-h sidebar-nav-link-logo"></span> 实体映射
 						</a></li>
 						<li class="sidebar-nav-link"><a href="{{ asset('/datagraph')}}"> <span
 								class="am-icon-dot-circle-o sidebar-nav-link-logo"></span> 图谱融合
 						</a></li>
+					<li class="sidebar-nav-link"><a href="{{ asset('/taskgraph')}}"> <span
+                               class="am-icon-picture-o sidebar-nav-link-logo"></span> 数据导入
+                        </a></li>
 					</ul></li>	
 					
-				<li class="sidebar-nav-link"><a href="javascript:;"
+				<li class="sidebar-nav-link" hidden><a href="javascript:;"
 					class="sidebar-nav-sub-title"> <i
 						class="am-icon-circle-o-notch sidebar-nav-link-logo"></i> 数据注入<span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
@@ -164,13 +168,13 @@
                                 <li class="sidebar-nav-link"><a href="{{ asset('/searchgraph')}}"> <span
                                                 class="am-icon-search sidebar-nav-link-logo"></span>图谱查询
                                 </a></li>
-                                <li class="sidebar-nav-link"><a href="{{ asset('/export')}}"> <span
+                                <li class="sidebar-nav-link" style="display:none"><a href="{{ asset('/export')}}"> <span
                                       class="am-icon-search sidebar-nav-link-logo"></span>导入导出
                                 </a></li>
                         </ul></li>
 		
 
-				<li class="sidebar-nav-link"><a href="{{ asset('safemanage')}}"> 
+				<li class="sidebar-nav-link" hidden><a href="{{ asset('safemanage')}}"> 
 					<i class="am-icon-warning sidebar-nav-link-logo"></i>安全管理</a></li>					
 			</ul>
 		</div>

@@ -70,7 +70,7 @@ Route::get('/fuse/ontologymap', 'viewController@ontologymap');
 
 
 /**
- * 本体(类)相关操作
+ * 实体(类)相关操作
  */
 Route::get('/schema/list', 'SchemaController@schema_list');
 Route::get('/schema/new', 'SchemaController@schema_new');
@@ -138,6 +138,7 @@ Route::get('/datasource/new', 'DatabaseController@add_dbSrc');
 Route::post('/database/getDB/{select_type}', 'DatabaseController@getDB');
 Route::post('/database/getDBtableMsg/{select_type}', 'DatabaseController@getDBtableMsg');
 Route::post('/addDBSrc_do', 'DatabaseController@addDBSrc_do');
+Route::get('/database/show', 'DatabaseController@showDB');
 
 
 //数据库连接

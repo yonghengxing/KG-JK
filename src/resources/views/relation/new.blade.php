@@ -6,7 +6,7 @@
             <div class="widget am-cf">
             
                 <div class="am-cf">
-                     <strong class="am-text-primary am-text-lg">动态知识图谱 /本体配置</strong> /
+                     <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
           			 <small>关系维护</small>
                 </div>
                  

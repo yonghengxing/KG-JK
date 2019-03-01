@@ -16,11 +16,11 @@
 					</h2>
 					<img class="am-u-sm-12" src="<?php echo e(asset('assets/img/WechatIMG88.9a4c13aa.png')); ?>" alt="">
 					<h2>
-						<span>●</span>本体配置构建世界观、数据配置构建数据世界
+						<span>●</span>实体配置构建世界观、数据配置构建数据世界
 					</h2> 
 					<img class="am-u-sm-12" src="<?php echo e(asset('assets/img/WechatIMG87.4f2d7c6d.png')); ?>" alt="">
 					<h2>
-						<span>●</span>本体映射、融合配置搭建本体和数据的桥梁
+						<span>●</span>实体映射、融合配置搭建实体和数据的桥梁
 					</h2>
 					<img class="am-u-sm-12" src="<?php echo e(asset('assets/img/WechatIMG89.49078d01.png')); ?>" alt="">
 					<h2>

@@ -51,7 +51,7 @@
                                 <tr>
                                     <th>数据源</th>
                                     <th>数据库</th>
-                                    <th>类型</th>
+                                   
                                     <th>密级状态</th>
                                     <th>创建时间</th>
                                     <th>创建人</th>
@@ -66,7 +66,7 @@
                                 <tr>
                                 	<td>{{ $datasourceMsg[$i]->dataSource }}</td>
                                 	<td>{{ $datasourceMsg[$i]->dbname }}</td>
-                                	<td>{{ $datasourceMsg[$i]->type }}</td>
+                                	
                                 	<td>{{ $datasourceMsg[$i]->plevel }}</td>
                                 	<td>{{ $datasourceMsg[$i]->created_at }}</td>
                                 	<td>{{ $datasourceMsg[$i]->createdname }}</td>

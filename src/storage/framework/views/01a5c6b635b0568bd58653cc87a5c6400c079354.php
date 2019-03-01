@@ -5,7 +5,7 @@
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                      <div class="am-cf">
-                         <strong class="am-text-primary am-text-lg">动态知识图谱 /本体配置</strong> /
+                         <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
               			 <small>实体类型</small>
                      </div>
                      
@@ -50,7 +50,7 @@
                             <thead>
                                 <tr>
                                     <th>实体名称</th>
-                                    <th>本体类型</th>
+                                    <th>实体类型</th>
                                     <th>图标</th>
                                     <th>融合状态</th>
                                     <th>创建时间</th>

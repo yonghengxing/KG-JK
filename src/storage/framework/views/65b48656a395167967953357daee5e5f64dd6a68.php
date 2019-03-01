@@ -158,12 +158,7 @@ window.onload = function() {
                     <div class="am-form-group">
                     	<label class="am-u-sm-3 am-form-label">数据源类型</label>
                     	<div class="am-u-sm-9">
-                          <label class="am-radio-inline">
-                            <input type="radio" name="tablesource" value="1" checked>单表来源
-                          </label>
-                          <label class="am-radio-inline">
-                            <input type="radio" name="tablesource" value="2">多表来源
-                          </label>
+								单表来源
                         </div>
                     </div>
                     
@@ -174,23 +169,11 @@ window.onload = function() {
                               <label class="am-checkbox-inline">
                                 <input type="checkbox" value="option1"> 数据项1
                               </label>
-                              <label class="am-checkbox-inline">
-                                <input type="checkbox" value="option2"> 数据项2
-                              </label>
-                              <label class="am-checkbox-inline">
-                                <input type="checkbox" value="option3"> 数据项3
-                              </label>
-                              <label class="am-checkbox-inline">
-                                <input type="checkbox" value="option1"> 数据项1
-                              </label>
-                              <label class="am-checkbox-inline">
-                                <input type="checkbox" value="option2"> 数据项2
-                              </label>
                             </div>
                         </div>
                     </span>                    
                     
-                    <span id="id2" style="display: none;"> 
+                    <span id="id2" style="display: none;" > 
                         <div class="am-form-group">
     						<label for="db_rules" class="am-u-sm-3 am-form-label">数据库提取规则</label>
     						<div class="am-u-sm-9">

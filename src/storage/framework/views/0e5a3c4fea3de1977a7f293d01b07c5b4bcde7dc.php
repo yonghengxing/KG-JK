@@ -85,6 +85,14 @@ window.onload = function() {
                             	<input type="text" id="Password" name="Password" placeholder="请填写密码">
                           	</div>
                         </div>
+                        
+                          <div class="am-form-group">
+    						<div class="am-u-sm-9 am-u-sm-push-3">
+    						<button type="submit"
+    							class="am-btn am-btn-primary tpl-btn-bg-color-success" name="button" value="test" >测试连接</button>
+    						</div>
+    					</div>
+                        
                     </span>
                     
                     <span id="id1" style="display: none;"> 
@@ -112,18 +120,17 @@ window.onload = function() {
                                </script>
 							</div>
 						</div>
+						
+    					<div class="am-form-group">
+    						<div class="am-u-sm-9 am-u-sm-push-3">
+    						<button type="submit"
+    							class="am-btn am-btn-success tpl-btn-bg-color-success " name="button" value="save">保存</button>
+    						<button type="submit"
+    							class="am-btn am-btn-danger tpl-btn-bg-color-success" onclick="history.go(-1);">取消</button>
+    						</div>
+    					</div>
                     </span>
-                    
-                    <div class="am-form-group">
-						<div class="am-u-sm-9 am-u-sm-push-3">
-						<button type="submit"
-							class="am-btn am-btn-primary tpl-btn-bg-color-success" name="button" value="test" >测试连接</button>
-						<button type="submit"
-							class="am-btn am-btn-success tpl-btn-bg-color-success " name="button" value="save">保存</button>
-						<button type="submit"
-							class="am-btn am-btn-danger tpl-btn-bg-color-success" onclick="history.go(-1);">取消</button>
-						</div>
-					</div>
+
             	</form>
 			</div>
 		</div>

@@ -50,7 +50,7 @@ class RelationTypeController extends BaseController
     }
 
     /**
-     * 新建本体页面
+     * 新建实体页面
      */
     public function relationType_new()
     {
@@ -58,7 +58,7 @@ class RelationTypeController extends BaseController
     }
 
     /**
-     * 新建本体数据处理
+     * 新建实体数据处理
      * 此处应该有处理属性集的操作
      */
     public function relationType_new_do(Request $request)
@@ -113,7 +113,7 @@ class RelationTypeController extends BaseController
         return redirect()->action('RelationTypeController@relationType_list');
     }
     /**
-     * 通过删除本体
+     * 通过删除实体
      */
     public function relationType_delete($tid)
     {

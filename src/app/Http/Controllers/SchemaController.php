@@ -8,8 +8,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\ParameterJson;
+use App\Models\Relation;
 use App\Models\Schema;
 use App\Services\ParameterJsonService;
+use App\Services\RelationService;
 use Illuminate\Routing\Controller as BaseController;
 
 
@@ -19,12 +21,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use PDO;
 
 
 
 class SchemaController extends BaseController
 {
-    function __construct(SchemaService $schemaService,ParameterJsonService $parameterJsonService)
+    function __construct(SchemaService $schemaService,ParameterJsonService $parameterJsonService,RelationService $relationService)
     {
         // $this->middleware('auth');
         $this->schemaService = $schemaService;
@@ -34,7 +37,7 @@ class SchemaController extends BaseController
 
 
     /**
-     * 显示所有的本体列表
+     * 显示所有的实体列表
      */
     public function schema_list(Request $request)
     {
@@ -52,26 +55,20 @@ class SchemaController extends BaseController
     }
 
     /**
-     * 新建本体页面
+     * 新建实体页面
      */
     public function schema_new()
     {
         return view('schema/new');
     }
-
-
-    public function schema_new_auto(){
-
-        // 获取配置文件的数据库名称
-//         $databasename = config("database.connections.mysql")['database'];
-        $databasename = "iscas_itechs_dbout";
-        // 获取数据库下所有的表名称
+    // 获取数据库下的所有实表，生成schema
+    public function  generate_schema_by_table($databasename,$data,&$keyField){
         $tablesql = "select table_name,table_comment  from information_schema.tables where table_type='base table' and table_schema=?  ";
         $tablenames = \DB::select($tablesql,[$databasename]);
-        $data = array();
-        $attribute = array();
-       $ret =  $this->schemaService->deleteAutoDatabase();
-       foreach ($tablenames as $tablename){
+
+
+
+        foreach ($tablenames as $tablename){
             // 遍历每个表，获取表的字段名，类型和是否主键;  暂且将所有类型转换为string;
             $sql = "select column_name,data_type ,IF(column_key='PRI','t','f') as pri
                 from information_schema.columns 
@@ -82,8 +79,11 @@ class SchemaController extends BaseController
             $property = array();
             foreach ($fields as $value) {
 
-                if($value->pri == 't')
+                if($value->pri == 't'){
                     $property[$value->column_name] = "string;primary_id";
+                    $keyField[$tablename->table_name] = $value->column_name;
+                }
+
                 else
                     $property[$value->column_name] = "string";
             }
@@ -102,23 +102,133 @@ class SchemaController extends BaseController
             $data[$tablename->table_name] = $attribute;
 
         }
+    }
+    // 获取数据下的所有视图，视图名称为 表名_列名，视图存入schema,并生成视图顶点csv文件，并自动关联实体表，并自动生成关系csv
+    public function generate_schema_by_view($databasename,$data,&$keyField){
 
-//        $result['vertex'] = $data;
-//        $resultjson =json_encode($result);
-//
-//
-//
-//        $mParameterJson = new ParameterJson();
-//        $mParameterJson->parameterjson = $resultjson;
-//        $mParameterJson->flag = 'vertex';
-//        $ret = $this->parameterJsonService->append($mParameterJson);
+        $viewsql = "select table_name,table_comment  from information_schema.tables where table_type='view' and table_schema=?  ";
+        $viewnames = \DB::select($viewsql,[$databasename]);
 
-        return redirect()->action('SchemaController@schema_list');
+        foreach ($viewnames as $tablename){
+            // 遍历每个表，获取表的字段名，类型和是否主键;  暂且将所有类型转换为string;
 
+
+            // 按所指定格式组织数据结构
+            $property = array();
+
+            $endlabel = explode("_",$tablename->table_name)[1];
+            $property[$endlabel] = "string;primary_id";
+
+            // 将一个个schema单独存入数据库中
+            $mSchema = new Schema();
+            $mSchema->sname = $tablename->table_comment;
+            $mSchema->slabel = $tablename->table_name;
+            $mSchema->isauto = '1';
+            $mSchema->property = json_encode($property);
+            $ret = $this->schemaService->append($mSchema);
+
+
+
+            $attribute['attribute'] = $property;
+            $data[$tablename->table_name] = $attribute;
+            $this->generate_schema_csv($tablename->table_name);
+            $this->generate_relation_by_view($tablename->table_name);
+            $this->generate_relation_csv($tablename->table_name,$keyField);
+        }
+    }
+    //自动生成视图到表的关系，关系名为:table_列名_e;
+    public function generate_relation_by_view($viewname){
+
+        $startlabel = explode("_",$viewname)[0];
+        //$endlabel = explode("_",$viewname)[1];
+        $mRelation = new Relation();
+        $mRelation->typelabel = $viewname."_e";
+        $mRelation->startlabel = $startlabel;
+        $mRelation->endlabel = $viewname;
+        $mRelation->isauto = '1';
+
+        $ret = $this->relationService->append($mRelation);
+
+    }
+    // 自动生成关系csv文件，csv文件名 表名_列名_e.csv;
+    public function  generate_relation_csv($viewname,&$keyField){
+        try {
+            $pdo_me = new PDO(
+                'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
+                'root',
+                ''
+            );
+        } catch (PDOException $ex) {
+            echo 'database connection failed';
+            exit();
+        }
+
+        $tableSource = explode("_",$viewname)[0];
+        $viewFiled = explode("_",$viewname)[1];
+        $path = "/home/fengbs/tigergraph/loadingData/".$viewname.'_e.csv';
+        if(file_exists ($path)){
+            unlink($path);
+        }
+        $tableKey = $keyField[$tableSource];
+
+        $csv_export = "select '".$tableSource."','".$viewname."' union select ".$tableKey.",".$viewFiled." from ".$tableSource." into outfile '".$path."' fields terminated by '&'";
+        $statement = $pdo_me->prepare($csv_export);
+
+        $statement->execute();
+
+
+    }
+    // 属性视图生成的顶点，同时生成供填充数据的csv,顶点csv文件名：表名_列名.csv;
+    public function generate_schema_csv($viewname){
+        $viewFiled = explode("_",$viewname)[1];
+        $path = "/home/fengbs/tigergraph/loadingData/".$viewname.".csv";
+	
+       
+        try {
+            $pdo_me = new PDO(
+                'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
+                'root',
+                ''
+            );
+        } catch (PDOException $ex) {
+            echo 'database connection failed';
+            exit();
+        }
+        $csv_export = "select '".$viewFiled."' union select * from ".$viewname." into outfile '".$path."' fields terminated by '&'";
+       
+        $statement = $pdo_me->prepare($csv_export);
+       
+        $statement->execute();
+    }
+
+    public function schema_new_auto(){
+        // 先删除自动生成的schema和relation;
+        $this->relationService->deleteAutoRelation();
+        $this->schemaService->deleteAutoDatabase();
+
+        $data = array();
+        $keyField = array();
+        // 获取配置文件的数据库名称
+        //$databasename = config("database.connections.mysql")['database'];
+        $databasename = "iscas_itechs_dbout";
+	array_map('unlink', glob('/home/fengbs/tigergraph/loadingData/*.csv'));
+        $this->generate_schema_by_table($databasename,$data,$keyField);
+        $this->generate_schema_by_view($databasename,$data,$keyField);
+       // return redirect()->action('SchemaController@schema_list');
+	$url = "http://192.168.15.62:5000/run_command_dbout";
+        $opts = array(
+            'http'=>array(
+                'method'=>"GET",
+                'timeout'=>1000,//s
+            )
+        );
+        $data =  file_get_contents($url, false, stream_context_create($opts));
+	return  redirect('../../../kg/schema/list');
+	
     }
 
     /**
-     * 新建本体数据处理
+     * 新建实体数据处理
      * 此处应该有处理属性集的操作
      */
     public function schema_new_do(Request $request)
@@ -149,7 +259,7 @@ class SchemaController extends BaseController
     }
 
     /**
-     * 打开修改本体信息的页面
+     * 打开修改实体信息的页面
      * 此处应该有解析属性集json的操作，以后再弄
      *
      */
@@ -165,7 +275,7 @@ class SchemaController extends BaseController
     }
 
     /**
-     * 修改本体的数据处理
+     * 修改实体的数据处理
      * 此处应该有处理属性集的操作
      */
     public function schema_info_do($sid,Request $request)
@@ -196,7 +306,7 @@ class SchemaController extends BaseController
         return redirect()->action('SchemaController@schema_list');
     }
     /**
-     * 通过ID删除本体
+     * 通过ID删除实体
      * 没有进行动作成功或失败的提示，直接进行跳转
      */
     public function schema_delete($sid)

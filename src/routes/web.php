@@ -22,7 +22,22 @@ Route::get('/index', 'IndexController@index');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/bxLogout', 'BXUserController@bxLogout');
+
 Route::get('/template', 'viewController@template');
+
+/**
+ * 用户相关操作路由
+ * @date: 2018年11月20日 下午3:35:09
+ * @author: wongwuchiu
+ */
+Route::get('/user/list', 'UserController@user_list');
+Route::get('/user/new', 'UserController@user_new');
+Route::post('/user/new', 'UserController@user_new_do');
+Route::get('/user/delete/{user_id}', 'UserController@user_delete');
+Route::get('/user/info/{user_id}', 'UserController@user_info');
+Route::post('/user/info/{user_id}', 'UserController@user_update');
+
 /**
  * 页面路由路径
  * @date: 2018年12月25日 下午3:48:16
@@ -139,6 +154,7 @@ Route::post('/database/getDB/{select_type}', 'DatabaseController@getDB');
 Route::post('/database/getDBtableMsg/{select_type}', 'DatabaseController@getDBtableMsg');
 Route::post('/addDBSrc_do', 'DatabaseController@addDBSrc_do');
 Route::get('/database/show', 'DatabaseController@showDB');
+Route::get('/datasource/addnew', 'DatabaseController@addnew');
 
 
 //数据库连接
@@ -150,3 +166,4 @@ Route::get('/database/db_connect','DatabaseController@db_connect');
 Route::get('/excel/export','Member\MemberController@export')->name('/excel/export'); 
 //Excel导入 
 Route::get('/excel/import','Member\MemberController@import')->name('/excel/import');
+

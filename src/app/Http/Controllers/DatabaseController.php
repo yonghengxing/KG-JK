@@ -38,6 +38,15 @@ class DatabaseController extends Controller{
         $databaseMsg = Kg_db::all();
         return view('database/list',compact('databaseMsg'));
     }
+    
+    /*
+     * 数据库信息展示
+     */
+    public function addnew(Request $request){
+        $databaseMsg = Kg_db::all();
+        $name = Kg_db::select('name')->get();
+        return view('datasource/addnew',compact('databaseMsg','name'));
+    }
     /*
      * 数据库与数据源连接信息展示
      */

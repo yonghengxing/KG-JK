@@ -20,6 +20,11 @@ class viewController extends Controller
         return view('oType/addObject');
     }
     
+    public function homePage()
+    {
+        return view('homePage');
+    }
+    
     public function rtype()
     {
         return view('rtype/rtype');

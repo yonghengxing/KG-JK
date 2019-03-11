@@ -13,9 +13,14 @@
                      
                      <div class="widget-body  am-fr">
                       <div class="am-g">
-                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                               	<a   href="<?php echo e(asset('/datasource/new')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建数据源</a>
+							  </div>
+                          </div>
+                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+                              <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                              	<a   href="<?php echo e(asset('/datasource/addnew')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建数据项</a>
 							  </div>
                           </div>
                           
@@ -51,7 +56,7 @@
                                 <tr>
                                     <th>数据源</th>
                                     <th>数据库</th>
-                                    <th>类型</th>
+                                   
                                     <th>密级状态</th>
                                     <th>创建时间</th>
                                     <th>创建人</th>
@@ -66,7 +71,7 @@
                                 <tr>
                                 	<td><?php echo e($datasourceMsg[$i]->dataSource); ?></td>
                                 	<td><?php echo e($datasourceMsg[$i]->dbname); ?></td>
-                                	<td><?php echo e($datasourceMsg[$i]->type); ?></td>
+                                	
                                 	<td><?php echo e($datasourceMsg[$i]->plevel); ?></td>
                                 	<td><?php echo e($datasourceMsg[$i]->created_at); ?></td>
                                 	<td><?php echo e($datasourceMsg[$i]->createdname); ?></td>

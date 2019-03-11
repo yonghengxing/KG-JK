@@ -25,7 +25,7 @@
 								 </div>
 							 </div>
 
-                          	<div  class="am-u-sm-4 ">
+                          	<div  class="am-u-sm-4 " hidden>
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                                     <input type="text" name= "searchText" id="searchText" class="am-form-field "  value="<?php if(isset($text)): ?><?php echo e($text); ?><?php endif; ?>">
                                       <span class="am-input-group-btn">
@@ -73,8 +73,8 @@
 										<td><?php echo e($schema->updatename); ?></td>
 										<td>
 											<div class="operation___3s32S">
-												<span><a href="<?php echo e(asset('/schema/info')); ?>/<?php echo e($schema->sid); ?>">详情</a></span>
-												<span><a href="<?php echo e(asset('/schema/delete')); ?>/<?php echo e($schema->sid); ?>" onclick="return del()">删除</a></span>
+												<span><a href="<?php echo e(asset('../../../kg/schema/info')); ?>/<?php echo e($schema->sid); ?>">详情</a></span>
+												<span><a href="<?php echo e(asset('../../../kg/schema/delete')); ?>/<?php echo e($schema->sid); ?>" onclick="return del()">删除</a></span>
 											</div>
 											
 											<script>

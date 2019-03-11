@@ -1,4 +1,4 @@
- <?php $__env->startSection('content'); ?>
+<?php $__env->startSection('content'); ?>
 <div class="row-content am-cf">
       <div class="row">
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
@@ -35,4 +35,5 @@
 	</div>
 </div>
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('template', \Illuminate\Support\Arr::except(get_defined_vars(), array('__data', '__path')))->render(); ?>

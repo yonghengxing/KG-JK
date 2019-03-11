@@ -49,7 +49,7 @@
 					<ul>
 						<!-- 欢迎语 -->
 						<li class="am-text-sm tpl-header-navbar-welcome"><a
-							href="javascript:;">欢迎你<span></span>
+							href="javascript:;">欢迎你，<?php echo e(Auth::user()->name); ?><span></span>
 						</a></li>
 
 						<!-- 退出 -->
@@ -80,9 +80,10 @@
 			<!-- 菜单 -->
 			<ul class="sidebar-nav">
 
-				<li class="sidebar-nav-link"><a href="<?php echo e(asset('/index')); ?>"> 
+				<li class="sidebar-nav-link"><a href="<?php echo e(asset('/home')); ?>"> 
 					<i class="am-icon-home sidebar-nav-link-logo"></i> 首页</a></li>
 					
+				<?php if(Auth::user()->admin || config('app.admin_mode',false)): ?>	
 				<li class="sidebar-nav-link"><a href="javascript:;"
 					class="sidebar-nav-sub-title"> <i
 						class="am-icon-database sidebar-nav-link-logo"></i> 外部数据库配置 <span
@@ -92,11 +93,11 @@
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/database')); ?>"> <span
 								class="am-icon-table sidebar-nav-link-logo"></span> 数据库
 						</a></li>
-						<li class="sidebar-nav-link"><a href="<?php echo e(asset('datasource')); ?>"> <span
+						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/datasource')); ?>"> <span
 								class="am-icon-file-text sidebar-nav-link-logo"></span> 数据源
-						</a></li>
-						
-					</ul></li>
+						</a></li>						
+				</ul></li>
+				<?php endif; ?>
 					
 				<li class="sidebar-nav-link"><a href="javascript:;"
 					class="sidebar-nav-sub-title"> <i
@@ -104,6 +105,7 @@
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
 					<ul class="sidebar-nav sidebar-nav-sub">
+						<?php if(Auth::user()->admin || config('app.admin_mode',false)): ?>	
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/schema/list')); ?>"> <span
 								class="am-icon-align-left sidebar-nav-link-logo"></span> 实体类型定义
 						</a></li>
@@ -116,6 +118,7 @@
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/relation/list')); ?>"> <span
 								class="am-icon-cogs sidebar-nav-link-logo"></span> 关系维护
 						</a></li>
+						<?php endif; ?>						
 						<li class="sidebar-nav-link"><a href="<?php echo e(asset('/schemagraph')); ?>"> <span
                               class="am-icon-picture-o sidebar-nav-link-logo"></span>模型查看
                         </a></li>						
@@ -158,20 +161,24 @@
 					
 					 <li class="sidebar-nav-link"><a href="javascript:;"
                             class="sidebar-nav-sub-title"> <i
-                                    class="am-icon-eye sidebar-nav-link-logo"></i>图谱展示<span
+                                    class="am-icon-eye sidebar-nav-link-logo"></i> 图谱展示<span
                                     class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
                     </a>
                         <ul class="sidebar-nav sidebar-nav-sub">
                                 <li class="sidebar-nav-link"><a href="<?php echo e(asset('/checkgraph')); ?>"> <span
-                                                class="am-icon-binoculars sidebar-nav-link-logo"></span>图谱查看
+                                                class="am-icon-binoculars sidebar-nav-link-logo"></span> 图谱查看
                                 </a></li>
                                 <li class="sidebar-nav-link"><a href="<?php echo e(asset('/searchgraph')); ?>"> <span
-                                                class="am-icon-search sidebar-nav-link-logo"></span>图谱查询
+                                                class="am-icon-search sidebar-nav-link-logo"></span> 图谱查询
                                 </a></li>
                                 <li class="sidebar-nav-link" style="display:none"><a href="<?php echo e(asset('/export')); ?>"> <span
-                                      class="am-icon-search sidebar-nav-link-logo"></span>导入导出
+                                      class="am-icon-search sidebar-nav-link-logo"></span> 导入导出
                                 </a></li>
                         </ul></li>
+                 <?php if(Auth::user()->admin || config('app.admin_mode',false)): ?>       
+                <li class="sidebar-nav-link"><a href="<?php echo e(asset('/user/list')); ?>"> 
+                      <i class="am-icon-users sidebar-nav-link-logo"></i>用户管理 </a></li>
+                <?php endif; ?>
 		
 
 				<li class="sidebar-nav-link" hidden><a href="<?php echo e(asset('safemanage')); ?>"> 

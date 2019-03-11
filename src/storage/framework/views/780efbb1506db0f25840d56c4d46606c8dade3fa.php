@@ -1,4 +1,4 @@
-@extends('template') @section('content')
+ <?php $__env->startSection('content'); ?>
 
 <script type="text/javascript">
 window.onload = function() {
@@ -28,8 +28,8 @@ window.onload = function() {
                  
                  <hr/>
                  
-                 <form horizontal="true" class="am-form am-form-horizontal "action="{{ asset('../../../kg/addDBSrc_do')}}" method="post" onsubmit="return checkForm()">
-                 	<input type="hidden" name="_token" value="{{ csrf_token() }}" />
+                 <form horizontal="true" class="am-form am-form-horizontal "action="<?php echo e(asset('../../../kg/addDBSrc_do')); ?>" method="post" onsubmit="return checkForm()">
+                 	<input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>" />
                  	
                  	<div class="am-form-group">
                       	<label for="DSname" class="am-u-sm-3 am-form-label">数据源名称</label>
@@ -55,9 +55,9 @@ window.onload = function() {
                         <select data-am-selected="{searchBox: 1}" style="display: none;" id="database" name="database">
                 			<option name="database1" selected = "selected">请选择数据库</option>
                 			<option name="database2">数据库1</option>       
-                			@foreach ($name as $name)
-								<option value="{{$name->name}}" name="{{$name->name}}">{{$name->name}}</option>
-							@endforeach      			
+                			<?php $__currentLoopData = $name; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $name): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<option value="<?php echo e($name->name); ?>" name="<?php echo e($name->name); ?>"><?php echo e($name->name); ?></option>
+							<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>      			
                         </select>
                      </div>
                     </div>
@@ -71,25 +71,26 @@ window.onload = function() {
                      </div>
                     </div>
              <script>
+
              $(function(){
                  //数据库选择改变
                  $("#database").change(function(){
                      var value = $(this).val();
 
                     var type = $(this).attr('id');
-					var str1 = "{{asset('database/getDB')}}";
+					var str1 = "<?php echo e(asset('database/getDB')); ?>";
 					var url1 = str1 + '/' + value;
 					console.log(url1);
 					var objectModel = {};
 					var csrf = "_token";
-          			var ctoken = "{{csrf_token()}}";
+          			var ctoken = "<?php echo e(csrf_token()); ?>";
           			objectModel[type] =value;
           			objectModel[csrf] = ctoken;
           			$.ajax({
               			url:url1,
               			type:"post",
               			dataType:"json",
-          				data: objectModel,//{_token:"{{csrf_token()}}",_method:'PATCH',type:value},
+          				data: objectModel,//{_token:"<?php echo e(csrf_token()); ?>",_method:'PATCH',type:value},
           				success:function(data){
           					$("#DBtable").empty();
               				var str = new Array;
@@ -107,18 +108,16 @@ window.onload = function() {
 
                      //数据表改变
                      $("#DBtable").change(function(){
-
                      var value = $(this).val();
                      var database = $("#database").val();
                      var database_public = 'database_public';
 
                     var type = $(this).attr('id');
-					var str1 = "{{asset('database/getDBtableMsg')}}";
+					var str1 = "<?php echo e(asset('database/getDBtableMsg')); ?>";
 					var url1 = str1 + '/' + value;
 					var objectModel = {};
 					var csrf = "_token";
-          			var ctoken = "{{csrf_token()}}";
-      				debugger;
+          			var ctoken = "<?php echo e(csrf_token()); ?>";
           			objectModel[type] =value;
           			objectModel[database_public] =database;
           			objectModel[csrf] = ctoken;
@@ -127,17 +126,11 @@ window.onload = function() {
               			type:"post",
               			dataType:"json",
           				data:objectModel,
-
           				success:function(data){
-              				alert(data.length);
               				if(data[0].column_name){//数据库类型
-
           					$("#choose_item").empty();
               				var str = new Array;
               				var strAll = " ";
-
-              				var length = data.length;
-
               				for(var i = 0;i < data.length;i++){
                   				//var column_name = data[i].column_name;
                   				var items = new Array;
@@ -145,41 +138,54 @@ window.onload = function() {
                   				+ data[i].column_name + "("+ data[i].column_comment +")"+"</label>";
                   				strAll = strAll.concat(str[i]);
                   				}
-              				$("#choose_item").html(strAll);
+              				$("#tbody").html(strAll);
               				}else{//excel类型
               					$("#choose_item").empty();
                   				var str = new Array;
                   				var strAll = " ";
                   				for(var i = 0;i < data.length;i++){
+                      				
                       				var items = new Array;
-                      				str[i] = "<label class='am-checkbox-inline'><input type='checkbox' name='items["+i+"]' value='"+data[i]+"'> "
-                      				+ data[i] /* + "("+ data[i] +")" */+"</label>";
+                      				str[i] = "<tr><td> <label class='am-checkbox-inline'><input type='checkbox' name='items["+i+"]' value='"+data[i]+"'> "
+                      				+ data[i] + "("+ data[i] +")"+"</label> </td>"
+                      				+ "<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' name='onlyradio"+i
+                      				+"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' name='onlyradio"+i
+                      				+"'value='0' >否</label> </div> </td>"
+                      				+"<td> <select data-am-selected='{searchBox: 1}' id='plevel"+i
+                      				+"'name='plevel"+i
+                      				+"'><option name='plevel' value='0' selected='selected'>选择保密等级</option></select></td>"
+                      				+"<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' name='cutradio"+i
+                      				+"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' name='cutradio"+i
+                      				+"'value='0' >否</label> </div> </td> </tr>";
+                      				
                       				strAll = strAll.concat(str[i]);
+
                       				}
-                  				$("#choose_item").html(strAll);
+                  				$("tbody").append(strAll);
                   				}
               				}
               			})
                      })
                  })
              </script>
-                    <div class="am-form-group">
-                    	<label class="am-u-sm-3 am-form-label">数据源类型</label>
-                    	<div class="am-u-sm-9">
-								单表来源
-                        </div>
-                    </div>
-                    
-                    <span id="id1" style="display: block;">
-                        <div class="am-form-group">
-                        	<label class="am-u-sm-3 am-form-label">数据项选择</label>
-                        	<div class="am-u-sm-9" id="choose_item">
-                              <label class="am-checkbox-inline">
-                                <input type="checkbox" value="option1"> 数据项1
-                              </label>
-                            </div>
-                        </div>                                              
-                    </span>                    
+                       
+                        
+                        <div class="am-form-group am-u-sm-12">
+                            <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
+                                <thead>
+                                    <tr>
+                                        <th>数据项</th>
+                                        <th>是否唯一</th>
+                                        <th>数据权限</th>
+                                        <th>是否分割</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="tbody">
+
+                                </tbody>
+                            </table>
+             			</div>                            
                     
                     <span id="id2" style="display: none;" > 
                         <div class="am-form-group">
@@ -205,4 +211,6 @@ window.onload = function() {
 		</div>
 	</div>
 </div>
-@stop
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('template', \Illuminate\Support\Arr::except(get_defined_vars(), array('__data', '__path')))->render(); ?>

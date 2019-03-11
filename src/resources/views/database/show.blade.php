@@ -11,7 +11,7 @@
                  
                  <hr/>
                  
-                 <form horizontal="true"  enctype="multipart/form-data" class="am-form am-form-horizontal " action="{{ asset('../../../kg/addDB_do')}}" method="post">
+                 <form horizontal="true"  enctype="multipart/form-data" class="am-form am-form-horizontal " action="{{ asset('/addDB_do')}}" method="post">
                  	<input type="hidden" name="_token" value="{{ csrf_token() }}" />
                  	
                  	<div class="am-form-group">

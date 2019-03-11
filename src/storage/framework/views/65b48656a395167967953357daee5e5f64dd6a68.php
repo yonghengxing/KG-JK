@@ -28,7 +28,7 @@ window.onload = function() {
                  
                  <hr/>
                  
-                 <form horizontal="true" class="am-form am-form-horizontal "action="<?php echo e(asset('/addDBSrc_do')); ?>" method="post" onsubmit="return checkForm()">
+                 <form horizontal="true" class="am-form am-form-horizontal "action="<?php echo e(asset('../../../kg/addDBSrc_do')); ?>" method="post" onsubmit="return checkForm()">
                  	<input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>" />
                  	
                  	<div class="am-form-group">
@@ -43,8 +43,8 @@ window.onload = function() {
                       <div class="am-u-sm-9 ">
                         <select data-am-selected="{searchBox: 1}" style="display: none;" id="plevel" name="plevel">
                         	<option name="plevel" value="0" selected="selected">选择保密等级</option>
-                			<option name="plevel" value="1">等级1</option>
-                			<option name="plevel" value="2">等级2</option>
+                			<option name="plevel" value="1">管理员</option>
+              
                         </select>
                      </div>
                     </div>
@@ -107,6 +107,7 @@ window.onload = function() {
 
                      //数据表改变
                      $("#DBtable").change(function(){
+
                      var value = $(this).val();
                      var database = $("#database").val();
                      var database_public = 'database_public';
@@ -117,6 +118,7 @@ window.onload = function() {
 					var objectModel = {};
 					var csrf = "_token";
           			var ctoken = "<?php echo e(csrf_token()); ?>";
+      				debugger;
           			objectModel[type] =value;
           			objectModel[database_public] =database;
           			objectModel[csrf] = ctoken;
@@ -125,11 +127,17 @@ window.onload = function() {
               			type:"post",
               			dataType:"json",
           				data:objectModel,
+
           				success:function(data){
+              				alert(data.length);
               				if(data[0].column_name){//数据库类型
+
           					$("#choose_item").empty();
               				var str = new Array;
               				var strAll = " ";
+
+              				var length = data.length;
+
               				for(var i = 0;i < data.length;i++){
                   				//var column_name = data[i].column_name;
                   				var items = new Array;
@@ -170,7 +178,7 @@ window.onload = function() {
                                 <input type="checkbox" value="option1"> 数据项1
                               </label>
                             </div>
-                        </div>
+                        </div>                                              
                     </span>                    
                     
                     <span id="id2" style="display: none;" > 

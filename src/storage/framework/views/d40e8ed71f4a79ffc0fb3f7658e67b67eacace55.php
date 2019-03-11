@@ -23,16 +23,16 @@
 									<a   href="<?php echo e(asset('/relation/auto')); ?>" class="am-btn am-btn-default am-btn-success"></span>生成模型</a>
 								</div>
 							</div>
-                          
-                      	<div  class="am-u-sm-4 ">
-                            <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                                <input type="text" name= "searchText" id="searchText" class="am-form-field "  value="<?php if(isset($text)): ?><?php echo e($text); ?><?php endif; ?>">
-                                  <span class="am-input-group-btn">
+
+							<div  class="am-u-sm-4 "  style="display:none;">
+								<div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+									<input type="text" name= "searchText" id="searchText" class="am-form-field "  value="<?php if(isset($text)): ?><?php echo e($text); ?><?php endif; ?>">
+									<span class="am-input-group-btn">
                                     <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"  onclick="search()" type="button"></button>
                                   </span>
-                            </div>
-                        </div>
-                        </div>
+								</div>
+							</div>
+						</div>
 
 						
 						<script type="text/javascript">
@@ -111,24 +111,15 @@
 												</script>
 											</td>
 									</tr>
-									<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-								<?php endif; ?>
-                            </tbody>
-                        </table>
-                     </div>                                
-
-        		
-        		<div class="globalFooter___1cM92">
-        			<div class="copyright___1ZP5c">
-        				<div>
-        					Copyright<i class="anticon anticon-copyright"></i>2018 Corporation All Rights Reserved.
-        				</div>
-        			</div>
-        		</div>
+								<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+							<?php endif; ?>
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('template', \Illuminate\Support\Arr::except(get_defined_vars(), array('__data', '__path')))->render(); ?>

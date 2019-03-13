@@ -146,7 +146,7 @@ Route::get('/excel/import','ExcelController@import');
  */
 Route::get('/database/new', 'DatabaseController@addDB');
 Route::post('/addDB_do', 'DatabaseController@addDB_do');
-Route::get('/addDB_do', 'DatabaseController@addDB_do');
+//Route::get('/addDB_do', 'DatabaseController@addDB_do');
 Route::get('/database', 'DatabaseController@database');
 Route::get('/datasource', 'DatabaseController@datasource');
 Route::get('/datasource/new', 'DatabaseController@add_dbSrc');
@@ -154,6 +154,7 @@ Route::post('/database/getDB/{select_type}', 'DatabaseController@getDB');
 Route::post('/database/getDBtableMsg/{select_type}', 'DatabaseController@getDBtableMsg');
 Route::post('/addDBSrc_do', 'DatabaseController@addDBSrc_do');
 Route::get('/database/show', 'DatabaseController@showDB');
+Route::get('/DBsrc_del/{rid}', 'DatabaseController@DBsrc_del');
 Route::get('/datasource/addnew', 'DatabaseController@addnew');
 
 

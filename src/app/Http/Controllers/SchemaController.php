@@ -32,6 +32,7 @@ class SchemaController extends BaseController
         // $this->middleware('auth');
         $this->schemaService = $schemaService;
         $this->parameterJsonService = $parameterJsonService;
+        $this->relationService = $relationService;
 
     }
 
@@ -61,46 +62,54 @@ class SchemaController extends BaseController
     {
         return view('schema/new');
     }
+
+    // 返回已经由外部数据库生成的schema,更新的时候，不再重新生成。
+    public function  get_schema_list(){
+        $mSchemas = $this->schemaService->getAll();
+        $res = array();
+        foreach ($mSchemas as $mSchema) {
+            $res[] = $mSchema->slabel;
+        }
+        return $res;
+    }
+
     // 获取数据库下的所有实表，生成schema
     public function  generate_schema_by_table($databasename,$data,&$keyField){
-        $tablesql = "select table_name,table_comment  from information_schema.tables where table_type='base table' and table_schema=?  ";
-        $tablenames = \DB::select($tablesql,[$databasename]);
+        // 获取指定数据库下的所有表，这里的table_type是指实体表，而不是View,后期可以考虑两者合一。
+        $tableSql = "select table_name,table_comment  from information_schema.tables where table_type='base table' and table_schema=?  ";
+        $tableNames = \DB::select($tableSql,[$databasename]);
 
+        $schemaName = $this->get_schema_list();
+        foreach ($tableNames as $tableName){
 
+            if(!in_array($tableName->table_name,$schemaName)){
 
-        foreach ($tablenames as $tablename){
-            // 遍历每个表，获取表的字段名，类型和是否主键;  暂且将所有类型转换为string;
-            $sql = "select column_name,data_type ,IF(column_key='PRI','t','f') as pri
-                from information_schema.columns 
-                where table_name=?";
-            $fields = \DB::select($sql,[$tablename->table_name]);
+                // 遍历每个表，获取表的字段名，类型和是否主键;  暂且将所有类型转换为string;
+                $sql = "select column_name,data_type ,IF(column_key='PRI','t','f') as pri from information_schema.columns where table_name=?";
+                $fields = \DB::select($sql,[$tableName->table_name]);
 
-            // 按所指定格式组织数据结构
-            $property = array();
-            foreach ($fields as $value) {
-
-                if($value->pri == 't'){
-                    $property[$value->column_name] = "string;primary_id";
-                    $keyField[$tablename->table_name] = $value->column_name;
+                // 按所指定格式组织数据结构
+                $property = array();
+                foreach ($fields as $value) {
+                    if($value->pri == 't'){
+                        $property[$value->column_name] = "string;primary_id";
+                        $keyField[$tableName->table_name] = $value->column_name;
+                    }
+                    else
+                        $property[$value->column_name] = "string";
                 }
 
-                else
-                    $property[$value->column_name] = "string";
+                // 将一个个schema单独存入数据库中
+                $mSchema = new Schema();
+                $mSchema->sname = $tableName->table_comment;
+                $mSchema->slabel = $tableName->table_name;
+                $mSchema->isauto = '1';
+                $mSchema->property = json_encode($property);
+                $ret = $this->schemaService->append($mSchema);
+
+                $attribute['attribute'] = $property;
+                $data[$tableName->table_name] = $attribute;
             }
-
-            // 将一个个schema单独存入数据库中
-            $mSchema = new Schema();
-            $mSchema->sname = $tablename->table_comment;
-            $mSchema->slabel = $tablename->table_name;
-            $mSchema->isauto = '1';
-            $mSchema->property = json_encode($property);
-            $ret = $this->schemaService->append($mSchema);
-
-
-
-            $attribute['attribute'] = $property;
-            $data[$tablename->table_name] = $attribute;
-
         }
     }
     // 获取数据下的所有视图，视图名称为 表名_列名，视图存入schema,并生成视图顶点csv文件，并自动关联实体表，并自动生成关系csv
@@ -108,32 +117,30 @@ class SchemaController extends BaseController
 
         $viewsql = "select table_name,table_comment  from information_schema.tables where table_type='view' and table_schema=?  ";
         $viewnames = \DB::select($viewsql,[$databasename]);
-
+        $schemaName = $this->get_schema_list();
         foreach ($viewnames as $tablename){
             // 遍历每个表，获取表的字段名，类型和是否主键;  暂且将所有类型转换为string;
+            if(!in_array($tablename->table_name,$schemaName)){
+                // 按所指定格式组织数据结构
+                $property = array();
 
+                $endlabel = explode("_",$tablename->table_name)[1];
+                $property[$endlabel] = "string;primary_id";
 
-            // 按所指定格式组织数据结构
-            $property = array();
+                // 将一个个schema单独存入数据库中
+                $mSchema = new Schema();
+                $mSchema->sname = $tablename->table_comment;
+                $mSchema->slabel = $tablename->table_name;
+                $mSchema->isauto = '1';
+                $mSchema->property = json_encode($property);
+                $ret = $this->schemaService->append($mSchema);
 
-            $endlabel = explode("_",$tablename->table_name)[1];
-            $property[$endlabel] = "string;primary_id";
-
-            // 将一个个schema单独存入数据库中
-            $mSchema = new Schema();
-            $mSchema->sname = $tablename->table_comment;
-            $mSchema->slabel = $tablename->table_name;
-            $mSchema->isauto = '1';
-            $mSchema->property = json_encode($property);
-            $ret = $this->schemaService->append($mSchema);
-
-
-
-            $attribute['attribute'] = $property;
-            $data[$tablename->table_name] = $attribute;
-            $this->generate_schema_csv($tablename->table_name);
-            $this->generate_relation_by_view($tablename->table_name);
-            $this->generate_relation_csv($tablename->table_name,$keyField);
+                $attribute['attribute'] = $property;
+                $data[$tablename->table_name] = $attribute;
+                $this->generate_schema_csv($tablename->table_name);
+                $this->generate_relation_by_view($tablename->table_name);
+                $this->generate_relation_csv($tablename->table_name,$keyField);
+            }
         }
     }
     //自动生成视图到表的关系，关系名为:table_列名_e;
@@ -169,8 +176,8 @@ class SchemaController extends BaseController
         if(file_exists ($path)){
             unlink($path);
         }
-        $tableKey = $keyField[$tableSource];
-
+       // $tableKey = $keyField[$tableSource];
+	$tableKey = "me_id";
         $csv_export = "select '".$tableSource."','".$viewname."' union select ".$tableKey.",".$viewFiled." from ".$tableSource." into outfile '".$path."' fields terminated by '&'";
         $statement = $pdo_me->prepare($csv_export);
 
@@ -202,20 +209,21 @@ class SchemaController extends BaseController
     }
 
     public function schema_new_auto(){
-        // 先删除自动生成的schema和relation;
-        $this->relationService->deleteAutoRelation();
-        $this->schemaService->deleteAutoDatabase();
+        // 删除之前自动生成的
+//        $this->relationService->deleteAutoRelation();
+//        $this->schemaService->deleteAutoDatabase();
 
         $data = array();
         $keyField = array();
         // 获取配置文件的数据库名称
         //$databasename = config("database.connections.mysql")['database'];
         $databasename = "iscas_itechs_dbout";
-	array_map('unlink', glob('/home/fengbs/tigergraph/loadingData/*.csv'));
+	    array_map('unlink', glob('/home/fengbs/tigergraph/loadingData/*.csv'));
         $this->generate_schema_by_table($databasename,$data,$keyField);
         $this->generate_schema_by_view($databasename,$data,$keyField);
        // return redirect()->action('SchemaController@schema_list');
-	$url = "http://192.168.15.62:5000/run_command_dbout";
+
+        $url = "http://192.168.15.62:5000/run_command_dbout";
         $opts = array(
             'http'=>array(
                 'method'=>"GET",
@@ -283,7 +291,8 @@ class SchemaController extends BaseController
         $sname = $request->input('sname');
         $slabel= $request->input('slabel');
 
-        $properties = array_filter($request->input('properties'));
+
+       $properties = array_filter($request->input('properties'));
 
 
 
@@ -294,10 +303,10 @@ class SchemaController extends BaseController
         $key = array_search('string;primary_id',json_decode($mSchema->property,true));
         $resultpro =array();
         foreach ($properties as $value) {
-                if($value == $key)
-                    $resultpro[$value] = "string;primary_id";
-                else
-                    $resultpro[$value]= "string";
+            if($value == $key)
+                $resultpro[$value] = "string;primary_id";
+            else
+                $resultpro[$value]= "string";
         }
 
         $mSchema->property = json_encode($resultpro);
@@ -314,7 +323,6 @@ class SchemaController extends BaseController
         $ret = $this->schemaService->delete($sid);
         return redirect()->action('SchemaController@schema_list');
     }
-
     /**
      * 搜索
      *

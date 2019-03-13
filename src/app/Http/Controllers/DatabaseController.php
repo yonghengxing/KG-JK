@@ -1,11 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Services\DBSrcService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 use Excel;
 
+use phpDocumentor\Reflection\Types\Array_;
 use Storage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Http\File;
@@ -14,9 +16,10 @@ use PDO;
 
 use App\Models\Kg_db;
 use App\Models\Kg_datasrc;
+use App\Models\User;
 
-use App\Service\DBService;
-
+use App\Services\DBService;
+use App\Services\UserService;
 
 use PHPExcel_Reader_IReadFilter;
 use PHPExcel_Reader_Excel2007;
@@ -25,27 +28,305 @@ use PHPExcel_Cell;
 use PHPExcel_IOFactory;
 
 
+/**
+ * @param $name_before
+ * @return $name_after
+ * 替换别名
+ */
+function name_replace($name_before){
+    //别名数据库连接
+    try {
+        $pdo_rename = new PDO(
+            'mysql:host=127.0.0.1;dbname=iscas_itechs_rename;port=3306;charset=utf8',
+            'root',
+            ''
+        );
+    } catch (PDOException $ex) {
+        echo 'iscas_itechs_rename connection failed';
+        exit();
+    }
+    echo 'iscas_itechs_rename连接成功';
 
+    //得到外部数据库数据表项（字段）
+    $sql = "SELECT * FROM `name_translate`";
+    $statement = $pdo_rename->prepare($sql);
+    $statement->execute();
+
+    $name_translate_table = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    for($i=0;$i<count($name_translate_table);$i++){
+        $name_before = str_ireplace($name_translate_table[$i]["name_before"],$name_translate_table[$i]["name_after"],$name_before,$count);
+//        if($count != 0){
+//            break;
+//        }
+    }
+//    dd($name_before);
+    return $name_before;
+}
+
+
+function cut_table($dbname,$cutradio,$items,$table_head){
+    //dbout连接
+    try {
+        $pdo_dbout = new PDO(
+            'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
+            'root',
+            ''
+        );
+    } catch (PDOException $ex) {
+        echo 'iscas_itechs_dbout connection failed';
+        exit();
+    }
+    echo 'dbout连接成功';
+
+    //得到表中内容
+    $sql = "SELECT * FROM ".$dbname;
+    $statement = $pdo_dbout->prepare($sql);
+    $statement->execute();
+    //dd($sql);
+    $dbout_table_before = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+//    dd($dbout_table_before,$cutradio,$items);
+//    $item_num = 0;
+    for($i =1;$i<count($cutradio)+1;$i++){
+        if ($cutradio[$i] == 1) {
+            $item_num[$i] = $i;
+            $item_name[$i] = $items[$i];
+//            break;
+        }
+    }
+//    dd($dbout_table_before,$cutradio,$items,$item_num,$item_name);
+
+    for ($m = 1;$m<count($cutradio)+1;$m++) {
+        if ($cutradio[$m] == 1) {
+            //得到表中内容
+            $sql = "SELECT * FROM ".$dbname;
+            $statement = $pdo_dbout->prepare($sql);
+            $statement->execute();
+            //dd($sql);
+            $dbout_table_before = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            /*
+             * 按“,”分割
+             */
+            for ($j = 0; $j < count($dbout_table_before); $j++) {
+                $justice = strpos($dbout_table_before[$j][$items[$item_num[$m]]], ",");
+                if ($justice != null) {
+                    //dd($dbout_table_before[$j]);
+                    $name_new = explode(",", $dbout_table_before[$j][$items[$item_num[$m]]], $justice);
+                    //dd($dbout_table_before,$cutradio,$items,$item_num,$justice,$item_name,$name_new,$table_head);
+                    for ($a = 0; $a < count($name_new); $a++) {
+                        $sql = "INSERT INTO " . $dbname . "  VALUES (NULL,";
+                        for ($b = 0; $b < count($table_head); $b++) {
+                            if (isset($items[$b])) {
+                                //dd($b,$items[$b],$item_name);
+                                if ($items[$b] == $item_name[$m]) {
+                                    $sql = $sql . "'" . $name_new[$a] . "',";
+                                } else {
+                                    $sql = $sql . "'" . $dbout_table_before[$j][$items[$b]] . "',";
+                                }
+                            }
+                        }
+                        $sql = substr($sql, 0, -1) . ")";
+                        $statement = $pdo_dbout->prepare($sql);
+                        $statement->execute();
+                    }
+
+                    //dd($dbout_table_before[$j][$items[$item_num]],$name_new,$justice,$dbout_table_before[$j]);
+                    $sql_delete = "DELETE FROM " . $dbname . " WHERE `me_id` = " . $dbout_table_before[$j]["me_id"];
+                    $statement = $pdo_dbout->prepare($sql_delete);
+                    $statement->execute();
+                }
+            }
+
+            /*
+             * 按“;”分割
+             */
+            for ($j = 0; $j < count($dbout_table_before); $j++) {
+                $justice = strpos($dbout_table_before[$j][$items[$item_num[$m]]], ";");
+                if ($justice != null) {
+                    //dd($dbout_table_before[$j]);
+                    $name_new = explode(";", $dbout_table_before[$j][$items[$item_num[$m]]], $justice);
+                    //dd($dbout_table_before,$cutradio,$items,$item_num,$justice,$item_name,$name_new,$table_head);
+                    for ($a = 0; $a < count($name_new); $a++) {
+                        $sql = "INSERT INTO " . $dbname . "  VALUES (NULL,";
+                        for ($b = 0; $b < count($table_head); $b++) {
+                            if (isset($items[$b])) {
+                                //dd($b,$items[$b],$item_name);
+                                if ($items[$b] == $item_name[$m]) {
+                                    $sql = $sql . "'" . $name_new[$a] . "',";
+                                } else {
+                                    $sql = $sql . "'" . $dbout_table_before[$j][$items[$b]] . "',";
+                                }
+                            }
+                        }
+                        $sql = substr($sql, 0, -1) . ")";
+                        $statement = $pdo_dbout->prepare($sql);
+                        $statement->execute();
+                    }
+
+                    //dd($dbout_table_before[$j][$items[$item_num]],$name_new,$justice,$dbout_table_before[$j]);
+                    $sql_delete = "DELETE FROM " . $dbname . " WHERE `me_id` = " . $dbout_table_before[$j]["me_id"];
+                    $statement = $pdo_dbout->prepare($sql_delete);
+                    $statement->execute();
+                }
+            }
+        }
+    }
+}
+
+/**
+ * @param $DBtable
+ * @param $table_head
+ * @param $only
+ */
+function create_view($DBtable,$table_head,$only)
+{
+    try {
+        $pdo_me = new PDO(
+            'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
+            'root',
+            ''
+        );
+    } catch (PDOException $ex) {
+        echo 'database connection failed';
+        exit();
+    }
+    echo '连接成功';
+
+    $sql = "select column_name from information_schema.columns where table_schema ='iscas_itechs_dbout' and table_name = '" . $DBtable . "'";
+    $statement = $pdo_me->prepare($sql);
+    $statement->execute();
+
+    $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    //dd($table_head,$results,$request);
+    for ($i = 0; $i < count($table_head); $i++) {
+        if (isset($only[$i])) {
+            if ($only[$i] == 1) {
+                $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i] . " AS SELECT DISTINCT " . $table_head[$i] . " FROM " . $DBtable;
+                //dd($results,$view_create,$request->onlyradio,$i);
+                $statement = $pdo_me->prepare($view_create);
+                $statement->execute();
+                $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i] . " AS SELECT " . $table_head[$i] . " FROM " . $DBtable;
+                //dd($results,$view_create,$request->onlyradio,$i);
+                $statement = $pdo_me->prepare($view_create);
+                $statement->execute();
+                $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
+            }
+        }
+    }
+}
+
+/**
+ * @param $request
+ * @param $table_head
+ */
+function add_privilege($request, $table_head){
+        $userID = User::select("id")->get();
+//        dd($request,$table_head,$userID,count($userID),$userID[count($userID)-1]["id"]);
+//    for($i = 0;$i<1000;$i++){
+//        $a = "plevel".$i;
+//        if (isset($request[$a])){
+
+//            for ($j = 0;$j<count($table_head);$j++){
+//                if (isset($request->items[$j])){
+//                    $b = "plevel[".$j."]";
+//                    $plevel[$j]["id"] = $request[$b]-1;
+//                    $plevel[$j]["name"] = $request->items[$j];
+//                }
+//            }
+//        }else{
+//            break;
+//        }
+//    }
+    //dd($plevel);
+
+    try {
+        $pdo_privilege = new PDO(
+            'mysql:host=127.0.0.1;dbname=iscas_itechs_privilege;port=3306;charset=utf8',
+            'root',
+            ''
+        );
+    } catch (PDOException $ex) {
+        echo 'database connection failed';
+        exit();
+    }
+    echo 'iscas_itechs_privilege连接成功';
+
+    //创建表
+    $sql = "CREATE TABLE ".$request["DBtable"]."(`id` int(255) NOT NULL COMMENT '主键ID',`items_name` varchar(255)  COMMENT '选择表项',`user_id` int(255)  COMMENT '用户ID') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; ALTER TABLE ".$request["DBtable"]." ADD PRIMARY KEY (`id`); ALTER TABLE ".$request["DBtable"]." MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;";
+    $statement = $pdo_privilege->prepare($sql);
+    $statement->execute();
+    $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    //插入权限数据
+//    $sql_insert = "INSERT INTO " . $request["DBtable"] . " (`id`, `items_name`, `user_id`) VALUES";
+//    for ($k = 0;$k<count($table_head) ;$k++) {
+//        if (isset($plevel[$k])) {
+//            $sql_insert = $sql_insert." (NULL, '" . $plevel[$k]["name"] . "', '" . $plevel[$k]["id"] . "'),";
+//        }
+//    }
+//    $sql_insert = substr($sql_insert,0,-1);
+//    $sql_insert = $sql_insert.";";
+//    //dd($sql_insert);
+//    //TODO
+////    if (count($table_head)==0){
+////        //TODO
+////        //打日志，不能不选
+////    }
+//    $statement = $pdo_privilege->prepare($sql_insert);
+//    $statement->execute();
+//    $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    for ($i = 0;$i<count($table_head);$i++){
+        if(isset($request->items[$i])){
+//            dd($request->plevel[$i],$i);
+            for ($j=0;$j<$userID[count($userID)-1]["id"]+1;$j++){ //$userID[count($userID)-1]["id"]+1  是userid的最大值加一    遍历该列的所有用户
+                if (isset($request->plevel[$i][$j])){
+                    $sql_insert = "INSERT INTO " . $request["DBtable"] . " (`id`, `items_name`, `user_id`) VALUES (NULL,'".$request->items[$i]."','".$j."')";
+                    $statement = $pdo_privilege->prepare($sql_insert);
+                    $statement->execute();
+                    $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+                }
+            }
+        }
+    }
+//    dd(111);
+}
 
 class DatabaseController extends Controller{
- 
-    
-    
+
+
+    function __construct(DBService $dbService,DBSrcService $dbSrcService)
+    {
+        // $this->middleware('auth');
+        $this->dbService = $dbService;
+        $this->dbSrcService = $dbSrcService;
+
+    }
+
+    /*
+     *   数据库信息展示
+     */
+    public function addnew(Request $request){
+//        $databaseMsg = Kg_db::all();
+        $databaseMsg = $this->dbService->getAll();
+        $name = Kg_db::select('name')->get();
+        $userMsg = User::all();
+        $userMsgjson = json_encode($userMsg);
+        return view('datasource/addnew',compact('databaseMsg','name','userMsg','userMsgjson'));
+    }
+
     /*
      * 数据库信息展示
      */
     public function database(Request $request){
-        $databaseMsg = Kg_db::all();
+        //$databaseMsg = Kg_db::all();
+        $databaseMsg = $this->dbService->getAll();
         return view('database/list',compact('databaseMsg'));
-    }
-    
-    /*
-     * 数据库信息展示
-     */
-    public function addnew(Request $request){
-        $databaseMsg = Kg_db::all();
-        $name = Kg_db::select('name')->get();
-        return view('datasource/addnew',compact('databaseMsg','name'));
     }
     /*
      * 数据库与数据源连接信息展示
@@ -65,7 +346,7 @@ class DatabaseController extends Controller{
       public function showDB(Request $request)
     {
         //dd($request,$request->get("IP"),$request->get("amp;port"),$request->get("amp;dbname"),$request->get("amp;username"),$request->get("amp;password"));
-        $IP = $request->get("IP");
+        $IP = $request->IP;
         $port = $request->get("amp;port");
         $dbname = $request->get("amp;dbname");
         $username = $request->get("amp;username");
@@ -77,14 +358,15 @@ class DatabaseController extends Controller{
 
     public function addDB_do(Request $request)
     {
-        $button = $request->get("button");
-        $name = $request->get("DBID");
-        $type = $request->get("type");
-        $IP = $request->get("IP");
-        $port = $request->get("Port");
-        $dbname = $request->get("DBname");
-        $username = $request->get("UserName");
-        $password = $request->get("Password");
+        //dd($request->button);
+        $button = $request->button;
+        $name = $request->DBID;
+        $type = $request->type;
+        $IP = $request->IP;
+        $port = $request->Port;
+        $dbname = $request->DBname;
+        $username = $request->UserName;
+        $password = $request->Password;
         $descFile = $request->file('descdoc');
         //数据库连接测试
         if($button == "test"){
@@ -99,6 +381,7 @@ class DatabaseController extends Controller{
                 } catch (PDOException $ex) {
 		    $msg = 'database connection failed';
 	 	    $url = 'database/new';
+	 	    //TODO
 		    return view('error', compact("url","msg"));
                     echo 'database connection failed';
                     exit();
@@ -118,14 +401,15 @@ class DatabaseController extends Controller{
         
         //输入数据库信息
         if ($button =="save"){
+            //dd($request);
 
-		$name = $request->get("name");
-            $type = $request->get("type");
-            $IP = $request->get("IP");
-            $port = $request->get("port");
-            $dbname = $request->get("dbname");
-            $username = $request->get("username");
-            $password = $request->get("password");
+            $name = $request->name;
+            $type = $request->type;
+            $IP = $request->IP;
+            $port = $request->port;
+            $dbname = $request->dbname;
+            $username = $request->username;
+            $password = $request->password;
 
 
             if ($type == 1){
@@ -139,7 +423,7 @@ class DatabaseController extends Controller{
             $database->port = $port;
             $database->username = $username;
             $database->password = $password;
-	    $database->createdname = "admin";
+	        $database->createdname = "admin";
             $database->updatename = "admin";
             $databaseMsg = $database->save();
             }
@@ -147,25 +431,36 @@ class DatabaseController extends Controller{
             elseif ($type == 0){
 
 
-	    $name = $request->get("DBID");            
+	        $name = $request->get("DBID");
             $typeName = "xsl";
 
+            if ($descFile == null){
+                $msg = '文件为空';
+                $url = 'database/new';
+                return view('error', compact("url","msg"));
+            }
             $test = $descFile->isValid();
+            if ($test == null){
+                $msg = '提交文件不可用';
+                $url = 'database/new';
+                return view('error', compact("url","msg"));
+            }
+                //文件有效性
             $time = time();
             $fileName = $descFile->getClientOriginalName();
             $tempPath = '/exports/'.$time.'/';
             $descFile->move(storage_path().$tempPath,$fileName);
               
-            $filePath = 'storage/exports/'.$time.'/'.iconv('GBK', 'UTF-8', $fileName);
+//            $filePath = 'storage/exports/'.$time.'/'.iconv('GBK', 'UTF-8', $fileName);
 
-            Excel::load($filePath, function($reader) {
-                $data = $reader->all();
-            });
+//            Excel::load($filePath, function($reader) {
+//                $data = $reader->all();
+//            });
 
-            $path = storage_path('exports\\'.$time.'\\'.$fileName);
+//            $path = storage_path('exports\\'.$time.'\\'.$fileName);
             
 
-            
+            //services
             $database = new Kg_db();
             $database->name = $name;
             $database->type = $typeName;
@@ -204,8 +499,8 @@ class DatabaseController extends Controller{
             $filePath = 'storage/'.$db_msg[0]->IP.'/'.iconv('GBK', 'UTF-8', $db_msg[0]->dbname);
 
             
-            $path_original = storage_path(''.$filePath.'\\'.iconv('GBK', 'UTF-8', $db_msg[0]->dbname));
-            $path = str_replace('/','\\',$path_original);
+            //$path_original = storage_path(''.$filePath.'\\'.iconv('GBK', 'UTF-8', $db_msg[0]->dbname));
+            //$path = str_replace('/','\\',$path_original);
             
             /**
              * 得到表头
@@ -213,7 +508,7 @@ class DatabaseController extends Controller{
             $data = Excel::load($filePath, function ($reader) {}, 'GBK');
 
             $tableName = $data->getSheetNames();
-            $table_name;
+            //$table_name;
             for($i=0;$i<count($tableName);$i++){
                 $table_name[$i]['table_name'] = $tableName[$i];
                 
@@ -264,7 +559,7 @@ class DatabaseController extends Controller{
 
             $data = Excel::load($filePath, function ($reader) {}, 'GBK');
             $tableName = $data->getSheetNames();
-            $table_num;
+            //$table_num;
             for($i=0;$i<count($tableName);$i++){
                 if ($tableName[$i] == $table_name){
                     $table_num = $i;
@@ -273,12 +568,12 @@ class DatabaseController extends Controller{
             }
 
             $index = 0;
-            $table_head;
+            //$table_head;
             while($data->getSheet($table_num)->getCellByColumnAndRow($index, 1)->getValue()){
                 $table_head[$index] = $data->getSheet($table_num)->getCellByColumnAndRow($index, 1)->getValue();
                 $index++;
             }
-            //dd($table_head);
+//            dd($table_head);
 
             echo json_encode($table_head);
 
@@ -315,15 +610,24 @@ class DatabaseController extends Controller{
      * @return unknown
      */
     public function addDBSrc_do(Request $request){
+//        dd($request);
         $DBSrcName = $request->DSname;
-        $plevel = $request->plevel;
+//        $plevel = $request->plevel;
         $database = $request->database;
         $DBtable = $request->DBtable;
         $tablesource = 1;
         $items = $request->items;
-        $db_rules = $request->db_rules;
+//        $db_rules = $request->db_rules;
 
-        if($tablesource == 1){
+        if ($items == null){
+            $msg = '选择项为空';
+            $url = 'datasource/addnew';
+            return view('error', compact("url","msg"));
+        }
+
+
+
+
         //数据库名（实际）
         
         $db_msg = Kg_db::select('IP','port','dbname','username','password')->where('name',$database)->get();
@@ -355,12 +659,12 @@ class DatabaseController extends Controller{
             
             //得到sheet页号
             $tableName = $data->getSheetNames();
-            $table_num;
-            for($i=0;$i<count($tableName);$i++){
-                if ($tableName[$i] == $DBtable){
-                    $table_num = $i;
-                    break;
-                }
+                //$table_num;
+                for($i=0;$i<count($tableName);$i++){
+                    if ($tableName[$i] == $DBtable){
+                        $table_num = $i;
+                        break;
+                    }
             }
 
             //选中的sheet表的内容
@@ -368,16 +672,19 @@ class DatabaseController extends Controller{
             
            
             $index = 0;
-            $table_head;
+            //dd($table_head);
             while($data->getSheet($table_num)->getCellByColumnAndRow($index, 1)->getValue()){
                 $table_head[$index] = $data->getSheet($table_num)->getCellByColumnAndRow($index, 1)->getValue();
                 $index++;
             }
             
 
-            
+            //添加权限
+            //TODO
+            add_privilege($request,$table_head);
+            //dd($request);
             //要导入的数据库的内容
-            $data_content_real ;
+            //$data_content_real = new Array_();
             if(isset($data_content_selected[1])){//多个sheet页
                 for($i = 0;$i<count($data_content_selected);$i++){
                     for($j = 0;$j<count($table_head);$j++){
@@ -416,7 +723,7 @@ class DatabaseController extends Controller{
             $sql_create = $sql_create.") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
             $sql_create = $sql_create." ALTER TABLE ".$DBtable." ADD PRIMARY KEY (`me_id`);";
             $sql_create = $sql_create." ALTER TABLE ".$DBtable." MODIFY `me_id` int(255) NOT NULL AUTO_INCREMENT;";
-            
+            //dd($sql_create);
             $statement = $pdo_me->prepare($sql_create);
             $statement->execute();            
             $results_create = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -467,7 +774,8 @@ class DatabaseController extends Controller{
                                 $ccc = strtolower($bbb);
                                 
                                 $jjj++;
-                                $iii[$i][$ccc] = $data_content_real[$i][$ccc];
+                                $name_real = name_replace($data_content_real[$i][$ccc]);
+                                $iii[$i][$ccc] = $name_real;
                                 $statement->bindValue( $jjj, $iii[$i][$ccc] ,PDO::PARAM_STR);
                             }
                         }
@@ -479,46 +787,28 @@ class DatabaseController extends Controller{
                 $statement->execute();
                 $results_create = $statement->fetchAll(PDO::FETCH_ASSOC);
             }
-            
+
+
+            //dd($request->items);
+            //切表
+            cut_table($DBtable,$request->cutradio,$request->items,$table_head);
+
             
            //创建视图
-
-	    $sql = "select column_name from information_schema.columns where table_schema ='iscas_itechs_dbout' and table_name = '".$DBtable."'";
-            $statement = $pdo_me->prepare($sql);
-            $statement->execute();
-            
-            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-		for($i=1;$i<count($results);$i++){
-                $view_create = "CREATE VIEW ".$DBtable."_".$results[$i]['column_name']." AS SELECT DISTINCT ".$results[$i]['column_name']." FROM ".$DBtable;
-                $statement = $pdo_me->prepare($view_create);
-                $statement->execute();
-            
-                $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
-            }
-		
+            create_view($DBtable,$table_head,$request->onlyradio);
 
             //在datasrc表中插入与db关联记录
             $kg_datasrc =new Kg_datasrc();
             $kg_datasrc->dataSource = $DBSrcName;
             $kg_datasrc->dbname	 = $database;
-            $kg_datasrc->plevel	 = $plevel;
+            $kg_datasrc->plevel	 = 1;
             $kg_datasrc->type	 = $tablesource;
             $kg_datasrc->createdname = "admin";
             $kg_datasrc->updatename = "admin";
+            $kg_datasrc->dbname_real = $DBtable;
             $kg_datasrc_save = $kg_datasrc->save();
             
 
-
-           $url = "http://192.168.15.62:5000/run_command_dbout";
-            //$url = "http://192.168.1.62:5000/run_command_load";
-            $opts = array(
-                'http'=>array(
-                    'method'=>"GET",
-                    'timeout'=>1000,//s
-                )
-            );
-            $data =  file_get_contents($url, false, stream_context_create($opts));
             
         }else{
             /**
@@ -556,7 +846,10 @@ class DatabaseController extends Controller{
         $statement->execute();
         
         $table_head = $statement->fetchAll(PDO::FETCH_ASSOC);
-        
+
+            //添加权限
+            add_privilege($request,$table_head);
+
         /**
          * 得到所选择外部数据库的数据
          */
@@ -645,22 +938,31 @@ class DatabaseController extends Controller{
             $statement->execute();
             $results_create = $statement->fetchAll(PDO::FETCH_ASSOC);
         }
-        
+
+
+
+            //切表
+            cut_table($DBtable,$request->cutradio,$request->items,$table_head);
+
+
+            //创建视图
+            create_view($DBtable,$table_head,$request->onlyradio);
+
 
 	//创建视图
-	$sql = "select column_name from information_schema.columns where table_schema ='iscas_itechs_dbout' and table_name = '".$DBtable."'";
-            $statement = $pdo_me->prepare($sql);
-            $statement->execute();
-            
-            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-	for($i=1;$i<count($results);$i++){
-                $view_create = "CREATE VIEW ".$DBtable."_".$results[$i]['column_name']." AS SELECT DISTINCT ".$results[$i]['column_name']." FROM ".$DBtable;
-                $statement = $pdo_me->prepare($view_create);
-                $statement->execute();
-            
-                $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
-            }
+//	$sql = "select column_name from information_schema.columns where table_schema ='iscas_itechs_dbout' and table_name = '".$DBtable."'";
+//            $statement = $pdo_me->prepare($sql);
+//            $statement->execute();
+//
+//            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+//
+//	for($i=1;$i<count($results);$i++){
+//                $view_create = "CREATE VIEW ".$DBtable."_".$results[$i]['column_name']." AS SELECT DISTINCT ".$results[$i]['column_name']." FROM ".$DBtable;
+//                $statement = $pdo_me->prepare($view_create);
+//                $statement->execute();
+//
+//                $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
+//            }
 
 
         //dd(111);
@@ -668,10 +970,11 @@ class DatabaseController extends Controller{
         $kg_datasrc =new Kg_datasrc();
         $kg_datasrc->dataSource = $DBSrcName;
         $kg_datasrc->dbname	 = $database;
-        $kg_datasrc->plevel	 = $plevel;
+        $kg_datasrc->plevel	 = 1;
         $kg_datasrc->type	 = $tablesource;
-            $kg_datasrc->createdname = "admin";
-            $kg_datasrc->updatename = "admin";
+        $kg_datasrc->dbname_real = $DBtable;
+        $kg_datasrc->createdname = "admin";
+        $kg_datasrc->updatename = "admin";
         $kg_datasrc_save = $kg_datasrc->save();
     
 
@@ -686,56 +989,74 @@ class DatabaseController extends Controller{
 
 
         }
-        }elseif ($tablesource == 2){
-            /**
-             * 多表
-             */
-            
-            //得到所选外部数据库的配置
-            $db_msg = Kg_db::select('IP','port','dbname','username','password')->where('name',$database)->get();
-            
-            
-            if ($a!=false or $b!=false){//Excel文件 
-                dd("excel文件");
-                
-            }else {//外部数据库文件
-                //外部数据库连接
-                try {
-                    $pdo_out = new PDO(
-                        'mysql:host='.$db_msg[0]->IP.';dbname='.$db_msg[0]->dbname.';port='.$db_msg[0]->port.';charset=utf8',
-                        $db_msg[0]->username,
-                        $db_msg[0]->password
-                        );
-                } catch (PDOException $ex) {
-                    echo 'database connection failed';
-                    exit();
-                }
-                echo 'success<br>';
-                
-                //本地数据库连接
-                try {
-                    $pdo_me = new PDO(
-                        'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
-                        'root',
-                        ''
-                        );
-                } catch (PDOException $ex) {
-                    echo 'database connection failed';
-                    exit();
-                }
-                echo '连接成功';
-                
-                
-                $statement = $pdo_me->prepare($db_rules);
-                $statement->execute();
-                $results_create = $statement->fetchAll(PDO::FETCH_ASSOC);
-                
-                
-                
-            }
-            
-            
+
+        return redirect()->action('DatabaseController@datasource');
+    }
+
+    /**
+     * 删除数据源
+     * @param $rid
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    function DBsrc_del($rid){
+        //连接数据库
+        try {
+            $pdo_me = new PDO(
+                'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
+                'root',
+                ''
+            );
+        } catch (PDOException $ex) {
+            echo 'database connection failed';
+            exit();
         }
+        echo '连接成功';
+
+        //连接数据库
+        try {
+            $pdo_privilege = new PDO(
+                'mysql:host=127.0.0.1;dbname=iscas_itechs_privilege;port=3306;charset=utf8',
+                'root',
+                ''
+            );
+        } catch (PDOException $ex) {
+            echo 'database connection failed';
+            exit();
+        }
+        echo '连接成功';
+
+        //删除数据库
+        $dbname_real = Kg_datasrc::select('dbname_real')->where('rid',$rid)->get();
+
+        $sql = "select column_name from information_schema.columns where table_schema ='iscas_itechs_dbout' and table_name = '".$dbname_real[0]->dbname_real."'";
+
+        $statement = $pdo_me->prepare($sql);
+        $statement->execute();
+
+        $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+//        dd($results);
+
+
+        $sql = "DROP TABLE ".$dbname_real[0]->dbname_real.";";
+        for($i=1;$i<count($results);$i++){
+            $sql = $sql."DROP VIEW ".$dbname_real[0]->dbname_real."_".$results[$i]['column_name'].";";
+        }
+//        dd($sql);
+        $statement = $pdo_me->prepare($sql);
+        $statement->execute();
+
+        $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        //删除权限
+        $sql = "DROP TABLE ".$dbname_real[0]->dbname_real.";";
+//        dd($sql);
+        $statement = $pdo_privilege->prepare($sql);
+        $statement->execute();
+        $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        //删除记录
+        $result = $this->dbSrcService->delete($rid);
+
         return redirect()->action('DatabaseController@datasource');
     }
 

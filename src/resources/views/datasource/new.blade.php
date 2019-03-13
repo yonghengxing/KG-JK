@@ -28,7 +28,7 @@ window.onload = function() {
                  
                  <hr/>
                  
-                 <form horizontal="true" class="am-form am-form-horizontal "action="{{ asset('../../../kg/addDBSrc_do')}}" method="post" onsubmit="return checkForm()">
+                 <form horizontal="true" class="am-form am-form-horizontal "action="{{ asset('addDBSrc_do')}}" method="post" onsubmit="return checkForm()">
                  	<input type="hidden" name="_token" value="{{ csrf_token() }}" />
                  	
                  	<div class="am-form-group">

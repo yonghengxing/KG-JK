@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use PDO;
 
 
 class RelationController extends BaseController
@@ -57,6 +58,17 @@ class RelationController extends BaseController
         return view('relation/list', compact('relations'));
     }
 
+
+    //关联字段ajax返回的数组;
+    public function get_relation_field(Request $request){
+        $sid = $request->rid;
+        //获取所选本体的所有字段，字段从property中解析出来
+        $schema = $this->schemaService->getById($sid);
+        $property = json_decode($schema->property,true);
+        $fields = array_keys($property);
+        return $fields;
+    }
+
     /**
      * 新建实体页面
      */
@@ -84,6 +96,8 @@ class RelationController extends BaseController
         $tovertex = $request->post("tovertex");
         $endlabel  = $this->schemaService->getById($tovertex)->slabel;
 
+        $relationField = $request->relationField;
+
         $mRelation = new Relation();
         $mRelation->relationtype = $relationType;
         $mRelation->fromvertex = $fromvertex;
@@ -93,8 +107,28 @@ class RelationController extends BaseController
         $mRelation->endlabel = $endlabel;
 
         $ret = $this->relationService->append($mRelation);
+        $this->generate_relation_csv($startlabel,$relationField,$typelabel,$endlabel);
 
+       // return redirect('../../../kg/relation/list');
         return redirect()->action('RelationController@relation_list');
+    }
+
+
+    public function generate_relation_csv($startLabel,$relationField,$typeLabel,$endLabel){
+        //数据库连接
+        $pdo_me = new PDO('mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8', 'root', '');
+
+        $path = "/home/fengbs/tigergraph/loadingData/".$typeLabel.'.csv';
+        //$path = "D://".$typeLabel.'.csv';
+        if(file_exists ($path)){
+            unlink($path);
+        }
+	
+        $tableKey = 'me_id';
+        $csv_export = "select '".$startLabel."','".$endLabel."' union select ".$tableKey.",".$relationField." from ".$startLabel." into outfile '".$path."' fields terminated by '&'";
+        $statement = $pdo_me->prepare($csv_export);
+        $statement->execute();
+
     }
 
     public function relation_new_auto(){

@@ -53,32 +53,35 @@
 			       <div class="am-u-sm-12">
                         <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
                             <thead>
-                                <tr>
-                                    <th>数据源</th>
-                                    <th>数据库</th>
-                                   
-                                    <th>密级状态</th>
-                                    <th>创建时间</th>
-                                    <th>创建人</th>
-                                    <th>更新时间</th>
-                                    <th>更新人</th>
-                                </tr>
-                                </thead>
+                            <tr>
+                                <th>数据源</th>
+                                <th>数据库</th>
+
+                                <th>密级状态</th>
+                                <th>创建时间</th>
+                                <th>创建人</th>
+                                <th>更新时间</th>
+                                <th>更新人</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
                             <tbody>
                              <?php 
                             for($i = 0;$i<count($datasourceMsg);$i++){
                             ?>
-                                <tr>
-                                	<td>{{ $datasourceMsg[$i]->dataSource }}</td>
-                                	<td>{{ $datasourceMsg[$i]->dbname }}</td>
-                                	
-                                	<td>{{ $datasourceMsg[$i]->plevel }}</td>
-                                	<td>{{ $datasourceMsg[$i]->created_at }}</td>
-                                	<td>{{ $datasourceMsg[$i]->createdname }}</td>
-                                	<td>{{ $datasourceMsg[$i]->updated_at }}</td>
-                                	<td>{{ $datasourceMsg[$i]->updatename }}</td>
-                                </tr>
-                            <?php }?>   
+
+                            <tr>
+                                <td>{{ $datasourceMsg[$i]->dataSource }}</td>
+                                <td>{{ $datasourceMsg[$i]->dbname }}</td>
+
+                                <td>{{ $datasourceMsg[$i]->plevel }}</td>
+                                <td>{{ $datasourceMsg[$i]->created_at }}</td>
+                                <td>{{ $datasourceMsg[$i]->createdname }}</td>
+                                <td>{{ $datasourceMsg[$i]->updated_at }}</td>
+                                <td>{{ $datasourceMsg[$i]->updatename }}</td>
+                                <td><a href="{{ asset('/DBsrc_del/'.$datasourceMsg[$i]->rid)}}"> 删除</a></td>
+                            </tr>
+                            <?php }?>
                             </tbody>
                         </table>
                      </div>                                

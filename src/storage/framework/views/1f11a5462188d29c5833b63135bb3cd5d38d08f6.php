@@ -53,32 +53,35 @@
 			       <div class="am-u-sm-12">
                         <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
                             <thead>
-                                <tr>
-                                    <th>数据源</th>
-                                    <th>数据库</th>
-                                   
-                                    <th>密级状态</th>
-                                    <th>创建时间</th>
-                                    <th>创建人</th>
-                                    <th>更新时间</th>
-                                    <th>更新人</th>
-                                </tr>
-                                </thead>
+                            <tr>
+                                <th>数据源</th>
+                                <th>数据库</th>
+
+                                <th>密级状态</th>
+                                <th>创建时间</th>
+                                <th>创建人</th>
+                                <th>更新时间</th>
+                                <th>更新人</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
                             <tbody>
                              <?php 
                             for($i = 0;$i<count($datasourceMsg);$i++){
                             ?>
-                                <tr>
-                                	<td><?php echo e($datasourceMsg[$i]->dataSource); ?></td>
-                                	<td><?php echo e($datasourceMsg[$i]->dbname); ?></td>
-                                	
-                                	<td><?php echo e($datasourceMsg[$i]->plevel); ?></td>
-                                	<td><?php echo e($datasourceMsg[$i]->created_at); ?></td>
-                                	<td><?php echo e($datasourceMsg[$i]->createdname); ?></td>
-                                	<td><?php echo e($datasourceMsg[$i]->updated_at); ?></td>
-                                	<td><?php echo e($datasourceMsg[$i]->updatename); ?></td>
-                                </tr>
-                            <?php }?>   
+
+                            <tr>
+                                <td><?php echo e($datasourceMsg[$i]->dataSource); ?></td>
+                                <td><?php echo e($datasourceMsg[$i]->dbname); ?></td>
+
+                                <td><?php echo e($datasourceMsg[$i]->plevel); ?></td>
+                                <td><?php echo e($datasourceMsg[$i]->created_at); ?></td>
+                                <td><?php echo e($datasourceMsg[$i]->createdname); ?></td>
+                                <td><?php echo e($datasourceMsg[$i]->updated_at); ?></td>
+                                <td><?php echo e($datasourceMsg[$i]->updatename); ?></td>
+                                <td><a href="<?php echo e(asset('/DBsrc_del/'.$datasourceMsg[$i]->rid)); ?>"> 删除</a></td>
+                            </tr>
+                            <?php }?>
                             </tbody>
                         </table>
                      </div>                                

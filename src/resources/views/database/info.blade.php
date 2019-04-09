@@ -11,7 +11,7 @@
                  
                  <hr/>
                  
-                 <form class="am-form am-form-horizontal ">
+                 <form class="am-form am-form-horizontal tpl-form-border-form  tpl-form-border-br">
                  	<input type="hidden" name="_token" value="{{ csrf_token() }}" />
 					<div class="am-form-group">
                       	<label for="DBID" class="am-u-sm-3 am-form-label">名称 / Name</label>

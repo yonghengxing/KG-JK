@@ -18,14 +18,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-
+use App\User;
+use App\Services\UserService;
 
 
 class RelationTypeController extends BaseController
 {
-    function __construct(RelationTypeService $relationTypeService)
+    function __construct(UserService $userService,RelationTypeService $relationTypeService)
     {
-        // $this->middleware('auth');
+        $this->middleware('auth');
         $this->relationTypeService = $relationTypeService;
 
     }
@@ -69,18 +70,20 @@ class RelationTypeController extends BaseController
         $mRelationType = new RelationType();
         $mRelationType->rlabel = $rlabel;
         $mRelationType->rname = $rname;
+        $mRelationType->createname = Auth::user()->name;
+        $mRelationType->updatename = Auth::user()->name;
 
-        $properties =$request->input('iskey');
-        $labels = $request->input('labels');
-        $kv = array_combine($labels,$properties);
-
-        foreach ($kv as $key=>$value){
-            if($value == '1')
-                $kv[$key] = "string;primary_id";
-            else
-                $kv[$key]= "string";
-        }
-        $mRelationType->property = json_encode($kv);        
+//        $properties =$request->input('iskey');
+//        $labels = $request->input('labels');
+//        $kv = array_combine($labels,$properties);
+//
+//        foreach ($kv as $key=>$value){
+//            if($value == '1')
+//                $kv[$key] = "string;primary_id";
+//            else
+//                $kv[$key]= "string";
+//        }
+//        $mRelationType->property = json_encode($kv);
 	
 	$ret = $this->relationTypeService->append($mRelationType);
         return redirect()->action('RelationTypeController@relationType_list');

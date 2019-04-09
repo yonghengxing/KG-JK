@@ -6,13 +6,13 @@
                 <div class="widget am-cf">
 
                     <div class="am-cf">
-                        <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
+                        <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
                         <small>关系维护</small>
                     </div>
 
                     <hr/>
 
-                    <form class="ant-form ant-form-horizontal" action="{{asset('relation/info')}}/{{$relation->rid}}" method="post" >
+                    <form class="ant-form ant-form-horizontal tpl-form-border-form  tpl-form-border-br" action="{{asset('relation/info')}}/{{$relation->rid}}" method="post" >
                         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
 
                         <div class="am-u-sm-12">

@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
+use App\Services\UserService;
 
 use App\Services\ComponentService;
 
@@ -23,6 +25,11 @@ use App\Models\ProductDevices;
 
 class IndexController extends BaseController
 {    
+    function __construct(UserService $userService)
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request)
     {
         

@@ -7,9 +7,20 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\Services\UserService;
 
 class viewController extends Controller
 {
+
+    function __construct(UserService $userService)
+    {
+        $this->middleware('auth');
+        $this->userService = $userService;
+    }
+
     public function otype()
     {
         return view('oType/oType');

@@ -1,68 +1,38 @@
-<?php $__env->startSection('content'); ?>
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">登录</div>
+ <?php $__env->startSection('content'); ?>
 
-                <div class="card-body">
-                    <form method="POST" action="<?php echo e(route('login')); ?>">
-                        <?php echo csrf_field(); ?>
 
-                        <div class="form-group row">
-                            <label for="username" class="col-sm-4 col-form-label text-md-right">用户名</label>
+<div  class="am-g tpl-g">
+	<div class="tpl-content-wrapper" style ="font-weight:bold;">
+        <video autoplay loop muted id="bgvid">
+        	<source src="<?php echo e(asset('assets/img/bg_video.mp4')); ?>" type="video/mp4">
+        </video>
+        
+        <div class="bg_mark"> </div>
+        
+        <div class="tpl-page-state-title am-text-center tpl-error-title" style="color: #ffffff;font-size: 6.6rem;font-weight: normal;">JKJ军事科学信息中心
+			</div>
+		<div class="tpl-error-title-info am-text-center"  style="color: #ffffff;font-size: 30px;">科技领域基础数据管理与服务系统
+			</div>
 
-                            <div class="col-md-6">
-                                <input id="name" type="name" class="form-control<?php echo e($errors->has('name') ? ' is-invalid' : ''); ?>" name="name" value="<?php echo e(old('email')); ?>" required autofocus>
-
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">密码</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control<?php echo e($errors->has('password') ? ' is-invalid' : ''); ?>" name="password" required>
-
-                                <?php if($errors->has('password')): ?>
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong><?php echo e($errors->first('password')); ?></strong>
-                                    </span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" <?php echo e(old('remember') ? 'checked' : ''); ?>>
-
-                                    <label class="form-check-label" for="remember">
-                                        <?php echo e(__('Remember Me')); ?>
-
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    <?php echo e(__('Login')); ?>
-
-                                </button>
-
-                                <?php if(Route::has('password.request')): ?>
-                                    <a class="btn btn-link" href="<?php echo e(route('password.request')); ?>">
-                                        <?php echo e(__('Forgot Your Password?')); ?>
-
-                                    </a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div class="login-box">
+            <form  method="POST" action="<?php echo e(route('login')); ?>" class="am-form" data-am-validator>
+              <div class="am-form-group">
+                <label for="name"><i class="am-icon-user"></i></label>
+                <input type="text" id="name" minlength="3" placeholder="输入用户名" class="form-control<?php echo e($errors->has('name') ? ' is-invalid' : ''); ?>" name="name" value="<?php echo e(old('email')); ?>" required autofocus/>
+              </div>
+            
+              <div class="am-form-group">
+                <label for="password"><i class="am-icon-key"></i></label>
+                <input type="password" id="password" placeholder="输入密码" class="form-control<?php echo e($errors->has('password') ? ' is-invalid' : ''); ?>" name="password" required/>
+                <?php if($errors->has('password')): ?>
+                        <span class="invalid-feedback" role="alert">
+                            <strong><?php echo e($errors->first('password')); ?></strong>
+                        </span>
+                    <?php endif; ?>
+              </div>
+              <button class="am-btn am-btn-secondary"  type="submit">登录</button>
+            </form>
+        </div>
         </div>
     </div>
 </div>

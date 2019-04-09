@@ -20,6 +20,8 @@ use App\Models\User;
 
 use App\Services\DBService;
 use App\Services\UserService;
+use App\Services\RelationService;
+use App\Services\SchemaService;
 
 use PHPExcel_Reader_IReadFilter;
 use PHPExcel_Reader_Excel2007;
@@ -27,6 +29,7 @@ use PHPExcel_Reader_Excel5;
 use PHPExcel_Cell;
 use PHPExcel_IOFactory;
 
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @param $name_before
@@ -89,15 +92,19 @@ function cut_table($dbname,$cutradio,$items,$table_head){
 //    dd($dbout_table_before,$cutradio,$items);
 //    $item_num = 0;
     for($i =1;$i<count($cutradio)+1;$i++){
+	if (isset($cutradio[$i])){
+
         if ($cutradio[$i] == 1) {
             $item_num[$i] = $i;
             $item_name[$i] = $items[$i];
 //            break;
         }
     }
+}
 //    dd($dbout_table_before,$cutradio,$items,$item_num,$item_name);
 
     for ($m = 1;$m<count($cutradio)+1;$m++) {
+	if (isset($cutradio[$m])) {
         if ($cutradio[$m] == 1) {
             //得到表中内容
             $sql = "SELECT * FROM ".$dbname;
@@ -174,13 +181,14 @@ function cut_table($dbname,$cutradio,$items,$table_head){
         }
     }
 }
+}
 
 /**
  * @param $DBtable
  * @param $table_head
  * @param $only
  */
-function create_view($DBtable,$table_head,$only)
+function create_view($DBtable,$table_head,$only,$items)
 {
     try {
         $pdo_me = new PDO(
@@ -202,6 +210,7 @@ function create_view($DBtable,$table_head,$only)
 
     //dd($table_head,$results,$request);
     for ($i = 0; $i < count($table_head); $i++) {
+	if (isset($items[$i])){
         if (isset($only[$i])) {
             if ($only[$i] == 1) {
                 $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i] . " AS SELECT DISTINCT " . $table_head[$i] . " FROM " . $DBtable;
@@ -218,6 +227,7 @@ function create_view($DBtable,$table_head,$only)
             }
         }
     }
+}
 }
 
 /**
@@ -300,11 +310,13 @@ function add_privilege($request, $table_head){
 class DatabaseController extends Controller{
 
 
-    function __construct(DBService $dbService,DBSrcService $dbSrcService)
+    function __construct(UserService $userService,DBService $dbService,DBSrcService $dbSrcService, SchemaService $schemaService, RelationService $relationService)
     {
-        // $this->middleware('auth');
+        $this->middleware('auth');
         $this->dbService = $dbService;
         $this->dbSrcService = $dbSrcService;
+ 	$this->schemaService = $schemaService;
+        $this->relationService = $relationService;
 
     }
 
@@ -795,7 +807,7 @@ class DatabaseController extends Controller{
 
             
            //创建视图
-            create_view($DBtable,$table_head,$request->onlyradio);
+            create_view($DBtable,$table_head,$request->onlyradio,$request->items);
 
             //在datasrc表中插入与db关联记录
             $kg_datasrc =new Kg_datasrc();
@@ -946,7 +958,7 @@ class DatabaseController extends Controller{
 
 
             //创建视图
-            create_view($DBtable,$table_head,$request->onlyradio);
+            create_view($DBtable,$table_head,$request->onlyradio,$request->items);
 
 
 	//创建视图
@@ -1054,12 +1066,28 @@ class DatabaseController extends Controller{
         $statement->execute();
         $statement->fetchAll(PDO::FETCH_ASSOC);
 
+        $this->relationService->deleteRelationByName($dbname_real[0]->dbname_real);
+        $this->schemaService->deleteSchemaByName($dbname_real[0]->dbname_real);
+        array_map('unlink', glob('/home/fengbs/tigergraph/loadingData/'.$dbname_real[0]->dbname_real."*.csv"));
+
         //删除记录
         $result = $this->dbSrcService->delete($rid);
 
         return redirect()->action('DatabaseController@datasource');
     }
 
+
+	function datasource_search(Request $request){
+        	$text = $request->route("text");
+        	$datasourceMsg = $this->dbSrcService->getDBSrcBySearch($text);
+        	return view('datasource/list', compact('datasourceMsg','text'));
+   	 }
+
+    function database_search(Request $request){
+        $text = $request->route("text");
+        $databaseMsg = $this->dbService->getDBBySearch($text);
+        return view('database/list', compact('databaseMsg','text'));
+    }
     
     
 }

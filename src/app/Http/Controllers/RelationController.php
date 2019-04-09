@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: huangfu
- * Date: 2018/12/28
- * Time: 17:10
- */
 
 namespace App\Http\Controllers;
 use App\Models\ParameterJson;
@@ -14,11 +8,14 @@ use App\Services\RelationTypeService;
 use App\Services\SchemaService;
 use Illuminate\Routing\Controller as BaseController;
 
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\Services\UserService;
+
 use App\Models\Relation;
 use App\Services\RelationService;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use PDO;
@@ -26,11 +23,11 @@ use PDO;
 
 class RelationController extends BaseController
 {
-    function __construct(RelationService $relationService,SchemaService $schemaService,
+    function __construct(UserService $userService,RelationService $relationService,SchemaService $schemaService,
                          RelationTypeService $relationTypeService, EntityService $entityService,ParameterJsonService $parameterJsonService)
 
     {
-        // $this->middleware('auth');
+        $this->middleware('auth');
         $this->relationService = $relationService;
         $this->schemaService = $schemaService;
         $this->entityService= $entityService;
@@ -75,7 +72,7 @@ class RelationController extends BaseController
     public function relation_new()
     {
         $relationTypes = $this->relationtTypeService->getAll();
-        $schemas = $this->schemaService->getAll();
+        $schemas = $this->schemaService->getSchemaTable();
 
         return view('relation/new',compact('relationTypes','schemas'));
     }
@@ -86,15 +83,16 @@ class RelationController extends BaseController
      */
   public function relation_new_do(Request $request)
     {
-
         $relationType = $request->post("relationType");
         $typelabel =  $this->relationtTypeService->getById($relationType)->rlabel;
 
         $fromvertex = $request->post("fromvertex");
         $startlabel  = $this->schemaService->getById($fromvertex)->slabel;
+        $startAuto = $this->schemaService->getById($fromvertex)->isauto;
 
         $tovertex = $request->post("tovertex");
         $endlabel  = $this->schemaService->getById($tovertex)->slabel;
+        $endAuto = $this->schemaService->getById($tovertex)->isauto;
 
         $relationField = $request->relationField;
 
@@ -105,26 +103,27 @@ class RelationController extends BaseController
         $mRelation->typelabel = $typelabel;
         $mRelation->startlabel = $startlabel;
         $mRelation->endlabel = $endlabel;
+        $mRelation->createname = Auth::user()->name;
+        $mRelation->updatename = Auth::user()->name;
 
         $ret = $this->relationService->append($mRelation);
-        $this->generate_relation_csv($startlabel,$relationField,$typelabel,$endlabel);
+        if($startAuto == "1" && $endAuto == "1" )
+            $this->generate_relation_csv($startlabel,$relationField,$typelabel,$endlabel);
 
-       // return redirect('../../../kg/relation/list');
         return redirect()->action('RelationController@relation_list');
     }
 
 
     public function generate_relation_csv($startLabel,$relationField,$typeLabel,$endLabel){
         //数据库连接
-        $pdo_me = new PDO('mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8', 'root', '');
-
-        $path = "/home/fengbs/tigergraph/loadingData/".$typeLabel.'.csv';
-        //$path = "D://".$typeLabel.'.csv';
+        dd(11);
+        $pdo_me = new PDO(config("properties.PDO")['url'],config("properties.PDO")['username'],config("properties.PDO")['psw']);
+        //自动生成相对应的csv文件，加个判断？如果不是自动生成的俩个schema,不自动生成？
+        $path = config("properties")['filePathLinux'].$typeLabel.'.csv';
         if(file_exists ($path)){
             unlink($path);
         }
-	
-        $tableKey = 'me_id';
+        $tableKey = config("properties")['defaultKeyId'];
         $csv_export = "select '".$startLabel."','".$endLabel."' union select ".$tableKey.",".$relationField." from ".$startLabel." into outfile '".$path."' fields terminated by '&'";
         $statement = $pdo_me->prepare($csv_export);
         $statement->execute();
@@ -136,56 +135,42 @@ class RelationController extends BaseController
         //获取edge的json
         $edge =array();
         $mRelations = $this->relationService->getAll();
-
         foreach ($mRelations as $relation){
-
             $property = array();
             $property['from'] = $relation->startlabel;
             $property['to'] = $relation->endlabel;
             $edge[$relation->typelabel] = $property;
-
         }
         //获取vertex的json
-
         $vertex = array();
         $mSchemas = $this->schemaService->getAll();
         foreach ($mSchemas as $schema){
             $atti['attribute'] = json_decode($schema->property,true);
             $vertex[$schema->slabel] = $atti;
-
-
         }
-
         $result['edge'] = $edge;
         $result['vertex'] = $vertex;
-
-
-        $resultjson =json_encode($result);
-
-
-        $myjson = fopen("/home/fengbs/KGdata/my.json", "w");
-        fwrite($myjson, $resultjson);
-        fclose($myjson);
-      
-
-        $url = "http://192.168.15.62:5000/run_command";
-    
-        $opts = array(   
-          'http'=>array(   
-            'method'=>"GET",   
-            'timeout'=>1000,//s  
-           )   
-        );    
-    
-       
-        $data =  file_get_contents($url, false, stream_context_create($opts));
-        
-
-
+        $resultJson =json_encode($result);
+        //保存到服务器my.json文件中
+        $filePath =  config("properties")['jsonPath'];
+        $myJson = fopen($filePath, "w");
+        fwrite($myJson, $resultJson);
+        fclose($myJson);
+        //生成json文件之后，调用python脚本自动生成图数据库
+        $this->run_command("run_command");
         return redirect()->action('RelationController@relation_list');
-
     }
 
+    public function run_command($select){
+        $url =  config("properties")[$select];
+        $opts = array(
+            'http'=>array(
+                'method'=>"GET",
+                'timeout'=>1000,//s
+            )
+        );
+        file_get_contents($url, false, stream_context_create($opts));
+    }
     /**
      * 打开修改关系信息的页面
      * 此处应该有解析属性集json的操作，以后再弄
@@ -193,10 +178,8 @@ class RelationController extends BaseController
      */
     public function relation_info($rid){
         $relation = $this->relationService->getById($rid);
-
         $relationTypes = $this->relationtTypeService->getAll();
         $schemas = $this->schemaService->getAll();
-
         return view('relation/info', compact("relation","relationTypes","schemas"));
     }
 
@@ -213,7 +196,6 @@ class RelationController extends BaseController
         $startlabel  = $this->schemaService->getById($fromvertex)->slabel;
         $endlabel  = $this->schemaService->getById($tovertex)->slabel;
 
-
         $mRelation= $this->relationService->getById($rid);
         $mRelation->relationtype = $relationType;
         $mRelation->fromvertex = $fromvertex;
@@ -221,7 +203,7 @@ class RelationController extends BaseController
         $mRelation->typelabel = $typelabel;
         $mRelation->startlabel = $startlabel;
         $mRelation->endlabel = $endlabel;
-
+        $mRelation->updatename = Auth::user()->name;
 
         $updateRet = $this->relationService->update($mRelation);
         return redirect()->action('RelationController@relation_list');
@@ -233,12 +215,10 @@ class RelationController extends BaseController
     public function relation_delete($rid)
     {
         $ret = $this->relationService->delete($rid);
+
         return redirect()->action('RelationController@relation_list');
     }
 
-    /*
-     *
-     */
     public function relation_search(Request $request)
     {
         $text = $request->route("text");

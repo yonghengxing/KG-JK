@@ -4,7 +4,7 @@
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                      <div class="am-cf">
-                         <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
+                         <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
               			 <small>关系类型</small>
                      </div>
                      
@@ -99,15 +99,6 @@
                             </tbody>
                         </table>
                      </div>                                
-
-        		{{-- 版权所有，有没有无所谓，另外，暂时去掉了分页，以后再加--}}
-        		<div class="globalFooter___1cM92">
-        			<div class="copyright___1ZP5c">
-        				<div>
-        					Copyright<i class="anticon anticon-copyright"></i>2018 Corporation All Rights Reserved.
-        				</div>
-        			</div>
-        		</div>
 			</div>
 		</div>
 	</div>

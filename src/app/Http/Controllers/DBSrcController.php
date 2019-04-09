@@ -28,8 +28,16 @@ use PHPExcel_Reader_Excel2007;
 use PHPExcel_Reader_Excel5;
 use PHPExcel_Cell;
 use PHPExcel_IOFactory;
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\Services\UserService;
 
 class DBSrcController extends Controller{
+
+    function __construct(UserService $userService)
+    {
+        $this->middleware('auth');
+    }
 
     /*
  * 数据库与数据源连接信息展示

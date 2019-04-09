@@ -4,7 +4,7 @@
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                      <div class="am-cf">
-                         <strong class="am-text-primary am-text-lg">动态知识图谱 /融合配置</strong> /
+                         <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
               			 <small>实体融合</small>
                      </div>
                      
@@ -14,7 +14,7 @@
                       <div class="am-g">
                           <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                              	<a   href="" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>自动映射</a>
+                              	<a   href="{{asset('entity/add')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>自动映射</a>
 							  </div>
                           </div>
                           

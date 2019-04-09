@@ -1,5 +1,5 @@
   <?php $__env->startSection('content'); ?>
- <script type="text/javascript">
+<script type="text/javascript">
 window.onload = function() {
     var radios = document.getElementsByName('type');
     for (var i = 0; i < radios.length; i++) {
@@ -23,23 +23,23 @@ window.onload = function() {
             <div class="widget am-cf">
             
                  <div class="am-cf">
-                     <strong class="am-text-primary am-text-lg">动态知识图谱 /数据配置/数据库</strong> /
+                     <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
           			 <small>添加数据库</small>
                  </div>
                  
                  <hr/>
-                
-                 <form horizontal="true"  enctype="multipart/form-data" class="am-form am-form-horizontal " action="<?php echo e(asset('/addDB_do')); ?>" method="post" onsubmit="return checkForm()">
+           
+                 <form horizontal="true"  enctype="multipart/form-data" class="am-form am-form-horizontal tpl-form-border-form  tpl-form-border-br" action="<?php echo e(asset('/addDB_do')); ?>" method="post" onsubmit="return checkForm()">
                  	<input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>" />
 					<div class="am-form-group">
-                      	<label for="DBID" class="am-u-sm-3 am-form-label">名称 / Name</label>
+                      	<label for="DBID" class="am-u-sm-3 am-form-label">名称</label>
                       	<div class="am-u-sm-6 am-u-end">
                         	<input type="text" id="DBID" name="DBID" placeholder="请输入名称">
                       	</div>
                     </div>
                                     
                     <div class="am-form-group">
-                    	<label class="am-u-sm-3 am-form-label">数据库类型/ Type</label>
+                    	<label class="am-u-sm-3 am-form-label">数据库类型</label>
                     	<div class="am-u-sm-9">
                           <label class="am-radio-inline">
                             <input type="radio" name="type" value="0" > xls
@@ -52,37 +52,37 @@ window.onload = function() {
                     
                     <span id="id2" style="display: none;">
                         <div class="am-form-group">
-                          	<label for="IP" class="am-u-sm-3 am-form-label">IP地址 / Name</label>
+                          	<label for="IP" class="am-u-sm-3 am-form-label">IP地址</label>
                           	<div class="am-u-sm-6 am-u-end">
-                            	<input type="text" id="IP" name="IP" placeholder="输入IP地址">
+                            	<input type="text" id="IP" name="IP" placeholder="请输入IP地址">
                           	</div>
                         </div>
                         
                         <div class="am-form-group">
-                          	<label for="Port" class="am-u-sm-3 am-form-label">端口 / Port</label>
+                          	<label for="Port" class="am-u-sm-3 am-form-label">端口</label>
                           	<div class="am-u-sm-6 am-u-end">
-                            	<input type="text" id="Port" name="Port" placeholder="输入填写端口">
+                            	<input type="text" id="Port" name="Port" placeholder="请输入填写端口">
                           	</div>
                         </div>
                         
                         <div class="am-form-group">
-                          	<label for="DBname" class="am-u-sm-3 am-form-label">数据库名称 / Name</label>
+                          	<label for="DBname" class="am-u-sm-3 am-form-label">数据库名称</label>
                           	<div class="am-u-sm-6 am-u-end">
-                            	<input type="text" id="DBname" name="DBname" placeholder="输入数据库名称">
+                            	<input type="text" id="DBname" name="DBname" placeholder="请输入数据库名称">
                           	</div>
                         </div>
                         
                         <div class="am-form-group">
-                          	<label for="UserName" class="am-u-sm-3 am-form-label">用户名 / Name</label>
+                          	<label for="UserName" class="am-u-sm-3 am-form-label">用户名</label>
                           	<div class="am-u-sm-6 am-u-end">
-                            	<input type="text" id="UserName" name="UserName" placeholder="请填写用户名">
+                            	<input type="text" id="UserName" name="UserName" placeholder="请输入用户名">
                           	</div>
                         </div>
                         
                         <div class="am-form-group">
-                          	<label for="Password" class="am-u-sm-3 am-form-label">密码 / Password</label>
+                          	<label for="Password" class="am-u-sm-3 am-form-label">密码</label>
                           	<div class="am-u-sm-6 am-u-end">
-                            	<input type="text" id="Password" name="Password" placeholder="请填写密码">
+                            	<input type="text" id="Password" name="Password" placeholder="请输入密码">
                           	</div>
                         </div>
                         
@@ -108,15 +108,15 @@ window.onload = function() {
 								</div>
 								<div id="file-list2"></div>
 								<script>
-                                              $(function() {
-                                                $('#descdoc').on('change', function() {
-                                                  var fileNames = '';
-                                                  $.each(this.files, function() {
-                                                    fileNames += '<span class="am-badge">' + this.name + '</span> ';
-                                                  });
-                                                  $('#file-list2').html(fileNames);
-                                                });
-                                              });
+                                  $(function() {
+                                    $('#descdoc').on('change', function() {
+                                      var fileNames = '';
+                                      $.each(this.files, function() {
+                                        fileNames += '<span class="am-badge">' + this.name + '</span> ';
+                                      });
+                                      $('#file-list2').html(fileNames);
+                                    });
+                                  });
                                </script>
 							</div>
 						</div>
@@ -130,7 +130,40 @@ window.onload = function() {
     						</div>
     					</div>
                     </span>
-
+					<script type="text/javascript">
+						function checkForm(){
+							var nameText = document.getElementById("DBID").value;
+							if ( nameText == "" || nameText == null ){
+									alert("请输入名称！");
+									return false;
+							}
+							var radios = $("input[type='radio']:checked").val();
+							if(radios ==1)
+							{
+								var IPText = document.getElementById("IP").value;
+								if ( IPText == "" || IPText == null ){
+										alert("请输入IP！");
+										return false;
+								}
+								var PortText = document.getElementById("Port").value;
+								if ( PortText == "" || PortText == null ){
+										alert("请输入填写端口！");
+										return false;
+								}
+								var DBnameText = document.getElementById("DBname").value;
+								if ( DBnameText == "" || DBnameText == null ){
+										alert("请输入数据库名称！");
+										return false;
+								}
+								var UserNameText = document.getElementById("UserName").value;
+								if ( UserNameText == "" || UserNameText == null ){
+										alert("请输入用户名！");
+										return false;
+								}
+							}
+						return true;
+						}
+					</script>
             	</form>
 			</div>
 		</div>

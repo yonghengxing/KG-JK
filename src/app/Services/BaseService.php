@@ -46,7 +46,7 @@ abstract class BaseService {
 	
 	public function getAll()
 	{
-	    $models=  $this->model->all();
+        $models=  $this->model->orderBy('created_at','desc')->get();
 	    return $models;
 	}
 	

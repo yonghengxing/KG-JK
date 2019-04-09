@@ -5,7 +5,7 @@
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                      <div class="am-cf">
-                         <strong class="am-text-primary am-text-lg">动态知识图谱 /数据配置</strong> /
+                         <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
               			 <small>数据库</small>
                      </div>
                      
@@ -21,7 +21,7 @@
                           
                            <div  class="am-u-sm-12 am-u-md-3 am-u-end">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                                    <input type="text" name= "searchText" class="am-form-field "  value="">
+                                    <input type="text" name= "searchText" id="search" class="am-form-field "  value="">
                                       <span class="am-input-group-btn">
                                         <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"  onclick="search()" type="submit"></button>
                                       </span>
@@ -34,7 +34,7 @@
                             function search() {
 
                                 var value = document.getElementById('search').value;
-                                var str1 = "{{asset('entity/search')}}";
+                                var str1 = "{{asset('database/search')}}";
                                 var url = str1 + '/' + value;
                                 window.location.href= url;
                             }

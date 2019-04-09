@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomeController@index')->name('home');
 
 Auth::routes();
 
@@ -25,6 +23,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/bxLogout', 'BXUserController@bxLogout');
 
 Route::get('/template', 'viewController@template');
+Route::get('/search', 'SchemaController@search');
 
 /**
  * 用户相关操作路由
@@ -82,7 +81,7 @@ Route::get('/export', 'viewController@export');
 Route::get('/fuse/ontologyfus', 'viewController@ontologyfus');
 Route::get('/fuse/ontologymap/fusmap', 'viewController@fusmap');
 Route::get('/fuse/ontologymap', 'viewController@ontologymap');
-
+Route::get('/entity/add', 'EntityController@add');
 
 /**
  * 实体(类)相关操作
@@ -95,6 +94,7 @@ Route::get('/schema/delete/{sid}', 'SchemaController@schema_delete');
 Route::get('/schema/info/{sid}', 'SchemaController@schema_info');
 Route::post('/schema/info/{sid}', 'SchemaController@schema_info_do');
 Route::get('/schema/search/{text?}', 'SchemaController@schema_search');
+Route::any('/schema/getQueryText/{sid}', 'SchemaController@get_query_text');
 
 
 /**
@@ -122,6 +122,7 @@ Route::get('/relation/delete/{rid}', 'RelationController@relation_delete');
 Route::get('/relation/info/{rid}', 'RelationController@relation_info');
 Route::post('/relation/info/{rid}', 'RelationController@relation_info_do');
 Route::get('/relation/search/{text?}', 'RelationController@relation_search');
+Route::any('relation/getRelationField/{rid}','RelationController@get_relation_field');
 
 /**
  * 关系类型操作
@@ -156,6 +157,8 @@ Route::post('/addDBSrc_do', 'DatabaseController@addDBSrc_do');
 Route::get('/database/show', 'DatabaseController@showDB');
 Route::get('/DBsrc_del/{rid}', 'DatabaseController@DBsrc_del');
 Route::get('/datasource/addnew', 'DatabaseController@addnew');
+Route::get('/database/search/{text?}', 'DatabaseController@database_search');
+Route::get('/datasource/search/{text?}', 'DatabaseController@datasource_search');
 
 
 //数据库连接

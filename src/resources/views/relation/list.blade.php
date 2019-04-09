@@ -4,7 +4,7 @@
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                      <div class="am-cf">
-                         <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
+                         <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
               			 <small>关系维护</small>
                      </div>
                      
@@ -24,7 +24,7 @@
 								</div>
 							</div>
 
-							<div  class="am-u-sm-4 "  style="display:none;">
+							<div  class="am-u-sm-3">
 								<div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
 									<input type="text" name= "searchText" id="searchText" class="am-form-field "  value="@if(isset($text)){{$text}}@endif">
 									<span class="am-input-group-btn">
@@ -88,7 +88,7 @@
 											</td>
 											<td>
 												<div class="operation___3s32S">
-													<span><a href="{{asset('/relation/info')}}/{{$relation->rid}}">编辑</a></span>
+													{{--<span><a href="{{asset('/relation/info')}}/{{$relation->rid}}">编辑</a></span>--}}
 													<span><a href="{{asset('/relation/delete')}}/{{$relation->rid}}" onclick="return del()">删除</a></span>
 
 												</div>

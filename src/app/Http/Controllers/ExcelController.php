@@ -5,11 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\Services\UserService;
 use Excel;
 
 class ExcelController extends Controller
 {
+
+    function __construct(UserService $userService)
+    {
+        $this->middleware('auth');
+    }
+
     public function export(){
         $cellData = [
             ['学号','姓名','成绩'],

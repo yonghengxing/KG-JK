@@ -1,25 +1,51 @@
  <?php $__env->startSection('content'); ?>
 
- <script>
-    function del(){
-        if(confirm("确定要删除吗？")){
-            return true;
-        }else{
-            return false;
-        }
-    }
-</script> 
+<script src="<?php echo e(asset('assets/js/screenfull.js')); ?>"></script>
+<div class="row-content am-cf" >
+    <div class="widget am-cf">
+        <div class="widget-head am-cf">
+            <div class="widget-title am-fl">
+                 <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
+      			 <small>数据导入</small>
+            </div>
+                <div class="widget-function am-fr">
+                    <a id='fullscreen' align='center' style='text-decoration:none;' class="am-icon-arrows">全屏</a>
+            </div>
+    	</div>
+    	
+    	<script type="text/javascript">
+            $("#fullscreen").click(function(){
+                var elem = document.getElementById("myframe");
+                requestFullScreen(elem);
+            });
+            function requestFullScreen(element) {
+                var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+                console.log(requestMethod);
+                if (requestMethod) {
+                    requestMethod.call(element);
+                } else if (typeof window.ActiveXObject !== "undefined") {
+                    var wscript = new ActiveXObject("WScript.Shell");
+                    if (wscript !== null) {
+                        wscript.SendKeys("{F11}");
+                    }
+                }
+            }
 
+            function changeFrame(){
+                var ifm= document.getElementById("myframe"); 
+                ifm.height=document.documentElement.clientHeight;
+                ifm.width=document.body.clientWidth;
+            }
 
+            window.onresize=function(){  
+                 changeFrame();  
 
- <div class="row-content am-cf">
-      <div class="row">
-           <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
-                <div class="widget am-cf" style = "height:600px">
-
-				<iframe name="myframe" src="http://kg.itechs.ac.cn/#/loading-executor" style="width:100%; height:100%;"></iframe>
-
-			</div>						        
+            }             
+        </script>
+        
+        <div class="widget-body" style="overflow-y:auto;overflow-x:auto;">
+    		<iframe id="myframe" style="width:100%;" allowfullscreen mozallowfullscreen webkitallowfullscreen src="http://api.kg.itechs.ac.cn/#/loading-executor" scrolling="no" onload="changeFrame()" frameborder="0">
+    		</iframe>
 		</div>
 	</div>
 </div>

@@ -3,10 +3,12 @@
                 <div class="row">
                     <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                         <div class="widget am-cf">
-                            <div class="widget-head am-cf">
-                                <div class="widget-title  am-cf">用户列表</div>
-                            </div>
-                            <div class="widget-body  am-fr">
+                                                 <div class="am-cf">
+                         <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
+              			 <small>用户管理</small>
+                     </div>
+                     
+                     <hr/>
 
                                
                                 <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
@@ -58,12 +60,6 @@
                                     </table>
                                 </div>
                                
-                                <div class="am-u-lg-12 am-cf">                          
-                                    <div class="am-fr">
-                                    	 <link rel="stylesheet" href="{{asset('css/app.css')}}">
-                                		{{ $users->links() }}
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

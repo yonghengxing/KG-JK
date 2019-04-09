@@ -4,12 +4,14 @@
     
         <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
             <div class="widget am-cf">
-                <div class="widget-head am-cf">
-                    <div class="widget-title am-fl">新增用户</div>
-                    <div class="widget-function am-fr">
-                        <a href="javascript:;" class="am-icon-cog"></a>
-                    </div>
-                </div>
+                
+                     <div class="am-cf">
+                         <strong class="am-text-primary am-text-lg">动态知识图谱 </strong> /
+              			 <small>新增用户</small>
+                     </div>
+                     
+                     <hr/>
+
                 <div class="widget-body am-fr">
 
                      <form class="am-form tpl-form-border-form  tpl-form-border-br" action="{{ asset('/user/new')}}" method="post" onsubmit="return checkForm()">

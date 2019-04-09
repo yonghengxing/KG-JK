@@ -19,12 +19,14 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Psy\Exception\RuntimeException;
 
+use App\User;
+use App\Services\UserService;
 
 class EntityController extends BaseController
 {
-    function __construct(EntityService $entityService)
+    function __construct(UserService $userService,EntityService $entityService)
     {
-        // $this->middleware('auth');
+        $this->middleware('auth');
         $this->entityService = $entityService;
 
     }
@@ -70,7 +72,7 @@ class EntityController extends BaseController
 
 	public function add()
     {
-        $url = "http://192.168.1.62:5000/run_command_load";
+        $url = "http://192.168.15.62:5000/run_command_load";
         $opts = array(
             'http'=>array(
                 'method'=>"GET",

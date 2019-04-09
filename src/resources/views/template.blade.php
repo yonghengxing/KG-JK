@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>ISCAS-工作平台</title>
+<title>科技领域基础数据管理与服务系统</title>
 <meta name="description" content="##">
 <meta name="keywords" content="index">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,14 +32,15 @@
 </head>
 
 <body data-type="widgets">
-	<script src="{{ asset('assets/js/theme.js') }}"></script>
 
 	<div class="am-g tpl-g">
 		<!-- 头部 -->
 		<header >
 			<!-- logo -->
 			<div class="am-topbar-brand">
-				<strong>科技领域基础数据管理与服务系统 </strong>	
+<strong style="" id="site_title">
+科技领域基础数据管理与服务系统 
+</strong>	
 			</div>
 			
 			<!-- 右侧内容 -->
@@ -60,18 +61,20 @@
 				</div>
 			</div>
 
+			<!-- 风格切换 -->
+    		<div class="tpl-skiner">
+    			<div class="tpl-skiner-toggle am-icon-cog"></div>
+    			<div class="tpl-skiner-content">
+    				<div class="tpl-skiner-content-title">选择主题</div>
+    				<div class="tpl-skiner-content-bar">
+    					<span class="skiner-color skiner-white" data-color="theme-white"></span>
+    					<span class="skiner-color skiner-black" data-color="theme-black"></span>
+    				</div>
+    			</div>
+    		</div>
+
+
 		</header>
-        <!-- 风格切换 -->
-		<div class="tpl-skiner">
-			<div class="tpl-skiner-toggle am-icon-cog"></div>
-			<div class="tpl-skiner-content">
-				<div class="tpl-skiner-content-title">选择主题</div>
-				<div class="tpl-skiner-content-bar">
-					<span class="skiner-color skiner-white" data-color="theme-white"></span>
-					<span class="skiner-color skiner-black" data-color="theme-black"></span>
-				</div>
-			</div>
-		</div>
 		
 		<!-- 侧边导航栏 -->
 		<div class="left-sidebar">
@@ -89,7 +92,7 @@
 						class="am-icon-database sidebar-nav-link-logo"></i> 外部数据库配置 <span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
-					<ul class="sidebar-nav sidebar-nav-sub">
+					<ul class="sidebar-nav sidebar-nav-sub" style="display: block;">
 						<li class="sidebar-nav-link"><a href="{{ asset('/database')}}"> <span
 								class="am-icon-table sidebar-nav-link-logo"></span> 数据库
 						</a></li>
@@ -104,7 +107,7 @@
 						class="am-icon-tags sidebar-nav-link-logo"></i> 实体配置 <span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
-					<ul class="sidebar-nav sidebar-nav-sub">
+					<ul class="sidebar-nav sidebar-nav-sub" style="display: block;">
 						@if(Auth::user()->admin || config('app.admin_mode',false))	
 						<li class="sidebar-nav-link"><a href="{{ asset('/schema/list')}}"> <span
 								class="am-icon-align-left sidebar-nav-link-logo"></span> 实体类型定义
@@ -130,7 +133,7 @@
 						class="am-icon-folder-open sidebar-nav-link-logo"></i> 数据映射 <span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
-					<ul class="sidebar-nav sidebar-nav-sub">
+					<ul class="sidebar-nav sidebar-nav-sub" style="display: block;">
 						<li class="sidebar-nav-link"><a href="{{ asset('/fuse/ontologymap')}}"> <span
 								class="am-icon-arrows-h sidebar-nav-link-logo"></span> 实体映射
 						</a></li>
@@ -147,7 +150,7 @@
 						class="am-icon-circle-o-notch sidebar-nav-link-logo"></i> 数据注入<span
 						class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
 				</a>
-					<ul class="sidebar-nav sidebar-nav-sub">
+					<ul class="sidebar-nav sidebar-nav-sub" style="display: block;">
 						<li class="sidebar-nav-link"><a href="{{ asset('taskallocation')}}"> <span
 								class="am-icon-tasks sidebar-nav-link-logo"></span> 任务配置
 						</a></li>
@@ -164,15 +167,15 @@
                                     class="am-icon-eye sidebar-nav-link-logo"></i> 图谱展示<span
                                     class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
                     </a>
-                        <ul class="sidebar-nav sidebar-nav-sub">
+                        <ul class="sidebar-nav sidebar-nav-sub" style="display: block;">
                                 <li class="sidebar-nav-link"><a href="{{ asset('/checkgraph')}}"> <span
                                                 class="am-icon-binoculars sidebar-nav-link-logo"></span> 图谱查看
                                 </a></li>
                                 <li class="sidebar-nav-link"><a href="{{ asset('/searchgraph')}}"> <span
                                                 class="am-icon-search sidebar-nav-link-logo"></span> 图谱查询
                                 </a></li>
-                                <li class="sidebar-nav-link" style="display:none"><a href="{{ asset('/export')}}"> <span
-                                      class="am-icon-search sidebar-nav-link-logo"></span> 导入导出
+                                <li class="sidebar-nav-link"><a href="{{ asset('/search')}}"> <span
+                                      class="am-icon-search sidebar-nav-link-logo"></span> 模糊搜索
                                 </a></li>
                         </ul></li>
                  @if(Auth::user()->admin || config('app.admin_mode',false))       
@@ -190,9 +193,29 @@
 		<!-- 内容区域 -->
 		<div class="tpl-content-wrapper">@yield('content')</div>
 	</div>
+        <script type="text/javascript">
+
+  $(function(){
+  /*
+      $('.sidebar-menu li:not(.treeview) > a').on('click', function(){
+          var $parent = $(this).parent().addClass('active');
+          $parent.siblings('.treeview.active').find('> a').trigger('click');
+          $parent.siblings().removeClass('active').find('li').removeClass('active');
+      });
+*/
+      $(window).on('load', function(){
+          $('.sidebar-nav-link a').each(function(){
+              if(window.location.href.indexOf(this.href) != -1){
+                  $(this).addClass('active');
+              }
+          });
+      });
+  });
+        </script>
 	<script src="{{ asset('assets/js/amazeui.min.js') }}"></script>
 	<script src="{{ asset('assets/js/amazeui.datatables.min.js') }}"></script>
 	<script src="{{ asset('assets/js/dataTables.responsive.min.js') }}"></script>
 	<script src="{{ asset('assets/js/app.js') }}"></script>
+	<script src="{{ asset('assets/js/theme.js') }}"></script>
 </body>
 </html>

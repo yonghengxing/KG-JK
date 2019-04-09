@@ -17,7 +17,7 @@
                 	onload = function() {
                 		setInterval(go, 1000);
                 	};
-                	var x = 5; //利用了全局变量来执行  
+                	var x = 1; //利用了全局变量来执行  
                 	function go() {
                     	$("#tips").text("页面跳转中... "+ x);
                 		x--;

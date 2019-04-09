@@ -4,7 +4,7 @@
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                      <div class="am-cf">
-                         <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置</strong> /
+                         <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
               			 <small>实体类型</small>
                      </div>
                      
@@ -21,11 +21,11 @@
 
 							 <div class="am-u-sm-2 ">
 								 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-									 <a   href="{{ asset('/schema/auto')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 自动生成实体</a>
+									 <a   href="{{ asset('/schema/auto')}}" class="am-btn am-btn-default am-btn-success"> 自动生成实体</a>
 								 </div>
 							 </div>
 
-                          	<div  class="am-u-sm-4 " hidden>
+                          	<div  class="am-u-sm-3 ">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                                     <input type="text" name= "searchText" id="searchText" class="am-form-field "  value="@if(isset($text)){{$text}}@endif">
                                       <span class="am-input-group-btn">
@@ -73,8 +73,8 @@
 										<td>{{ $schema->updatename }}</td>
 										<td>
 											<div class="operation___3s32S">
-												<span><a href="{{asset('../../../kg/schema/info')}}/{{$schema->sid}}">详情</a></span>
-												<span><a href="{{asset('../../../kg/schema/delete')}}/{{$schema->sid}}" onclick="return del()">删除</a></span>
+												<span><a href="{{asset('/schema/info')}}/{{$schema->sid}}">详情</a></span>
+												{{--<span><a href="{{asset('../../../kg/schema/delete')}}/{{$schema->sid}}" onclick="return del()">删除</a></span>--}}
 											</div>
 											
 											<script>

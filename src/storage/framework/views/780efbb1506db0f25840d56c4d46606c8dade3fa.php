@@ -22,13 +22,13 @@ window.onload = function() {
             <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                     <div class="am-cf">
-                        <strong class="am-text-primary am-text-lg">动态知识图谱 /数据配置/数据源</strong> /
+                        <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
                         <small>添加数据源</small>
                     </div>
 
                     <hr/>
 
-                    <form horizontal="true" class="am-form am-form-horizontal "action="<?php echo e(asset('/addDBSrc_do')); ?>" method="post" onsubmit="return checkForm()">
+                    <form horizontal="true" class="am-form am-form-horizontal tpl-form-border-form  tpl-form-border-br"action="<?php echo e(asset('/addDBSrc_do')); ?>" method="post" onsubmit="return checkForm()">
                         <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>" />
 
                         <div class="am-form-group">

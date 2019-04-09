@@ -29,5 +29,11 @@ class RelationService extends BaseService
 
         return $ret;
     }
+    function deleteRelationByName($databaseName){
+        //删除数据源时自动删除相应的关系。
+        $this->model->where('startlabel','$databaseName')->orWhere('endlabel','$databaseName')
+            ->orWhere('startlabel','like',$databaseName.'_%')->orWhere('endlabel','like',$databaseName.'_%')->delete();
+
+    }
 
 }

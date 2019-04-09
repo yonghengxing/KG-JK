@@ -35,7 +35,7 @@
             <div class="widget am-cf">
             
               	 <div class="am-cf">
-                     <strong class="am-text-primary am-text-lg">动态知识图谱 /实体配置 / 实体类型</strong> /
+                     <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
                      <small>查看实体详情</small>
                  </div>
                  
@@ -45,23 +45,23 @@
                  <form class="am-form tpl-form-border-form  tpl-form-border-br" action="{{ asset('/schema/info')}}/{{$schema->sid}}" method="post" >
 					<input type="hidden" name="_token" value="{{ csrf_token() }}" />
 					<div class="am-form-group">
-                        <label  class="am-u-sm-3 am-form-label">实体名称<span class="tpl-form-line-small-title">Name</span></label>
+                        <label  class="am-u-sm-3 am-form-label">实体名称：</label>
                         <div class="am-u-sm-9">
                              {{ $schema->sname }}
                         </div>
                     </div>
 
 					 <div class="am-form-group">
-						 <label for="schema-name" class="am-u-sm-3 am-form-label">实体标识</label>
+						 <label for="schema-name" class="am-u-sm-3 am-form-label">实体标识：</label>
 						 <div class="am-u-sm-9">
                              {{$schema->slabel  }}
                         </div>
 					 </div>
                     
-                     <div class="widget-body am-fr" id="showArri">
+                     <div class="" id="showArri">
                      	@for ($i = 1; $i <= $num; $i++)
                         <div class="am-form-group" index="1" id="Attr1">
-                          <label for="schema-attribute1" class="am-u-sm-3 am-form-label" >属性({{ $i }}) /  Attribute</label>
+                          <label for="schema-attribute1" class="am-u-sm-3 am-form-label" >属性({{ $i }}) ：</label>
                           <div class="am-u-sm-9">
                              {{$properties[$i-1]}}
                           </div>
@@ -76,7 +76,7 @@
 						<button type="submit"
 							class="am-btn am-btn-success tpl-btn-bg-color-success ">保存</button> -->
 						<button type="button"
-							class="am-btn am-btn-danger tpl-btn-bg-color-success" onclick="history.go(-1);">返回</button>
+							class="am-btn am-btn-default tpl-btn-bg-color-success" onclick="history.go(-1);">返回</button>
 						</div>
 					</div>
                     

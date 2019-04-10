@@ -273,13 +273,14 @@ class DBSrcController extends Controller{
                 }
             }
 
+            dd($items);
             //建立表结构
             $sql_create = "CREATE TABLE ".$DBtable."(`me_id` int(255) NOT NULL COMMENT '主键ID',";
 
             $index = 0;
             for($i = 0;$i<count($table_head);$i++){
                 if(isset($items[$i])){
-                    $sql_create = $sql_create.$items[$i]." MEDIUMTEXT  COMMENT '".$items[$i]."',";
+                    $sql_create = $sql_create.$items[$i]."_kg"." MEDIUMTEXT  COMMENT '".$items[$i]."',";
                     $index++;
                 }
             }

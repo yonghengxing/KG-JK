@@ -159,7 +159,7 @@ Route::get('/DBsrc_del/{rid}', 'DatabaseController@DBsrc_del');
 Route::get('/datasource/addnew', 'DatabaseController@addnew');
 Route::get('/database/search/{text?}', 'DatabaseController@database_search');
 Route::get('/datasource/search/{text?}', 'DatabaseController@datasource_search');
-
+Route::get('/datasource/show', 'DatabaseController@DBsrc_show');
 
 //数据库连接
 Route::get('/database/db_connect','DatabaseController@db_connect');

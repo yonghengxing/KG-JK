@@ -34,7 +34,7 @@ window.onload = function() {
 					<div class="am-form-group">
                       	<label for="DBID" class="am-u-sm-3 am-form-label">名称</label>
                       	<div class="am-u-sm-6 am-u-end">
-                        	<input type="text" id="DBID" name="DBID" placeholder="请输入名称">
+                        	<input type="text" id="DBID" name="DBID" placeholder="请输入名称" required>
                       	</div>
                     </div>
                                     

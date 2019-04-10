@@ -16,14 +16,14 @@
                     <div class="am-form-group">
                       <label for="schema-name" class="am-u-sm-3 am-form-label">实体名称</label>
                       <div class="am-u-sm-6 am-u-end">
-                        <input type="text" id="sname" name="sname" placeholder="请输入实体名称">
+                        <input type="text" id="sname" name="sname" placeholder="请输入实体名称" required>
                       </div>
                     </div>
 
 					 <div class="am-form-group">
 						 <label for="schema-name" class="am-u-sm-3 am-form-label">实体标识</label>
 						 <div class="am-u-sm-6 am-u-end">
-							 <input type="text" id="slabel" name="slabel" placeholder="请输入标识，仅限英文">
+							 <input type="text" id="slabel" name="slabel" placeholder="请输入标识，仅限英文" required>
 						 </div>
 					 </div>
                     
@@ -32,7 +32,7 @@
 						 <div class="am-form-group" index="1" id="Attr1">
 							 <label for="labels-2" class="am-u-sm-3 am-form-label" >属性标识</label>
 							 <div class="am-u-sm-6 am-u-end">
-								 <input type="text" id="labels-2" name="labels[]" placeholder="请输入属性标识">
+								 <input type="text" id="labels-2" name="labels[]" placeholder="请输入属性标识" required>
 							 </div>
 						 </div>
 					 </div>
@@ -48,7 +48,7 @@
                                 compIndex +'" id="Attr'+
                                 compIndex +'"> <label for="labels-'+
                                 compIndex +'" class="am-u-sm-3 am-form-label" >属性标识</label> <div class="am-u-sm-6 am-u-end"> <input type="text" name="labels[]" id="labels-'+
-                                compIndex +'" placeholder="请输入属性标识"> </div> </div> </div>';
+                                compIndex +'" placeholder="请输入属性标识" required> </div> </div> </div>';
                     		
                     		$("#showArri").append(str);
                     	}
@@ -75,23 +75,7 @@
 							class="am-btn am-btn-danger tpl-btn-bg-color-success" onclick="history.go(-1);">取消</button>
 						</div>
 					</div>
-					
-					<script type="text/javascript">
-						function checkForm(){
-							var nameText = document.getElementById("sname").value;
-							if ( nameText == "" || nameText == null ){
-									alert("请输入实体名称！");
-									return false;
-							}
-							var slabelText = document.getElementById("slabel").value;
-							if ( slabelText == "" || slabelText == null ){
-									alert("请输入标识，仅限英文！");
-									return false;
-							}
 
-							return true;
-						}
-					</script>
             	</form>
             	</div>
 			</div>

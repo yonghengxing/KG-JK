@@ -91,16 +91,18 @@ function cut_table($dbname,$cutradio,$items,$table_head){
 
 //    dd($dbout_table_before,$cutradio,$items);
 //    $item_num = 0;
-    for($i =1;$i<count($cutradio)+1;$i++){
-	if (isset($cutradio[$i])){
+if ($cutradio != null && $cutradio !="") {
 
-        if ($cutradio[$i] == 1) {
-            $item_num[$i] = $i;
-            $item_name[$i] = $items[$i];
+    for($i =1;$i<count($cutradio)+1;$i++){
+	   if (isset($cutradio[$i])){
+
+            if ($cutradio[$i] == 1) {
+                $item_num[$i] = $i;
+                $item_name[$i] = $items[$i];
 //            break;
+            }
         }
     }
-}
 //    dd($dbout_table_before,$cutradio,$items,$item_num,$item_name);
 
     for ($m = 1;$m<count($cutradio)+1;$m++) {
@@ -182,6 +184,7 @@ function cut_table($dbname,$cutradio,$items,$table_head){
     }
 }
 }
+}
 
 /**
  * @param $DBtable
@@ -213,13 +216,13 @@ function create_view($DBtable,$table_head,$only,$items)
 	if (isset($items[$i])){
         if (isset($only[$i])) {
             if ($only[$i] == 1) {
-                $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i] . " AS SELECT DISTINCT " . $table_head[$i] . " FROM " . $DBtable;
-                //dd($results,$view_create,$request->onlyradio,$i);
+                $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i]."_kg" . " AS SELECT DISTINCT " . $table_head[$i]."_kg" . " FROM " . $DBtable;
+//                 dd($results,$view_create,$i);
                 $statement = $pdo_me->prepare($view_create);
                 $statement->execute();
                 $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
             } else {
-                $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i] . " AS SELECT " . $table_head[$i] . " FROM " . $DBtable;
+                $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i]."_kg" . " AS SELECT " . $table_head[$i]."_kg" . " FROM " . $DBtable;
                 //dd($results,$view_create,$request->onlyradio,$i);
                 $statement = $pdo_me->prepare($view_create);
                 $statement->execute();
@@ -296,7 +299,7 @@ function add_privilege($request, $table_head){
 //            dd($request->plevel[$i],$i);
             for ($j=0;$j<$userID[count($userID)-1]["id"]+1;$j++){ //$userID[count($userID)-1]["id"]+1  是userid的最大值加一    遍历该列的所有用户
                 if (isset($request->plevel[$i][$j])){
-                    $sql_insert = "INSERT INTO " . $request["DBtable"] . " (`id`, `items_name`, `user_id`) VALUES (NULL,'".$request->items[$i]."','".$j."')";
+                    $sql_insert = "INSERT INTO " . $request["DBtable"] . " (`id`, `items_name`, `user_id`) VALUES (NULL,'".$request->items[$i]."_kg','".$j."')";
                     $statement = $pdo_privilege->prepare($sql_insert);
                     $statement->execute();
                     $results = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -692,7 +695,6 @@ class DatabaseController extends Controller{
             
 
             //添加权限
-            //TODO
             add_privilege($request,$table_head);
             //dd($request);
             //要导入的数据库的内容
@@ -727,7 +729,7 @@ class DatabaseController extends Controller{
             $index = 0;
             for($i = 0;$i<count($table_head);$i++){
                 if(isset($items[$i])){
-                    $sql_create = $sql_create.$items[$i]." MEDIUMTEXT  COMMENT '".$items[$i]."',";
+                    $sql_create = $sql_create.$items[$i]."_kg"." MEDIUMTEXT  COMMENT '".$items[$i]."',";
                         $index++;
                 }
             }
@@ -747,7 +749,7 @@ class DatabaseController extends Controller{
                 $sql_insert = "INSERT INTO ".$DBtable." (";
                 for($i = 0;$i<count($table_head);$i++){
                     if(isset($items[$i])){
-                        $sql_insert = $sql_insert.$items[$i].',';
+                        $sql_insert = $sql_insert.$items[$i].'_kg,';
                         $index++;
                     }
                 }
@@ -801,9 +803,13 @@ class DatabaseController extends Controller{
             }
 
 
-            //dd($request->items);
+//             dd($request->items);
+            for ($i = 0; $i < count($request->items); $i++) {
+                $items[$i] = $request["items"][$i]."_kg";
+            }
+//             dd($request->items, $items);
             //切表
-            cut_table($DBtable,$request->cutradio,$request->items,$table_head);
+            cut_table($DBtable,$request->cutradio,$items,$table_head);
 
             
            //创建视图
@@ -1089,5 +1095,9 @@ class DatabaseController extends Controller{
         return view('database/list', compact('databaseMsg','text'));
     }
     
+    function DBsrc_show( ){
+
+        return view('datasource/show');
+    }
     
 }

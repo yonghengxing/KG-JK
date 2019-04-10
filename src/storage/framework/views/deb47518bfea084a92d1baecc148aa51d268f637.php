@@ -27,8 +27,8 @@
                             <tbody>
                                     <tr class="gradeX">
 										<td>
-                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="fromVertex" name="fromvertex">
-                                                <option value="">选择起始实体</option>
+                                        <select data-am-selected="{searchBox: 1}" style="display: none;" id="fromVertex" name="fromVertex">
+                                            <option>请选择数据库</option>
                                                 <?php if(isset($schemas)): ?>
                                                     <?php $__currentLoopData = $schemas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schema): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                         <option value="<?php echo e($schema->sid); ?>"><?php echo e($schema->slabel); ?></option>
@@ -38,7 +38,7 @@
                                         </td>
                                         <td>
                                             <select data-am-selected="{searchBox: 1}" style="display: none;" id="toVertex" name="tovertex">
-                                            	<option value="">选择终点实体</option>
+                                            	<option>选择终点实体</option>
                                                 <?php if(isset($schemas)): ?>
                                                     <?php $__currentLoopData = $schemas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schema): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                         <option value="<?php echo e($schema->sid); ?>"><?php echo e($schema->slabel); ?></option>
@@ -48,7 +48,7 @@
                                         </td>
                                         <td>
                                             <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationType" name="relationType">
-                                            	<option value="">选择关系类型</option>
+                                            	<option>选择关系类型</option>
                                                 <?php if(isset($relationTypes)): ?>
                                                     <?php $__currentLoopData = $relationTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $relationType): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                          <option value="<?php echo e($relationType->tid); ?>"><?php echo e($relationType->rlabel); ?></option>
@@ -59,7 +59,7 @@
                                         </td>
                                         <td>
                                             <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationField" name="relationField">
-
+												<option>选择关联字段</option>
                                             </select>
                                         </td>
 									</tr>
@@ -73,7 +73,7 @@
                             $("#fromVertex").change(function(){
                                 var value = $(this).val();
                                 var str1 = "<?php echo e(asset('relation/getRelationField')); ?>";
-                                var text = $('#fromVertex option:selected').text();
+//                                 var text = $('#fromVertex option:selected').text();
                                 var url1 = str1 + '/' + value;
                                 console.log(url1);
                                 var objectModel = {};

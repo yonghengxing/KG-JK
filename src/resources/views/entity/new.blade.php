@@ -14,9 +14,9 @@
 					compIndex +'" class="am-u-sm-2 am-form-label" >属性('+
 					compIndex +')名称：</label> <div class="am-u-sm-4"> <input type="text" id="attribute-name'+
 					compIndex +'" placeholder="请输入属性('+
-					compIndex +')名称"> </div> <label for="attribute-value'+
+					compIndex +')名称" required> </div> <label for="attribute-value'+
 					compIndex + '" class="am-u-sm-1 am-form-label" >属性值</label> <div class="am-u-sm-4 am-u-end"> <input type="text" id="attribute-value'+
-					compIndex + '" placeholder="请输入属性值"> </div> </div>';
+					compIndex + '" placeholder="请输入属性值" required></div> </div>';
 
 
 		$("#showArri").append(str);
@@ -40,7 +40,7 @@
                     <div class="am-form-group">
                       <label for="entityname" class="am-u-sm-3 am-form-label">实体名称：</label>
                       <div class="am-u-sm-6 am-u-end">
-                        <input type="text" name="entitylabel" placeholder="输入实体名称">
+                        <input type="text" name="entitylabel" placeholder="输入实体名称" required>
                       </div>
                     </div>     
                  
@@ -73,11 +73,11 @@
                         <div class="am-form-group" index="1" id="Attr1">
 							<label for="attribute-name2" class="am-u-sm-2 am-form-label" >属性(1)名称：</label>
 							<div class="am-u-sm-4">
-								<input type="text" id="attribute-name2" placeholder="请输入属性(1)名称">
+								<input type="text" id="attribute-name2" placeholder="请输入属性(1)名称" required>
 							</div>
 							<label for="attribute-value1" class="am-u-sm-1 am-form-label" >属性值</label>
                           	<div class="am-u-sm-4 am-u-end">
-								<input type="text" id="attribute-value1" placeholder="请输入属性值">
+								<input type="text" id="attribute-value1" placeholder="请输入属性值" required>
                             </div>
                         </div>
                      </div>

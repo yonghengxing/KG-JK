@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-    <title>ISCAS-工作平台</title>
+    <title>科技领域基础数据管理与服务系统</title>
 
     <!-- Scripts -->
     <script src="<?php echo e(asset('js/app.js')); ?>" defer></script>

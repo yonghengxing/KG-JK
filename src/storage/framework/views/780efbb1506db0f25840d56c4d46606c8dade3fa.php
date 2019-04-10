@@ -1,22 +1,4 @@
  <?php $__env->startSection('content'); ?>
-
-<script type="text/javascript">
-window.onload = function() {
-    var radios = document.getElementsByName('tablesource');
-    for (var i = 0; i < radios.length; i++) {
-          radios[i].indexs = i + 1;
-        radios[i].onchange = function () {
-            if (this.checked) {
-                document.getElementById("id1").style.display="none";
-                document.getElementById("id2").style.display="none";
-                document.getElementById("id" + this.indexs).style.display="block";
-
-            } 
-        }
-    }
-}
-</script>
-
     <div class="row-content am-cf">
         <div class="row">
             <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">

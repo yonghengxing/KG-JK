@@ -19,8 +19,11 @@ class RelationService extends BaseService
 
     function getRelationBySearch($text){
         $relations = $this->model->where("typelabel",'like','%'.$text.'%')->orWhere("startlabel",'like','%'.$text.'%')
-            ->orWhere("endlabel",'like','%'.$text.'%')->get();
+            ->orWhere("endlabel",'like','%'.$text.'%')->orWhere("createname",'like','%'.$text.'%')
+            ->orWhere("updated_at",'like','%'.$text.'%')->orWhere("created_at",'like','%'.$text.'%')
+            ->orWhere("updatename",'like','%'.$text.'%')->get();
         return $relations;
+
 
     }
     
@@ -30,7 +33,7 @@ class RelationService extends BaseService
         return $ret;
     }
     function deleteRelationByName($databaseName){
-        //删除数据源时自动删除相应的关系。
+        //????????????????
         $this->model->where('startlabel','$databaseName')->orWhere('endlabel','$databaseName')
             ->orWhere('startlabel','like',$databaseName.'_%')->orWhere('endlabel','like',$databaseName.'_%')->delete();
 

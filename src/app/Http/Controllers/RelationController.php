@@ -116,7 +116,7 @@ class RelationController extends BaseController
 
     public function generate_relation_csv($startLabel,$relationField,$typeLabel,$endLabel){
         //数据库连接
-        dd(11);
+
         $pdo_me = new PDO(config("properties.PDO")['url'],config("properties.PDO")['username'],config("properties.PDO")['psw']);
         //自动生成相对应的csv文件，加个判断？如果不是自动生成的俩个schema,不自动生成？
         $path = config("properties")['filePathLinux'].$typeLabel.'.csv';

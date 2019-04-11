@@ -18,7 +18,10 @@ class RelationTypeService extends BaseService
     }
 
     function getRelationTypeBySearch($text){
-        $relationTypes = $this->model->where("relationlabel",'like','%'.$text.'%')->get();
+        $relationTypes = $this->model->where("rlabel",'like','%'.$text.'%')
+            ->orWhere("updated_at",'like','%'.$text.'%')->orWhere("created_at",'like','%'.$text.'%')
+            ->orWhere("rname",'like','%'.$text.'%')->orWhere("createname",'like','%'.$text.'%')
+            ->orWhere("updatename",'like','%'.$text.'%')->get();
         return $relationTypes;
 
     }

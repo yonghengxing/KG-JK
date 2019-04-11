@@ -9,7 +9,11 @@ class DBService extends BaseService{
     }
 
     function getDBBySearch($text){
-        $db = $this->model->where("name",'like','%'.$text.'%')->get();
+        $db = $this->model->where("name",'like','%'.$text.'%')->orWhere("dbname",'like','%'.$text.'%')
+            ->orWhere("created_at",'like','%'.$text.'%')->orWhere("updated_at",'like','%'.$text.'%')
+            ->orWhere("IP",'like','%'.$text.'%')->orWhere("createdname",'like','%'.$text.'%')
+            ->orWhere("updatename",'like','%'.$text.'%')->get();
+
         return $db;
     }
 

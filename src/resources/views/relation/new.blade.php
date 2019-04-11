@@ -12,7 +12,7 @@
 
                 <hr/>
 
-				<form class="ant-form ant-form-horizontal tpl-form-border-form  tpl-form-border-br" action="{{asset('relation/new')}}" method="post">
+				<form class="ant-form ant-form-horizontal tpl-form-border-form  tpl-form-border-br" action="{{asset('relation/new')}}" method="post" onsubmit="return checkForm()">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}" />
                     <div class="am-u-sm-12">
                         <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
@@ -27,8 +27,19 @@
                             <tbody>
                                     <tr class="gradeX">
 										<td>
-                                        <select data-am-selected="{searchBox: 1}" style="display: none;" id="fromVertex" name="fromVertex">
-                                            <option>请选择数据库</option>
+                                        <select data-am-selected="{searchBox: 1}" style="display: none;" id="fromVertex" name="fromVertex" >
+                                            <option value="none">选择数据库 </option>
+                                                @if (isset($schemas))
+                                                    @foreach($schemas as $schema)
+                                                        <option value="{{ $schema->sid }}">{{ $schema->slabel }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="toVertex" name="tovertex" >
+                                            	<option value="none">选择终点实体</option>
                                                 @if (isset($schemas))
                                                     @foreach($schemas as $schema)
                                                         <option value="{{ $schema->sid }}">{{ $schema->slabel }}</option>
@@ -37,18 +48,8 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="toVertex" name="tovertex">
-                                            	<option>选择终点实体</option>
-                                                @if (isset($schemas))
-                                                    @foreach($schemas as $schema)
-                                                        <option value="{{ $schema->sid }}">{{ $schema->slabel }}</option>
-                                                    @endforeach
-                                                @endif
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationType" name="relationType">
-                                            	<option>选择关系类型</option>
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationType" name="relationType" >
+                                            	<option value="none">选择关系类型</option>
                                                 @if (isset($relationTypes))
                                                     @foreach($relationTypes as $relationType)
                                                          <option value="{{ $relationType->tid }}">{{ $relationType->rlabel }}</option>
@@ -58,8 +59,8 @@
 
                                         </td>
                                         <td>
-                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationField" name="relationField">
-												<option>选择关联字段</option>
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationField" name="relationField" >
+												<option value="none">选择关联字段</option>
                                             </select>
                                         </td>
 									</tr>
@@ -68,6 +69,20 @@
                      </div>
 
 					 <script>
+
+                         function checkForm()
+                         {
+                             var relationField =document.getElementById("relationField").value;
+                             var relationType =document.getElementById("relationType").value;
+                             var toVertex =document.getElementById("toVertex").value;
+                             var fromVertex =document.getElementById("fromVertex").value;
+
+                             if(fromVertex == "none" || toVertex == "none" || relationField=="none" || relationType == "none"){
+                                 alert("请完成所有的选择");
+                                 return false;
+                             }
+                             return true;
+                         }
                         $(function(){
                             //数据库选择改变
                             $("#fromVertex").change(function(){

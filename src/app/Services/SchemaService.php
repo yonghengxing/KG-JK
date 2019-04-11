@@ -20,7 +20,9 @@ class SchemaService extends BaseService
     }
 
     function getSchemaBySearch($text){
-        $schemas = $this->model->where("stype",'like','%'.$text.'%')->orWhere("property",'like','%'.$text.'%')->get();
+        $schemas = $this->model->where("slabel",'like','%'.$text.'%')->orWhere("property",'like','%'.$text.'%')
+            ->orWhere("updated_at",'like','%'.$text.'%')->orWhere("created_at",'like','%'.$text.'%')
+            ->orWhere("sname",'like','%'.$text.'%')->orWhere("createname",'like','%'.$text.'%')->get();
         return $schemas;
 
     }
@@ -31,7 +33,7 @@ class SchemaService extends BaseService
     }
 	
 	function deleteSchemaByName($databaseName){
-	//删除数据源时自动删除相应的schema。
+	//?????????????schema?
 	$this->model->where('slabel',$databaseName)->orwhere('slabel','like',$databaseName."_%")->delete();
     }
 
@@ -44,21 +46,21 @@ class SchemaService extends BaseService
         return $res;
     }
     public function  generate_schema_by_table($databaseName){
-        // 获取指定数据库下的所有表，这里的table_type是指实体表，而不是View,后期可以考虑两者合一。
+        // ????????????,???table_type?????,???View,???????????
         $tableSql = "select table_name,table_comment  from information_schema.tables where table_type<>'view' and table_schema=?  ";
         $tableNames = \DB::select($tableSql,[$databaseName]);
-        // 返回已经由外部数据库生成的schema,更新的时候，不再重新生成。
+        // ?????????????schema,?????,???????
         $schemaName = $this->get_schema_list();
 
         foreach ($tableNames as $tableName){
 
             if(!in_array($tableName->table_name,$schemaName)){
 
-                // 遍历每个表，获取表的字段名，类型和是否主键;  暂且将所有类型转换为string;
+                // ?????,???????,???????;  ??????????string;
                 $sql = "select column_name,data_type ,IF(column_key='PRI','t','f') as pri from information_schema.columns where table_name=?";
                 $fields = \DB::select($sql,[$tableName->table_name]);
 
-                // 按所指定格式组织数据结构
+                // ????????????
                 $property = array();
                 foreach ($fields as $value) {
                     if(!in_array($value->column_name,array('id','user_id','items_name'))){
@@ -71,7 +73,7 @@ class SchemaService extends BaseService
                     }
                 }
 
-                // 将一个个schema单独存入数据库中
+                // ????schema????????
                 $mSchema = new Schema();
                 $mSchema->sname = $tableName->table_comment;
                 $mSchema->slabel = $tableName->table_name;
@@ -94,15 +96,15 @@ class SchemaService extends BaseService
         $viewNames = \DB::select($viewSql,[$databaseName]);
         $schemaName = $this->get_schema_list();
         foreach ($viewNames as $tableName){
-            // 遍历每个表，获取表的字段名，类型和是否主键;  暂且将所有类型转换为string;
+            // ?????,???????,???????;  ??????????string;
             if(!in_array($tableName->table_name,$schemaName)){
-                // 按所指定格式组织数据结构
+                // ????????????
                 $property = array();
-                //视图生成的schema，只有一个主键属性，名称为实体表的一列，视图名称_后即是。
+                //?????schema,????????,?????????,????_????
                 $endLabel = explode("_",$tableName->table_name)[1];
                 $property[$endLabel] = "string;primary_id";
 
-                // 将一个个schema单独存入数据库中
+                // ????schema????????
                 $mSchema = new Schema();
                 $mSchema->sname = $tableName->table_comment;
                 $mSchema->slabel = $tableName->table_name;
@@ -113,18 +115,18 @@ class SchemaService extends BaseService
                 $mSchema->updatename = Auth::user()->name;
                 $this->append($mSchema);
 
-                //每个视图，都要生成csv数据文件
+                //????,????csv????
                 $this->generate_schema_csv($tableName->table_name,$pdo_me);
-                //每个视图，都要建立与实体表的关系
+                //????,???????????
                 $this->generate_relation_by_view($tableName->table_name);
-                //每个视图，都要生成到实体表关系的csv文件数据
+                //????,???????????csv????
                 $this->generate_relation_csv($tableName->table_name,$pdo_me);
             }
         }
     }
 
     public function generate_schema_csv($viewName,$pdo_me){
-        //属性切成的schema,名称为视图的后缀，填充数据来源于实体表的一列属性，名称和schema名称一致
+        //?????schema,????????,???????????????,???schema????
         $viewFiled = explode("_",$viewName)[1];
         $path = config("properties")['filePathLinux'].$viewName.".csv";
 
@@ -138,7 +140,7 @@ class SchemaService extends BaseService
     }
 
     public function generate_relation_by_view($viewName){
-        //建立单切属性到实体总表的关系，即视图前缀到视图名称的关系
+        //??????????????,?????????????
         $startLabel = explode("_",$viewName)[0];
         $endLabel = $viewName;
         $mRelation = new Relation();
@@ -154,7 +156,7 @@ class SchemaService extends BaseService
     }
 
     public function  generate_relation_csv($viewName,$pdo_me){
-        // 单切属性到实体表的关系填充数据来源自实体表，实体表每行数据，切出主键和属性列两列数据生成csv文件
+        // ?????????????????????,???????,??????????????csv??
 //        $pdo_me = new PDO(config("properties.PDO")['url'],config("properties.PDO")['username'],config("properties.PDO")['psw']);
 
         $tableSource = explode("_",$viewName)[0];

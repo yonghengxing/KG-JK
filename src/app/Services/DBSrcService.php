@@ -9,7 +9,9 @@ class DBSrcService extends BaseService{
     }
 
     function getDBSrcBySearch($text){
-        $dbsrc = $this->model->where("dataSource",'like','%'.$text.'%')->get();
+        $dbsrc = $this->model->where("dataSource",'like','%'.$text.'%')->orWhere("dbname",'like','%'.$text.'%')
+            ->orWhere("updated_at",'like','%'.$text.'%')->orWhere("created_at",'like','%'.$text.'%')
+            ->orWhere("dbname_real",'like','%'.$text.'%')->get();
         return $dbsrc;
     }
 

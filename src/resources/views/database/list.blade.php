@@ -21,7 +21,7 @@
                           
                            <div  class="am-u-sm-12 am-u-md-3 am-u-end">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                                    <input type="text" name= "searchText" id="search" class="am-form-field "  value="">
+                                    <input type="text" name= "searchText" id="search" class="am-form-field "  value="@if(isset($text)){{$text}}@endif">
                                       <span class="am-input-group-btn">
                                         <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"  onclick="search()" type="submit"></button>
                                       </span>

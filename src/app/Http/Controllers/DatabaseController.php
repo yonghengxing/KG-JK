@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use Excel;
 
+use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\Types\Array_;
 use Storage;
 use Illuminate\Http\UploadedFile;
@@ -120,8 +121,8 @@ if ($cutradio != null && $cutradio !="") {
              */
             for ($j = 0; $j < count($dbout_table_before); $j++) {
                 $justice = strpos($dbout_table_before[$j][$items[$item_num[$m]]], ",");
-                if ($justice != null) {
-                    //dd($dbout_table_before[$j]);
+                if ($justice != null || $justice!= false) {
+                    //dd($dbout_table_before[$j]);LegalStatus
                     $name_new = explode(",", $dbout_table_before[$j][$items[$item_num[$m]]], $justice);
                     //dd($dbout_table_before,$cutradio,$items,$item_num,$justice,$item_name,$name_new,$table_head);
                     for ($a = 0; $a < count($name_new); $a++) {
@@ -373,7 +374,6 @@ class DatabaseController extends Controller{
 
     public function addDB_do(Request $request)
     {
-        //dd($request->button);
         $button = $request->button;
         $name = $request->DBID;
         $type = $request->type;
@@ -385,6 +385,11 @@ class DatabaseController extends Controller{
         $descFile = $request->file('descdoc');
         //数据库连接测试
         if($button == "test"){
+            if ($IP==null || $port ==null || $dbname ==null || $username == null){
+                $msg = '填写项未完整填写';
+                $url = 'database/new';
+                return view('error', compact("url","msg"));
+            }
             if($type == 1){
                 try {
                     $pdo = new PDO(
@@ -447,7 +452,7 @@ class DatabaseController extends Controller{
 
 
 	        $name = $request->get("DBID");
-            $typeName = "xsl";
+            $typeName = "xls";
 
             if ($descFile == null){
                 $msg = '文件为空';
@@ -639,9 +644,15 @@ class DatabaseController extends Controller{
             $url = 'datasource/addnew';
             return view('error', compact("url","msg"));
         }
-
-
-
+        $a = array_keys($items);
+        $b = array_keys($request->onlyradio);
+        $c = array_keys($request->plevel);
+        $d = array_keys($request->cutradio);
+        if (array_diff($a,$b) != [] || array_diff($a,$c)!= [] || array_diff($a,$d)!= []){
+            $msg = '选项选择不规范';
+            $url = 'datasource/addnew';
+            return view('error', compact("url","msg"));
+        }
 
         //数据库名（实际）
         
@@ -804,10 +815,13 @@ class DatabaseController extends Controller{
 
 
 //             dd($request->items);
-            for ($i = 0; $i < count($request->items); $i++) {
-                $items[$i] = $request["items"][$i]."_kg";
+            $a = array_keys($request->items);
+            $b = array_pop($a);
+            for ($i = 0; $i <= $b; $i++) {
+                if (isset($request["items"][$i])){
+                    $items[$i] = $request["items"][$i]."_kg";
+                }
             }
-//             dd($request->items, $items);
             //切表
             cut_table($DBtable,$request->cutradio,$items,$table_head);
 
@@ -967,21 +981,6 @@ class DatabaseController extends Controller{
             create_view($DBtable,$table_head,$request->onlyradio,$request->items);
 
 
-	//创建视图
-//	$sql = "select column_name from information_schema.columns where table_schema ='iscas_itechs_dbout' and table_name = '".$DBtable."'";
-//            $statement = $pdo_me->prepare($sql);
-//            $statement->execute();
-//
-//            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
-//
-//	for($i=1;$i<count($results);$i++){
-//                $view_create = "CREATE VIEW ".$DBtable."_".$results[$i]['column_name']." AS SELECT DISTINCT ".$results[$i]['column_name']." FROM ".$DBtable;
-//                $statement = $pdo_me->prepare($view_create);
-//                $statement->execute();
-//
-//                $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
-//            }
-
 
         //dd(111);
         //在datasrc表中插入与db关联记录
@@ -1094,10 +1093,61 @@ class DatabaseController extends Controller{
         $databaseMsg = $this->dbService->getDBBySearch($text);
         return view('database/list', compact('databaseMsg','text'));
     }
-    
-    function DBsrc_show( ){
 
-        return view('datasource/show');
+    function DBsrc_show($rid){
+
+        $dbname_real = Kg_datasrc::select("dbname_real")->where("rid",$rid)->get();
+
+        //连接数据库
+        try {
+            $pdo_privilege = new PDO(
+                'mysql:host=127.0.0.1;dbname=iscas_itechs_privilege;port=3306;charset=utf8',
+                'root',
+                ''
+            );
+        } catch (PDOException $ex) {
+            echo 'database connection failed';
+            exit();
+        }
+        echo '连接成功';
+
+
+
+        $sql = "SELECT `items_name`,`user_id` FROM ".$dbname_real[0]->dbname_real;
+        $statement = $pdo_privilege->prepare($sql);
+        $statement->execute();
+        $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $sql = "SELECT distinct `items_name` FROM ".$dbname_real[0]->dbname_real;
+        $statement = $pdo_privilege->prepare($sql);
+        $statement->execute();
+        $results2 = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+        for ($i = 0;$i<count($results);$i++){
+            $results_name[$i]["items_name"] = $results[$i]["items_name"];
+            $results_userId[$i] = $results[$i]["user_id"];
+            $results_name[$i]["name"][0] = User::select("name")->where("id",$results[$i]["user_id"])->get()[0]["name"];
+        }
+//        dd($results2,$results_name);
+        for ($i = 0;$i<count($results2);$i++){
+            for ($j=0;$j<count($results_name);$j++){
+                if ($results2[$i]["items_name"]==$results_name[$j]["items_name"]){
+//                    Log::alert($results_name[$i]["items_name"]."*****************".$results_name[$j]["items_name"]."<br>");
+                    if (isset($results2[$i]["name"])){
+                        $a = array_keys($results2[$i]["name"]);
+                        $b = array_pop($a);
+                        $results2[$i]["name"][$b+1] = $results_name[$j]["name"][0];
+                        Log::info($results2[$i]["name"][$b+1]."***".$results_name[$i]["items_name"]."+++".($b+1));
+                    }else{
+                        $results2[$i]["name"][0] = $results_name[$j]["name"][0];
+                        Log::info($results2[$i]["name"][0]."***".$results_name[$i]["items_name"]);
+                    }
+                }
+            }
+        }
+        return view('datasource/show',compact('results2'));
+
     }
     
 }

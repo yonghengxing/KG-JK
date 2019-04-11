@@ -55,6 +55,8 @@
                                 <th>真实数据库名</th>
                                 <th>创建时间</th>
                                 <th>创建人</th>
+                                <th>更新时间</th>
+                                <th>更新人</th>
                                 <th>操作</th>
                             </tr>
                             </thead>
@@ -69,11 +71,10 @@
 
                                 <td><?php echo e($datasourceMsg[$i]->dbname_real); ?></td>
                                 <td><?php echo e($datasourceMsg[$i]->created_at); ?></td>
-                                <td><?php echo e($datasourceMsg[$i]->createdname); ?></td>  
-                                <td>
-                                    <a href="<?php echo e(asset('/datasource/show')); ?>"> 详情</a>
-                                    <a href="<?php echo e(asset('/DBsrc_del/'.$datasourceMsg[$i]->rid)); ?>"> 删除</a>
-                                </td>
+                                <td><?php echo e($datasourceMsg[$i]->createdname); ?></td>
+                                <td><?php echo e($datasourceMsg[$i]->updated_at); ?></td>
+                                <td><?php echo e($datasourceMsg[$i]->updatename); ?></td>
+                                <td><a href="<?php echo e(asset('/datasource/show/'.$datasourceMsg[$i]->rid)); ?>"> 详情</a> |<a href="<?php echo e(asset('/DBsrc_del/'.$datasourceMsg[$i]->rid)); ?>"> 删除</a></td>
                             </tr>
                             <?php }?>
                             </tbody>

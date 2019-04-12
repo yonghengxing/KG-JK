@@ -17,11 +17,16 @@
                                 <th>数据项</th>
                                 <th>数据权限</th>
                             </tr>
+                            <?php for ($i=0;$i<count($results2);$i++){  ?>
+                            <tr>
+                                <td><?php echo e($results2[$i]["items_name"]); ?></td>
+                                <td><?php for ($j=0;$j<count($results2[$i]["name"]);$j++){ ?>
+                                        <?php echo e($results2[$i]["name"][$j]); ?><br>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
                         </thead>
-
-                        <tbody class="tbody">
-
-                        </tbody>
                     </table>
      			</div>
                 

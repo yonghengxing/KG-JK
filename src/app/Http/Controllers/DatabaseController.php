@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Excel;
 
 use Illuminate\Support\Facades\Log;
+use mysql_xdevapi\Exception;
 use phpDocumentor\Reflection\Types\Array_;
 use Storage;
 use Illuminate\Http\UploadedFile;
@@ -23,7 +24,7 @@ use App\Services\DBService;
 use App\Services\UserService;
 use App\Services\RelationService;
 use App\Services\SchemaService;
-
+use App\Services\StatusService;
 use PHPExcel_Reader_IReadFilter;
 use PHPExcel_Reader_Excel2007;
 use PHPExcel_Reader_Excel5;
@@ -46,10 +47,10 @@ function name_replace($name_before){
             ''
         );
     } catch (PDOException $ex) {
-        echo 'iscas_itechs_rename connection failed';
+        //echo 'iscas_itechs_rename connection failed';
         exit();
     }
-    echo 'iscas_itechs_rename连接成功';
+    //echo 'iscas_itechs_rename连接成功';
 
     //得到外部数据库数据表项（字段）
     $sql = "SELECT * FROM `name_translate`";
@@ -78,10 +79,10 @@ function cut_table($dbname,$cutradio,$items,$table_head){
             ''
         );
     } catch (PDOException $ex) {
-        echo 'iscas_itechs_dbout connection failed';
+        //echo 'iscas_itechs_dbout connection failed';
         exit();
     }
-    echo 'dbout连接成功';
+    //echo 'dbout连接成功';
 
     //得到表中内容
     $sql = "SELECT * FROM ".$dbname;
@@ -201,10 +202,10 @@ function create_view($DBtable,$table_head,$only,$items)
             ''
         );
     } catch (PDOException $ex) {
-        echo 'database connection failed';
+       // echo 'database connection failed';
         exit();
     }
-    echo '连接成功';
+   // echo '连接成功';
 
     $sql = "select column_name from information_schema.columns where table_schema ='iscas_itechs_dbout' and table_name = '" . $DBtable . "'";
     $statement = $pdo_me->prepare($sql);
@@ -212,7 +213,6 @@ function create_view($DBtable,$table_head,$only,$items)
 
     $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-    //dd($table_head,$results,$request);
     for ($i = 0; $i < count($table_head); $i++) {
 	if (isset($items[$i])){
         if (isset($only[$i])) {
@@ -265,10 +265,10 @@ function add_privilege($request, $table_head){
             ''
         );
     } catch (PDOException $ex) {
-        echo 'database connection failed';
+       // echo 'database connection failed';
         exit();
     }
-    echo 'iscas_itechs_privilege连接成功';
+   // echo 'iscas_itechs_privilege连接成功';
 
     //创建表
     $sql = "CREATE TABLE ".$request["DBtable"]."(`id` int(255) NOT NULL COMMENT '主键ID',`items_name` varchar(255)  COMMENT '选择表项',`user_id` int(255)  COMMENT '用户ID') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; ALTER TABLE ".$request["DBtable"]." ADD PRIMARY KEY (`id`); ALTER TABLE ".$request["DBtable"]." MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;";
@@ -314,13 +314,14 @@ function add_privilege($request, $table_head){
 class DatabaseController extends Controller{
 
 
-    function __construct(UserService $userService,DBService $dbService,DBSrcService $dbSrcService, SchemaService $schemaService, RelationService $relationService)
+    function __construct(UserService $userService,DBService $dbService,DBSrcService $dbSrcService, SchemaService $schemaService, RelationService $relationService, StatusService $statusService)
     {
         $this->middleware('auth');
         $this->dbService = $dbService;
         $this->dbSrcService = $dbSrcService;
- 	$this->schemaService = $schemaService;
+ 	    $this->schemaService = $schemaService;
         $this->relationService = $relationService;
+        $this->statusService = $statusService;
 
     }
 
@@ -374,6 +375,7 @@ class DatabaseController extends Controller{
 
     public function addDB_do(Request $request)
     {
+//        dd($request);
         $button = $request->button;
         $name = $request->DBID;
         $type = $request->type;
@@ -403,7 +405,7 @@ class DatabaseController extends Controller{
 	 	    $url = 'database/new';
 	 	    //TODO
 		    return view('error', compact("url","msg"));
-                    echo 'database connection failed';
+                   // echo 'database connection failed';
                     exit();
             }
 		return view('success' , compact("url","IP","port","dbname","username","password","type","name"));
@@ -412,9 +414,9 @@ class DatabaseController extends Controller{
             }elseif ($type == 0){
                 $test1 = $descFile->isValid();
                 if ($test1 == true){
-                    echo '连接成功';
+                    //echo '连接成功';
                 }else {
-                    echo '连接失败';
+                    //echo '连接失败';
                 }
             }
         }
@@ -470,7 +472,7 @@ class DatabaseController extends Controller{
             $fileName = $descFile->getClientOriginalName();
             $tempPath = '/exports/'.$time.'/';
             $descFile->move(storage_path().$tempPath,$fileName);
-              
+
 //            $filePath = 'storage/exports/'.$time.'/'.iconv('GBK', 'UTF-8', $fileName);
 
 //            Excel::load($filePath, function($reader) {
@@ -533,7 +535,7 @@ class DatabaseController extends Controller{
                 $table_name[$i]['table_name'] = $tableName[$i];
                 
             }
-            echo json_encode($table_name);
+           echo json_encode($table_name);
 
         
         }else{//数据库文件
@@ -546,7 +548,7 @@ class DatabaseController extends Controller{
                     $db_msg[0]->password
                     );
             } catch (PDOException $ex) {
-                echo 'database connection failed';
+               // echo 'database connection failed';
                 exit();
             }
             
@@ -556,7 +558,7 @@ class DatabaseController extends Controller{
             
             $results = $statement->fetchAll(PDO::FETCH_ASSOC);
             
-            echo json_encode($results);
+           echo json_encode($results);
         }
 
     }
@@ -595,7 +597,7 @@ class DatabaseController extends Controller{
             }
 //            dd($table_head);
 
-            echo json_encode($table_head);
+           echo json_encode($table_head);
 
           
             
@@ -610,7 +612,7 @@ class DatabaseController extends Controller{
                 $db_msg[0]->password
                 );
         } catch (PDOException $ex) {
-            echo 'database connection failed';
+          //  echo 'database connection failed';
             exit();
         }
         
@@ -620,7 +622,7 @@ class DatabaseController extends Controller{
         $statement->execute();
         
         $results = $statement->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode($results);
+       echo json_encode($results);
         }
     }
     
@@ -641,6 +643,11 @@ class DatabaseController extends Controller{
 
         if ($items == null){
             $msg = '选择项为空';
+            $url = 'datasource/addnew';
+            return view('error', compact("url","msg"));
+        }
+        if ($request->onlyradio == null || $request->plevel==null || $request->cutradio == null){
+            $msg = '选项选择不规范';
             $url = 'datasource/addnew';
             return view('error', compact("url","msg"));
         }
@@ -672,10 +679,10 @@ class DatabaseController extends Controller{
                     ''
                     );
             } catch (PDOException $ex) {
-                echo 'database connection failed';
+                //echo 'database connection failed';
                 exit();
             }
-            echo '连接成功';
+            //echo '连接成功';
      
             //得到excel文件内容
             $filePath = 'storage/'.$db_msg[0]->IP.'/'.iconv('GBK', 'UTF-8', $db_msg[0]->dbname);
@@ -854,10 +861,10 @@ class DatabaseController extends Controller{
                 $db_msg[0]->password
                 );
         } catch (PDOException $ex) {
-            echo 'database connection failed';
+           // echo 'database connection failed';
             exit();
         }
-        echo 'success<br>';
+       // echo 'success<br>';
         
         //本地数据库连接
         try {
@@ -867,10 +874,10 @@ class DatabaseController extends Controller{
                 ''
                 );
         } catch (PDOException $ex) {
-            echo 'database connection failed';
+            //echo 'database connection failed';
             exit();
         }
-        echo '连接成功';
+        //echo '连接成功';
 
         //得到外部数据库数据表项（字段）
         $sql = "select column_name, column_comment from information_schema.columns where table_schema ='".$db_msg[0]->dbname."' and table_name = '".$DBtable."'";
@@ -911,7 +918,7 @@ class DatabaseController extends Controller{
         
         for($i = 0;$i<count($table_head);$i++){
             if(isset($items[$i])){
-                $sql_create = $sql_create." ".$items[$i]." varchar(255) ,";
+                $sql_create = $sql_create." ".$items[$i]."_kg varchar(255) ,";
             }
         }
         $sql_create = substr($sql_create, 0, -1);
@@ -934,7 +941,7 @@ class DatabaseController extends Controller{
             $sql_insert = "INSERT INTO ".$DBtable." (";
             for($i = 0;$i<count($table_head);$i++){
                 if(isset($items[$i])){
-                    $sql_insert = $sql_insert.$items[$i].',';
+                    $sql_insert = $sql_insert.$items[$i].'_kg,';
                     $index++;
                 }
             }
@@ -972,13 +979,22 @@ class DatabaseController extends Controller{
         }
 
 
-
+        $a = array_keys($request->items);
+        $b = array_pop($a);
+        for ($i = 0;$i<=$b;$i++){
+            if (isset($request["items"][$i])){
+                $items[$i] = $request["items"][$i]."_kg";
+            }
+        }
             //切表
-            cut_table($DBtable,$request->cutradio,$request->items,$table_head);
+            cut_table($DBtable,$request->cutradio,$items,$table_head);
 
 
+        for ($i=0;$i<count($table_head);$i++){
+            $table_head_new[$i] = $table_head[$i]["column_name"];
+        }
             //创建视图
-            create_view($DBtable,$table_head,$request->onlyradio,$request->items);
+            create_view($DBtable,$table_head_new,$request->onlyradio,$request->items);
 
 
 
@@ -1006,7 +1022,7 @@ class DatabaseController extends Controller{
 
 
         }
-
+        $this->statusService->datasrcStatusActive();
         return redirect()->action('DatabaseController@datasource');
     }
 
@@ -1024,10 +1040,10 @@ class DatabaseController extends Controller{
                 ''
             );
         } catch (PDOException $ex) {
-            echo 'database connection failed';
+            //echo 'database connection failed';
             exit();
         }
-        echo '连接成功';
+        //echo '连接成功';
 
         //连接数据库
         try {
@@ -1037,10 +1053,10 @@ class DatabaseController extends Controller{
                 ''
             );
         } catch (PDOException $ex) {
-            echo 'database connection failed';
+            //echo 'database connection failed';
             exit();
         }
-        echo '连接成功';
+        //echo '连接成功';
 
         //删除数据库
         $dbname_real = Kg_datasrc::select('dbname_real')->where('rid',$rid)->get();
@@ -1106,10 +1122,10 @@ class DatabaseController extends Controller{
                 ''
             );
         } catch (PDOException $ex) {
-            echo 'database connection failed';
+           // echo 'database connection failed';
             exit();
         }
-        echo '连接成功';
+       // echo '连接成功';
 
 
 
@@ -1148,6 +1164,33 @@ class DatabaseController extends Controller{
         }
         return view('datasource/show',compact('results2'));
 
+    }
+
+    function DB_del($dbId){
+        $type = Kg_db::select("type")->where("dbId",$dbId)->get()[0]["type"];
+        if ($type == "xls" || $type == "xsl"){
+            $file = Kg_db::select("dbname","IP")->where("dbId",$dbId)->get()[0];
+            $path_road = $file["IP"].$file["dbname"];
+            $path_file = storage_path($path_road);
+            $path = storage_path($file["IP"]);
+            if (!unlink($path_file))
+            {
+                Log::info("Error deleting $path_file");
+            }
+            if (!rmdir($path))
+            {
+                Log::info("Error deleting $path");
+            }
+            $result = $this->dbService->delete($dbId);
+        }elseif ($type == "MySQL"){
+            $result = $this->dbService->delete($dbId);
+        }else{
+            $msg = '删除失败';
+            $url = 'database/new';
+            return view('error', compact("url","msg"));
+        }
+
+        return redirect()->action('DatabaseController@database');
     }
     
 }

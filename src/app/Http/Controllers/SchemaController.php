@@ -19,16 +19,17 @@ use PDO;
 
 use App\User;
 use App\Services\UserService;
+use App\Services\StatusService;
 
 class SchemaController extends BaseController
 {
-    function __construct(UserService $userService,SchemaService $schemaService,ParameterJsonService $parameterJsonService,RelationService $relationService)
+    function __construct(UserService $userService,SchemaService $schemaService,ParameterJsonService $parameterJsonService,RelationService $relationService,StatusService $statusService)
     {
         $this->middleware('auth');
         $this->schemaService = $schemaService;
         $this->parameterJsonService = $parameterJsonService;
         $this->relationService = $relationService;
-
+        $this->statusService = $statusService;
     }
     /**
      * 显示所有的实体列表
@@ -44,7 +45,9 @@ class SchemaController extends BaseController
         $schemas= new LengthAwarePaginator($result,$total,$perPage,$currentPage,[
             'path' => Paginator::resolveCurrentPath(),
             'pageName' => 'page']);
-        return view('schema/list', compact('schemas'));
+        $status = $this->statusService->datasrcStatusShow();
+//         dd($status)
+        return view('schema/list', compact('schemas','status'));
     }
 
     /**
@@ -67,6 +70,8 @@ class SchemaController extends BaseController
         //数据导入数据库的csv文件
         $this->schemaService->run_command('run_command_dbout');
         $pdo_me = null;
+        $this->statusService->datasrcStatusDone();
+        $this->statusService->schemaStatusActive();
         return redirect()->action('SchemaController@schema_list');
     }
 
@@ -92,6 +97,7 @@ class SchemaController extends BaseController
         $mSchema->property = json_encode($kv);
 
         $ret = $this->schemaService->append($mSchema);
+        $this->statusService->schemaStatusActive();
         return redirect()->action('SchemaController@schema_list');
     }
 

@@ -79,7 +79,7 @@
 						<button type="submit"
 							class="am-btn am-btn-success tpl-btn-bg-color-success ">保存</button> -->
 						<button type="button"
-							class="am-btn am-btn-default tpl-btn-bg-color-success" onclick="history.go(-1);">返回</button>
+							class="am-btn am-btn-primary tpl-btn-bg-color-success" onclick="history.go(-1);">返回</button>
 						</div>
 					</div>
                     

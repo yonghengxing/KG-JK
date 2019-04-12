@@ -18,17 +18,18 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Psy\Exception\RuntimeException;
+use App\Services\StatusService;
 
 use App\User;
 use App\Services\UserService;
 
 class EntityController extends BaseController
 {
-    function __construct(UserService $userService,EntityService $entityService)
+    function __construct(UserService $userService,EntityService $entityService,StatusService $statusService)
     {
         $this->middleware('auth');
         $this->entityService = $entityService;
-
+        $this->statusService = $statusService;
     }
 
 
@@ -80,7 +81,7 @@ class EntityController extends BaseController
             )
         );
         $data =  file_get_contents($url, false, stream_context_create($opts));
-        
+        $this->statusService->modelStatusDone();
         return view('fuse/ontologymap');
     }
 

@@ -99,18 +99,25 @@
                                         data:objectModel,
                                         success:function(data){
                                             if(data[0].column_name){//数据库类型
-                                                //debugger;
+                                                debugger;
                                                 $("#choose_item").empty();
                                                 var str = new Array;
                                                 var strAll = " ";
                                                 for(var i = 0;i < data.length;i++){
                                                     //var column_name = data[i].column_name;
                                                     var items = new Array;
-                                                    str[i] = "<label class='am-checkbox-inline'><input type='checkbox' name='items["+i+"]' value='"+data[i].column_name+"'> "
-                                                        + data[i].column_name + "("+ data[i].column_comment +")"+"</label>";
+                                                    str[i] = "<tr><td> <label class='am-checkbox-inline'><input type='checkbox' name='items["+i+"]' value='"+data[i]["column_name"]+"'> "
+                                                        + data[i]["column_name"] + "("+ data[i]["column_comment"] +")"+"</label> </td>"
+                                                        + "<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' name='onlyradio["+i+"]"
+                                                        +"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' name='onlyradio["+i+"]"
+                                                        +"'value='0' >否</label> </div> </td>"
+                                                        +"<td> <label class='am-checkbox-inline' id='plevel"+i+"' name=='plevel"+i+"'></lable> </td>"
+                                                        +"<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' name='cutradio["+i+"]"
+                                                        +"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' name='cutradio["+i+"]"
+                                                        +"'value='0' >否</label> </div> </td> </tr>";
                                                     strAll = strAll.concat(str[i]);
                                                 }
-                                                $("#tbody").html(strAll);
+                                                $("tbody").html(strAll);
                                             }else{//excel类型
                                                 $("#choose_item").empty();
                                                 var str = new Array;

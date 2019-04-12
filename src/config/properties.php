@@ -23,5 +23,9 @@ return [
     'jsonPath' => "/home/fengbs/KGdata/my.json",
 	 //windwons下测试
     //'jsonPath' => "E:/logs/my.json",
+    
+    //状态全局变量
+    'dbsource_status'=>"0001",
+    
 ];
 

@@ -21,7 +21,7 @@
                           
                            <div  class="am-u-sm-12 am-u-md-3 am-u-end">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                                    <input type="text" name= "searchText" id="search" class="am-form-field "  value="">
+                                    <input type="text" name= "searchText" id="search" class="am-form-field "  value="<?php if(isset($text)): ?><?php echo e($text); ?><?php endif; ?>">
                                       <span class="am-input-group-btn">
                                         <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"  onclick="search()" type="submit"></button>
                                       </span>
@@ -57,6 +57,7 @@
                                     <th>创建人</th>
                                     <th>更新时间</th>
                                     <th>更新人</th>
+                                    <th>操作</th>
                                 </tr>
                                 </thead>
                             <tbody>
@@ -72,6 +73,7 @@
                                 <td><?php echo e($databaseMsg[$i]->createdname); ?></td>
                                 <td><?php echo e($databaseMsg[$i]->updated_at); ?></td>
                                 <td><?php echo e($databaseMsg[$i]->updatename); ?></td>
+                                <td><a href="<?php echo e(asset('/DB_del/'.$databaseMsg[$i]->dbId)); ?>" >删除</a></td>
                             </tr>
                             <?php }?>  
                             </tbody>

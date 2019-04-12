@@ -6,6 +6,7 @@ use App\Services\EntityService;
 use App\Services\ParameterJsonService;
 use App\Services\RelationTypeService;
 use App\Services\SchemaService;
+use App\Services\StatusService;
 use Illuminate\Routing\Controller as BaseController;
 
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,7 @@ use PDO;
 class RelationController extends BaseController
 {
     function __construct(UserService $userService,RelationService $relationService,SchemaService $schemaService,
-                         RelationTypeService $relationTypeService, EntityService $entityService,ParameterJsonService $parameterJsonService)
+        RelationTypeService $relationTypeService, EntityService $entityService,ParameterJsonService $parameterJsonService,StatusService $statusService)
 
     {
         $this->middleware('auth');
@@ -33,6 +34,7 @@ class RelationController extends BaseController
         $this->entityService= $entityService;
         $this->relationtTypeService= $relationTypeService;
         $this->parameterJsonService= $parameterJsonService;
+        $this->statusService = $statusService;
 
     }
 
@@ -52,7 +54,8 @@ class RelationController extends BaseController
         $relations= new LengthAwarePaginator($result,$total,$perPage,$currentPage,[
             'path' => Paginator::resolveCurrentPath(),
             'pageName' => 'page']);
-        return view('relation/list', compact('relations'));
+        $status = $this->statusService->schemaStatusShow();
+        return view('relation/list', compact('relations','status'));
     }
 
 
@@ -158,7 +161,25 @@ class RelationController extends BaseController
         fclose($myJson);
         //生成json文件之后，调用python脚本自动生成图数据库
         $this->run_command("run_command");
-        return redirect()->action('RelationController@relation_list');
+        //$str,就是建立图数据库模型运行情况返回值，只有为“0”的时候，表示成功建立模型，其他的情况出错。
+        //出错的原因，八成是因为，1：属性列字段占用图数据库关键字2：表名称与列属性字段名称一致。
+        //另外的两成是因为，python脚本没启动
+       $statusFilePath =config("properties")['statusFilePath'];
+       $str = file_get_contents($statusFilePath);
+       if($str == 0)
+       {
+           $msg = '生成模型成功';
+           $url = 'relation/list';
+           $this->statusService->schemaStatusDone();
+           $this->statusService->modelStatusActive();
+           return view('success', compact("url","msg"));
+       }
+        else {
+            $msg = '生成模型失败';
+            $url = 'relation/list';
+            return view('error', compact("url","msg"));
+        }
+//         return redirect()->action('RelationController@relation_list');
     }
 
     public function run_command($select){

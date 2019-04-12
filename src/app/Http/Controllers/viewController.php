@@ -11,14 +11,16 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Services\UserService;
+use App\Services\StatusService;
 
 class viewController extends Controller
 {
 
-    function __construct(UserService $userService)
+    function __construct(UserService $userService,StatusService $statusService)
     {
         $this->middleware('auth');
         $this->userService = $userService;
+        $this->statusService = $statusService;
     }
 
     public function otype()
@@ -84,7 +86,8 @@ class viewController extends Controller
             $data[$schema] = $file;
 
         }
-        return view('fuse/ontologymap',compact('data'));
+        $status = $this->statusService->modelStatusShow();
+        return view('fuse/ontologymap',compact('data','status'));
 
 
         //return view('fuse/ontologymap');

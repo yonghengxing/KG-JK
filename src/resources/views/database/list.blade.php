@@ -57,6 +57,7 @@
                                     <th>创建人</th>
                                     <th>更新时间</th>
                                     <th>更新人</th>
+                                    <th>操作</th>
                                 </tr>
                                 </thead>
                             <tbody>
@@ -72,6 +73,7 @@
                                 <td>{{ $databaseMsg[$i]->createdname }}</td>
                                 <td>{{ $databaseMsg[$i]->updated_at }}</td>
                                 <td>{{ $databaseMsg[$i]->updatename }}</td>
+                                <td><a href="{{ asset('/DB_del/'.$databaseMsg[$i]->dbId)}}" >删除</a></td>
                             </tr>
                             <?php }?>  
                             </tbody>

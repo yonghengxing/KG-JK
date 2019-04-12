@@ -1,4 +1,32 @@
 @extends('template') @section('content')
+
+<style>
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* 定位 */
+    position: absolute;
+    z-index: 1;
+	top: -5px;
+    left: 105%;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+</style>
+
 <div class="row-content am-cf">
       <div class="row">
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
@@ -13,8 +41,13 @@
                      <div class="widget-body  am-fr">
                       <div class="am-g">
                           <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
-                              <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                              <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p tooltip" id="tooltip">
                               	<a   href="{{asset('entity/add')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>自动映射</a>
+                      			@if($status==1)									 
+							 	<span class="tooltiptext">有新模型及数据，可自动映射</span>
+							 	@else
+							 	<span class="tooltiptext">没有新信息，不可自动映射</span>
+							 	@endif
 							  </div>
                           </div>
                           

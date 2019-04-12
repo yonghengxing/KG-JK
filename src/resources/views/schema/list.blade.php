@@ -1,4 +1,32 @@
 @extends('template') @section('content')
+
+<style>
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* 定位 */
+    position: absolute;
+    z-index: 1;
+	top: -5px;
+    left: 105%;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+</style>
+
   <div class="row-content am-cf">
       <div class="row">
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
@@ -20,11 +48,18 @@
 							 </div>
 
 							 <div class="am-u-sm-2 ">
-								 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-									 <a   href="{{ asset('/schema/auto')}}" class="am-btn am-btn-default am-btn-success"> 自动生成实体</a>
-								 </div>
-							 </div>
-
+								 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p tooltip" id="tooltip">
+									 <a href="{{ asset('/schema/auto')}}" class="am-btn am-btn-default am-btn-success"> 自动生成实体</a>
+									 	@if($status==1)
+									 	
+									 	<span class="tooltiptext">有新数据源信息，可生成实体</span>
+									 	@else
+									 	<span class="tooltiptext">没有新的数据源信息，不可生成实体</span>
+									 	@endif
+							 	</div>
+							</div>
+							
+							
                           	<div  class="am-u-sm-3 ">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                                     <input type="text" name= "searchText" id="searchText" class="am-form-field "  value="@if(isset($text)){{$text}}@endif">

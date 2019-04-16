@@ -80,7 +80,7 @@ class viewController extends Controller
 
             }
         }
-
+	$data = array();
         foreach ($file_list as $file) {
             $schema = explode(".",$file)[0];
             $data[$schema] = $file;

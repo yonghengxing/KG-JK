@@ -1,17 +1,17 @@
-@extends('template') @section('content')
+ <?php $__env->startSection('content'); ?>
     <div class="row-content am-cf">
         <div class="row">
             <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf">
                     <div class="am-cf">
                         <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
-                        <small>创建数据源</small>
+                        <small>添加数据源</small>
                     </div>
 
                     <hr/>
 
-                    <form horizontal="true" class="am-form am-form-horizontal tpl-form-border-form  tpl-form-border-br"action="{{ asset('/addDBSrc_do')}}" method="post" onsubmit="return checkForm()">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+                    <form horizontal="true" class="am-form am-form-horizontal tpl-form-border-form  tpl-form-border-br"action="<?php echo e(asset('/addDBSrc_do')); ?>" method="post" onsubmit="return checkForm()">
+                        <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>" />
 
                         <div class="am-form-group">
                             <label for="DSname" class="am-u-sm-3 am-form-label">数据源名称</label>
@@ -26,9 +26,9 @@
                             <div class="am-u-sm-9 ">
                                 <select data-am-selected="{searchBox: 1}" style="display: none;" id="database" name="database">
                                     <option name="database1" selected = "selected" value="0">请选择数据库</option>
-                                    @foreach ($name as $name)
-                                        <option value="{{$name->name}}" name="{{$name->name}}">{{$name->name}}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $name; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $name): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($name->name); ?>" name="<?php echo e($name->name); ?>"><?php echo e($name->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -49,19 +49,19 @@
                                     var value = $(this).val();
 
                     var type = $(this).attr('id');
-					var str1 = "{{asset('database/getDB')}}";
+					var str1 = "<?php echo e(asset('database/getDB')); ?>";
 					var url1 = str1 + '/' + value;
 					console.log(url1);
 					var objectModel = {};
 					var csrf = "_token";
-          			var ctoken = "{{csrf_token()}}";
+          			var ctoken = "<?php echo e(csrf_token()); ?>";
           			objectModel[type] =value;
           			objectModel[csrf] = ctoken;
           			$.ajax({
               			url:url1,
               			type:"post",
               			dataType:"json",
-          				data: objectModel,//{_token:"{{csrf_token()}}",_method:'PATCH',type:value},
+          				data: objectModel,//{_token:"<?php echo e(csrf_token()); ?>",_method:'PATCH',type:value},
           				success:function(data){
           					$("#DBtable").empty();
               				var str = new Array;
@@ -84,11 +84,11 @@
                                     var database_public = 'database_public';
 
                                     var type = $(this).attr('id');
-                                    var str1 = "{{asset('database/getDBtableMsg')}}";
+                                    var str1 = "<?php echo e(asset('database/getDBtableMsg')); ?>";
                                     var url1 = str1 + '/' + value;
                                     var objectModel = {};
                                     var csrf = "_token";
-                                    var ctoken = "{{csrf_token()}}";
+                                    var ctoken = "<?php echo e(csrf_token()); ?>";
                                     objectModel[type] =value;
                                     objectModel[database_public] =database;
                                     objectModel[csrf] = ctoken;
@@ -145,7 +145,7 @@
                                             for (var j = 0;j<data.length;j++){
                                                 // if(document.getElementById("plevel"+j)){
                                                     //存在
-                                                    var userMsg = "{{$userMsg}}";
+                                                    var userMsg = "<?php echo e($userMsg); ?>";
                                                     userMsg = userMsg.replace(/&quot;/g,'"');
                                                     var c = JSON.parse(userMsg);
                                                     var str_level = "";
@@ -209,4 +209,6 @@
             </div>
         </div>
     </div>
-@stop
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('template', \Illuminate\Support\Arr::except(get_defined_vars(), array('__data', '__path')))->render(); ?>

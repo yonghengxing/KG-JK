@@ -1,4 +1,4 @@
-@extends('template') @section('content')
+ <?php $__env->startSection('content'); ?>
 
  <div class="row-content am-cf">
       <div class="row">
@@ -15,7 +15,7 @@
                       <div class="am-g">
                          <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
                               <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                              	<a   href="{{ asset('/datasource/addnew')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建数据源</a>
+                              	<a   href="<?php echo e(asset('/datasource/addnew')); ?>" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>创建数据源</a>
 							  </div>
                           </div>
                           
@@ -29,12 +29,12 @@
                             </div>
                         </div>
                         
-						{{-- 条件搜索，目前只能点击搜索才进行搜索，以后可以加入Enter键快速搜索 --}}
+						
                         <script type="text/javascript">
                             function search() {
 
                                 var value = document.getElementById('searchText').value;
-                                var str1 = "{{asset('datasource/search')}}";
+                                var str1 = "<?php echo e(asset('datasource/search')); ?>";
                                 var url = str1 + '/' + value;
                                 window.location.href= url;
                             }
@@ -64,23 +64,25 @@
                             ?>
 
                             <tr>
-                                <td>{{ $datasourceMsg[$i]->dataSource }}</td>
-                                <td>{{ $datasourceMsg[$i]->dbname }}</td>
+                                <td><?php echo e($datasourceMsg[$i]->dataSource); ?></td>
+                                <td><?php echo e($datasourceMsg[$i]->dbname); ?></td>
 
-                                <td>{{ $datasourceMsg[$i]->dbname_real }}</td>
-                                <td>{{ $datasourceMsg[$i]->created_at }}</td>
-                                <td>{{ $datasourceMsg[$i]->createdname }}</td>
-                                <td><a href="{{ asset('/datasource/show/'.$datasourceMsg[$i]->rid)}}"> 详情</a> |<a href="{{ asset('/DBsrc_del/'.$datasourceMsg[$i]->rid)}}"> 删除</a></td>
+                                <td><?php echo e($datasourceMsg[$i]->dbname_real); ?></td>
+                                <td><?php echo e($datasourceMsg[$i]->created_at); ?></td>
+                                <td><?php echo e($datasourceMsg[$i]->createdname); ?></td>
+                                <td><a href="<?php echo e(asset('/datasource/show/'.$datasourceMsg[$i]->rid)); ?>"> 详情</a> |<a href="<?php echo e(asset('/DBsrc_del/'.$datasourceMsg[$i]->rid)); ?>"> 删除</a></td>
                             </tr>
                             <?php }?>
                             </tbody>
                         </table>
                      </div>                                
 
-        		{{-- 版权所有，有没有无所谓，另外，暂时去掉了分页，以后再加--}}
+        		
 
 			</div>
 		</div>
 	</div>
 </div>
-@stop
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('template', \Illuminate\Support\Arr::except(get_defined_vars(), array('__data', '__path')))->render(); ?>

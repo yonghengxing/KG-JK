@@ -10,6 +10,8 @@ return [
     'run_command_dbout' => "http://192.168.15.62:5000/run_command_dbout",
 
     'run_command' => "http://192.168.15.62:5000/run_command",
+
+    'run_command_load' => "http://192.168.15.62:5000/run_command_load",
     // PDO配置
     'PDO' =>[
         'url'=>'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
@@ -21,6 +23,7 @@ return [
 
     //定义的schema,关系形成json文件地址
     'jsonPath' => "/home/fengbs/KGdata/my.json",
+    'statusFilePath' => "/home/fengbs/KGdata/status.txt",
 	 //windwons下测试
     //'jsonPath' => "E:/logs/my.json",
     

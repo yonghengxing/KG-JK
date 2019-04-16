@@ -73,7 +73,7 @@ class EntityController extends BaseController
 
 	public function add()
     {
-        $url = "http://192.168.15.62:5000/run_command_load";
+        $url = config("properties")['run_command_load'];
         $opts = array(
             'http'=>array(
                 'method'=>"GET",
@@ -81,8 +81,15 @@ class EntityController extends BaseController
             )
         );
         $data =  file_get_contents($url, false, stream_context_create($opts));
+       
+       $statusFilePath =config("properties")['statusFilePath'];
+       $str = file_get_contents($statusFilePath);
+	   //dd($str);
+       
+
         $this->statusService->modelStatusDone();
-        return view('fuse/ontologymap');
+        $status = $this->statusService->modelStatusShow();
+        return view('fuse/ontologymap',compact('status'));
     }
 
 

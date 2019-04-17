@@ -159,9 +159,11 @@ class SchemaService extends BaseService
         // ?????????????????????,???????,??????????????csv??
 //        $pdo_me = new PDO(config("properties.PDO")['url'],config("properties.PDO")['username'],config("properties.PDO")['psw']);
 
-        $tableSource = explode("_",$viewName)[0];
-        $viewFiled = explode("_",$viewName)[1];
-
+        //$tableSource = explode("_",$viewName)[0];
+        //$viewFiled = explode("_",$viewName)[1];
+        $pos = strpos($viewName,"_");
+        $tableSource = substr($viewName,0,$pos);
+        $viewFiled = substr($viewName,$pos+1);
         $path = config("properties")['filePathLinux'].$viewName.'_e.csv';
         if(file_exists ($path)){
             unlink($path);

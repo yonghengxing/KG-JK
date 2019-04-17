@@ -85,11 +85,11 @@ class EntityController extends BaseController
        $statusFilePath =config("properties")['statusFilePath'];
        $str = file_get_contents($statusFilePath);
 	   //dd($str);
-       
-
         $this->statusService->modelStatusDone();
         $status = $this->statusService->modelStatusShow();
-        return view('fuse/ontologymap',compact('status'));
+        //return view('fuse/ontologymap',compact('status'));
+        return redirect()->action('EntityController@add');
+
     }
 
 

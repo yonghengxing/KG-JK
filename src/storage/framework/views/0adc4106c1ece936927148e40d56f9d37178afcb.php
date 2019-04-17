@@ -5,7 +5,7 @@
                 <div class="widget am-cf">
                     <div class="am-cf">
                         <strong class="am-text-primary am-text-lg">动态知识图谱</strong> /
-                        <small>添加数据源</small>
+                        <small>创建数据源</small>
                     </div>
 
                     <hr/>

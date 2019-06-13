@@ -15,7 +15,7 @@ return [
     ],    
     
     'admin_mode' => env('ADMIN_MODE', false),
-
+    
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -193,6 +193,7 @@ return [
         //AetherUpload\AetherUploadServiceProvider::class,
 
         Maatwebsite\Excel\ExcelServiceProvider::class,
+//	Barryvdh\Cors\ServiceProvider::class,
     ],
 
     /*
@@ -242,7 +243,6 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Zipper' => Chumper\Zipper\Zipper::class,
-
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 

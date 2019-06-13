@@ -27,7 +27,7 @@
                             <tbody>
                                     <tr class="gradeX">
 										<td>
-                                        <select data-am-selected="{searchBox: 1}" style="display: none;" id="fromVertex" name="fromVertex" >
+                                        <select data-am-selected="{searchBox: 1}" style="display: none;" id="fromVertex" name="fromvertex" >
                                             <option value="none">选择数据库 </option>
                                                 @if (isset($schemas))
                                                     @foreach($schemas as $schema)

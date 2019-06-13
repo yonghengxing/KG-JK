@@ -362,8 +362,9 @@ class DBSrcController extends Controller{
             $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
             for($i=1;$i<count($results);$i++){
-                $view_create = "CREATE VIEW ".$DBtable."_".$results[$i]['column_name']." AS SELECT DISTINCT ".$results[$i]['column_name']." FROM ".$DBtable;
-                $statement = $pdo_me->prepare($view_create);
+                $view_create = "CREATE VIEW ".$DBtable."_".$results[$i]['column_name']." AS SELECT DISTINCT ".$results[$i]['column_name']." FROM ".$DBtable." where ".$results[$i]['column_name']." is not null";
+                dd($view_create);
+				$statement = $pdo_me->prepare($view_create);
                 $statement->execute();
 
                 $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -528,8 +529,9 @@ class DBSrcController extends Controller{
             $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
             for($i=1;$i<count($results);$i++){
-                $view_create = "CREATE VIEW ".$DBtable."_".$results[$i]['column_name']." AS SELECT DISTINCT ".$results[$i]['column_name']." FROM ".$DBtable;
-                $statement = $pdo_me->prepare($view_create);
+                $view_create = "CREATE VIEW ".$DBtable."_".$results[$i]['column_name']." AS SELECT DISTINCT ".$results[$i]['column_name']." FROM ".$DBtable." where ".$results[$i]['column_name']." is not null";
+                dd($view_create."1111");
+				$statement = $pdo_me->prepare($view_create);
                 $statement->execute();
 
                 $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);

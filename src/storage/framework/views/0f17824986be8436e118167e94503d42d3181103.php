@@ -27,7 +27,7 @@
                             <tbody>
                                     <tr class="gradeX">
 										<td>
-                                        <select data-am-selected="{searchBox: 1}" style="display: none;" id="fromVertex" name="fromVertex" >
+                                        <select data-am-selected="{searchBox: 1}" style="display: none;" id="fromVertex" name="fromvertex" >
                                             <option value="none">选择数据库 </option>
                                                 <?php if(isset($schemas)): ?>
                                                     <?php $__currentLoopData = $schemas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schema): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>

@@ -86,6 +86,7 @@ class RelationController extends BaseController
      */
   public function relation_new_do(Request $request)
     {
+
         $relationType = $request->post("relationType");
         $typelabel =  $this->relationtTypeService->getById($relationType)->rlabel;
 
@@ -191,6 +192,7 @@ class RelationController extends BaseController
             )
         );
         file_get_contents($url, false, stream_context_create($opts));
+    
     }
     /**
      * 打开修改关系信息的页面
@@ -235,6 +237,13 @@ class RelationController extends BaseController
      */
     public function relation_delete($rid)
     {
+		//先删除生成的文件
+        $relation  = $this->relationService->getById($rid);
+        $name = $relation->typelabel;
+        $path = config("properties")['filePathLinux'].$name.'.csv';
+        if(file_exists ($path)){
+            unlink($path);
+        }
         $ret = $this->relationService->delete($rid);
 
         return redirect()->action('RelationController@relation_list');

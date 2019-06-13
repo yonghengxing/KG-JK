@@ -24,6 +24,7 @@ Route::get('/bxLogout', 'BXUserController@bxLogout');
 
 Route::get('/template', 'viewController@template');
 Route::get('/search', 'SchemaController@search');
+Route::get('/test', 'EntityController@test');
 
 /**
  * 用户相关操作路由
@@ -43,12 +44,6 @@ Route::post('/user/info/{user_id}', 'UserController@user_update');
  * @author: liudanqi
  */
 Route::get('/otype', 'viewController@otype');
-Route::get('/otype/addObject', 'viewController@addObject');
-Route::get('/rtype', 'viewController@rtype');
-Route::get('/rtype/addRtype', 'viewController@addRtype');
-Route::get('/taskallocation', 'viewController@taskallocation');
-Route::get('/taskallocation/addtask', 'viewController@addtask');
-Route::get('/taskhis', 'viewController@taskhis');
 Route::get('/safemanage', 'viewController@safemanage');
 
 /**
@@ -63,24 +58,15 @@ Route::get('/searchgraph', 'viewController@searchgraph');
 Route::get('/checkgraph', 'viewController@checkgraph');
 Route::get('/export', 'viewController@export');
 
-// /**
-//  * 数据配置相关操作
-//  * @date: 2018年1月14日 下午17:21:16
-//  * @author: liudanqi
-//  */
-// Route::get('/database', 'viewController@database');
-// Route::get('/database/new', 'viewController@newDB');
-// Route::get('/datasource', 'viewController@datasource');
-// Route::get('/datasource/new', 'viewController@newDS');
 
 /**
  * 融合配置相关操作
  * @date: 2018年1月10日 下午17:15:16
  * @author: liudanqi
  */
-Route::get('/fuse/ontologyfus', 'viewController@ontologyfus');
-Route::get('/fuse/ontologymap/fusmap', 'viewController@fusmap');
 Route::get('/fuse/ontologymap', 'viewController@ontologymap');
+Route::get('/fuse/show/{key}', 'viewController@fuseShow');
+Route::get('/fuse/detail/{key}/{id}', 'viewController@fuseDetail');
 Route::get('/entity/add', 'EntityController@add');
 
 /**

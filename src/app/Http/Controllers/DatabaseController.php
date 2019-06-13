@@ -6,7 +6,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 use Excel;
-
+use App\Services\PinYin;
 use Illuminate\Support\Facades\Log;
 use mysql_xdevapi\Exception;
 use phpDocumentor\Reflection\Types\Array_;
@@ -33,23 +33,31 @@ use PHPExcel_IOFactory;
 
 use Illuminate\Support\Facades\Auth;
 
+//将中文转换成拼音
+function pinyin($zhongwen){
+    $py = new PinYin();
+    $all_py = $py->get_all_py("$zhongwen");
+    $res = implode('',$all_py);
+    return  $res;
+}
+
 /**
  * @param $name_before
  * @return $name_after
  * 替换别名
  */
-function name_replace($name_before){
+function name_replace($name_before,$pdo_rename){
     //别名数据库连接
-    try {
-        $pdo_rename = new PDO(
-            'mysql:host=127.0.0.1;dbname=iscas_itechs_rename;port=3306;charset=utf8',
-            'root',
-            ''
-        );
-    } catch (PDOException $ex) {
+//    try {
+//        $pdo_rename = new PDO(
+//            'mysql:host=127.0.0.1;dbname=iscas_itechs_rename;port=3306;charset=utf8',
+//            'root',
+//            ''
+//        );
+//    } catch (PDOException $ex) {
         //echo 'iscas_itechs_rename connection failed';
-        exit();
-    }
+//        exit();
+ //   }
     //echo 'iscas_itechs_rename连接成功';
 
     //得到外部数据库数据表项（字段）
@@ -133,7 +141,9 @@ if ($cutradio != null && $cutradio !="") {
                                 //dd($b,$items[$b],$item_name);
                                 if ($items[$b] == $item_name[$m]) {
                                     $sql = $sql . "'" . $name_new[$a] . "',";
-                                } else {
+
+
+                              } else {
                                     $sql = $sql . "'" . $dbout_table_before[$j][$items[$b]] . "',";
                                 }
                             }
@@ -212,18 +222,22 @@ function create_view($DBtable,$table_head,$only,$items)
     $statement->execute();
 
     $results = $statement->fetchAll(PDO::FETCH_ASSOC);
-
+    $Chinese_head =array();
+    foreach ($table_head as $item) {
+        $Chinese_head[] = pinyin($item);
+    }
+    $table_head = $Chinese_head;
     for ($i = 0; $i < count($table_head); $i++) {
 	if (isset($items[$i])){
         if (isset($only[$i])) {
             if ($only[$i] == 1) {
-                $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i]."_kg" . " AS SELECT DISTINCT " . $table_head[$i]."_kg" . " FROM " . $DBtable;
+                $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i]."_kg" . " AS SELECT DISTINCT " . $table_head[$i]."_kg" . " FROM " . $DBtable." where ". $table_head[$i]."_kg"." is not null";
 //                 dd($results,$view_create,$i);
                 $statement = $pdo_me->prepare($view_create);
                 $statement->execute();
                 $results_create_view = $statement->fetchAll(PDO::FETCH_ASSOC);
             } else {
-                $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i]."_kg" . " AS SELECT " . $table_head[$i]."_kg" . " FROM " . $DBtable;
+                $view_create = "CREATE VIEW " . $DBtable . "_" . $table_head[$i]."_kg" . " AS SELECT " . $table_head[$i]."_kg" . " FROM " . $DBtable." where ". $table_head[$i]."_kg"." is not null";
                 //dd($results,$view_create,$request->onlyradio,$i);
                 $statement = $pdo_me->prepare($view_create);
                 $statement->execute();
@@ -300,7 +314,7 @@ function add_privilege($request, $table_head){
 //            dd($request->plevel[$i],$i);
             for ($j=0;$j<$userID[count($userID)-1]["id"]+1;$j++){ //$userID[count($userID)-1]["id"]+1  是userid的最大值加一    遍历该列的所有用户
                 if (isset($request->plevel[$i][$j])){
-                    $sql_insert = "INSERT INTO " . $request["DBtable"] . " (`id`, `items_name`, `user_id`) VALUES (NULL,'".$request->items[$i]."_kg','".$j."')";
+                    $sql_insert = "INSERT INTO " . $request["DBtable"] . " (`id`, `items_name`, `user_id`) VALUES (NULL,'".pinyin($request->items[$i])."_kg','".$j."')";
                     $statement = $pdo_privilege->prepare($sql_insert);
                     $statement->execute();
                     $results = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -433,7 +447,6 @@ class DatabaseController extends Controller{
             $username = $request->username;
             $password = $request->password;
 
-
             if ($type == 1){
   
                 $typeName = "MySQL";
@@ -470,6 +483,7 @@ class DatabaseController extends Controller{
                 //文件有效性
             $time = time();
             $fileName = $descFile->getClientOriginalName();
+			$fileName = pinyin($fileName);
             $tempPath = '/exports/'.$time.'/';
             $descFile->move(storage_path().$tempPath,$fileName);
 
@@ -542,6 +556,7 @@ class DatabaseController extends Controller{
             $db_msg = Kg_db::select('IP','port','dbname','username','password')->where('name',$get_DBname)->get();
             //连接数据库
             try {
+		//dd($db_msg[0]->password);
                 $pdo = new PDO(
                     'mysql:host='.$db_msg[0]->IP.';dbname='.$db_msg[0]->dbname.';port='.$db_msg[0]->port.';charset=utf8',
                     $db_msg[0]->username,
@@ -651,6 +666,9 @@ class DatabaseController extends Controller{
             $url = 'datasource/addnew';
             return view('error', compact("url","msg"));
         }
+        foreach ( $items as $item) {
+            $item = pinyin($item);
+        }
         $a = array_keys($items);
         $b = array_keys($request->onlyradio);
         $c = array_keys($request->plevel);
@@ -710,10 +728,9 @@ class DatabaseController extends Controller{
                 $table_head[$index] = $data->getSheet($table_num)->getCellByColumnAndRow($index, 1)->getValue();
                 $index++;
             }
-            
 
-            //添加权限
-            add_privilege($request,$table_head);
+
+
             //dd($request);
             //要导入的数据库的内容
             //$data_content_real = new Array_();
@@ -740,14 +757,22 @@ class DatabaseController extends Controller{
                     }
                 }
             }
-           
+
+            $DBtable = pinyin($DBtable);
+            $resItems = array();
+            foreach ($items as $item) {
+                $resItems[] = pinyin($item);
+            }
+            //添加权限
+            add_privilege($request,$table_head);
+
             //建立表结构
             $sql_create = "CREATE TABLE ".$DBtable."(`me_id` int(255) NOT NULL COMMENT '主键ID',";
             
             $index = 0;
             for($i = 0;$i<count($table_head);$i++){
-                if(isset($items[$i])){
-                    $sql_create = $sql_create.$items[$i]."_kg"." MEDIUMTEXT  COMMENT '".$items[$i]."',";
+                if(isset($resItems[$i])){
+                    $sql_create = $sql_create.$resItems[$i]."_kg"." MEDIUMTEXT  COMMENT '".$resItems[$i]."',";
                         $index++;
                 }
             }
@@ -766,8 +791,8 @@ class DatabaseController extends Controller{
                 $jjj = 0;
                 $sql_insert = "INSERT INTO ".$DBtable." (";
                 for($i = 0;$i<count($table_head);$i++){
-                    if(isset($items[$i])){
-                        $sql_insert = $sql_insert.$items[$i].'_kg,';
+                    if(isset($resItems[$i])){
+                        $sql_insert = $sql_insert.$resItems[$i].'_kg,';
                         $index++;
                     }
                 }
@@ -796,6 +821,18 @@ class DatabaseController extends Controller{
 
             
                 $statement = $pdo_me->prepare($sql_insert);
+
+    //别名数据库连接
+    try {
+        $pdo_rename = new PDO(
+            'mysql:host=127.0.0.1;dbname=iscas_itechs_rename;port=3306;charset=utf8',
+            'root',
+            ''
+        );
+    } catch (PDOException $ex) {
+        //echo 'iscas_itechs_rename connection failed';
+        exit();
+    }
                 
                 for($i = $ins;$i<($ins+20);$i++){
                     if(isset($data_content_real[$i])){
@@ -806,7 +843,7 @@ class DatabaseController extends Controller{
                                 $ccc = strtolower($bbb);
                                 
                                 $jjj++;
-                                $name_real = name_replace($data_content_real[$i][$ccc]);
+                                $name_real = name_replace($data_content_real[$i][$ccc],$pdo_rename);
                                 $iii[$i][$ccc] = $name_real;
                                 $statement->bindValue( $jjj, $iii[$i][$ccc] ,PDO::PARAM_STR);
                             }
@@ -830,7 +867,7 @@ class DatabaseController extends Controller{
                 }
             }
             //切表
-            cut_table($DBtable,$request->cutradio,$items,$table_head);
+            //cut_table($DBtable,$request->cutradio,$items,$table_head);
 
             
            //创建视图

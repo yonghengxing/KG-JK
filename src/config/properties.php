@@ -26,6 +26,9 @@ return [
     'statusFilePath' => "/home/fengbs/KGdata/status.txt",
 	 //windwons下测试
     //'jsonPath' => "E:/logs/my.json",
+	    
+	//图数据库IP地址	
+	'graphIP' => 'http://192.168.15.62:14240',
     
     //状态全局变量
     'dbsource_status'=>"0001",

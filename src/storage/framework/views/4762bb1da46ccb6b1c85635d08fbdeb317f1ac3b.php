@@ -9,7 +9,7 @@
         
         <div class="bg_mark"> </div>
         
-        <div class="tpl-page-state-title am-text-center tpl-error-title" style="color: #ffffff;font-size: 6.6rem;font-weight: normal;">JKJ军事科学信息中心
+        <div class="tpl-page-state-title am-text-center tpl-error-title" style="color: #ffffff;font-size: 6.6rem;font-weight: normal;">中科院软件所科学信息中心
 			</div>
 		<div class="tpl-error-title-info am-text-center"  style="color: #ffffff;font-size: 30px;">科技领域基础数据管理与服务系统
 			</div>
@@ -18,7 +18,7 @@
             <form  method="POST" action="<?php echo e(route('login')); ?>" class="am-form" data-am-validator>
               <div class="am-form-group">
                 <label for="name"><i class="am-icon-user"></i></label>
-                <input type="text" id="name" minlength="3" placeholder="输入用户名" class="form-control<?php echo e($errors->has('name') ? ' is-invalid' : ''); ?>" name="name" value="<?php echo e(old('email')); ?>" required autofocus/>
+                <input type="text" id="name" minlength="1" placeholder="输入用户名" class="form-control<?php echo e($errors->has('name') ? ' is-invalid' : ''); ?>" name="name" value="<?php echo e(old('email')); ?>" required autofocus/>
               </div>
             
               <div class="am-form-group">

@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Services\UserService;
 use App\Services\StatusService;
+use PDO;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class viewController extends Controller
 {
@@ -22,51 +25,7 @@ class viewController extends Controller
         $this->userService = $userService;
         $this->statusService = $statusService;
     }
-
-    public function otype()
-    {
-        return view('oType/oType');
-    }
-    
-    public function addObject()
-    {
-        return view('oType/addObject');
-    }
-    
-    public function homePage()
-    {
-        return view('homePage');
-    }
-    
-    public function rtype()
-    {
-        return view('rtype/rtype');
-    }
-    
-    public function addRtype()
-    {
-        return view('rtype/addRtype');
-    }
-    
-    public function database()
-    {
-        return view('database/list');
-    }
-    
-    public function newDB()
-    {
-        return view('database/new');
-    }
-    
-    public function newDS()
-    {
-        return view('datasource/new');
-    }
-    
-    public function datasource()
-    {
-        return view('datasource/list');
-    }
+   
     
     public function ontologymap()
     {   
@@ -92,31 +51,95 @@ class viewController extends Controller
 
         //return view('fuse/ontologymap');
     }
-    
-    public function fusmap()
-    {
-        return view('fuse/fusmap');
-    }
-    
-    public function ontologyfus()
-    {
-        return view('fuse/ontologyfus');
-    }
-    
-    public function taskallocation()
-    {
-        return view('task/taskallocation');
-    }
-    
-    public function taskhis()
-    {
-        return view('task/taskhis');
-    }
-        
-    public function addtask()
-    {
-        return view('task/addtask');
-    }
+    public function fuseShow($key,Request $request)
+     {
+         //dbout连接
+         try {
+             $pdo_dbout = new PDO(
+                 'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
+                 'root',
+                 ''
+                 );
+         } catch (PDOException $ex) {
+             //echo 'iscas_itechs_dbout connection failed';
+             exit();
+         }         
+
+         //得到前四列信息
+         $sql = "SHOW columns FROM ".$key;     //得到表头
+         $statement = $pdo_dbout->prepare($sql);
+         $statement->execute();
+         $dbout_table_columns = $statement->fetchAll(PDO::FETCH_ASSOC);
+//dd($sql);
+         $count= count($dbout_table_columns);
+         if($count>3)
+         {
+             for ($i=0; $i<=3; $i++)
+             {
+                 $columns[$i] = $dbout_table_columns[$i];                 
+             }
+             $sql = "SELECT " .$columns[0]["Field"]. "," .$columns[1]["Field"]. "," .$columns[2]["Field"]. "," .$columns[3]["Field"]." FROM ".$key;
+             $statement = $pdo_dbout->prepare($sql);
+             $statement->execute();
+             $dbout_table = $statement->fetchAll(PDO::FETCH_ASSOC);
+         }
+         else
+         {
+             $columns = $dbout_table_columns;
+             $sql = "SELECT * FROM ".$key;
+             $statement = $pdo_dbout->prepare($sql);
+             $statement->execute();
+             $dbout_table = $statement->fetchAll(PDO::FETCH_ASSOC);
+             
+         }
+
+         //分页
+         $perPage = 15;
+         if ($request->has('page')) {
+             $current_page = $request->input('page');
+             $current_page = $current_page <= 0 ? 1 :$current_page;
+         } else {
+             $current_page = 1;
+         }
+         $item = array_slice($dbout_table, ($current_page-1)*$perPage, $perPage); //注释1
+         $total = count($dbout_table);
+         $tablePaginator =new LengthAwarePaginator($item, $total, $perPage, $current_page , [
+             'path' => Paginator::resolveCurrentPath(), //注释2
+             'pageName' => 'page',
+         ]);
+
+	$tablename = $key;
+         
+          return view('fuse/show',compact('columns','tablePaginator','tablename'));
+     }
+     
+     public function fuseDetail($key,$id)
+     {
+         //dbout连接
+         try {
+             $pdo_dbout = new PDO(
+                 'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
+                 'root',
+                 ''
+                 );
+         } catch (PDOException $ex) {
+             //echo 'iscas_itechs_dbout connection failed';
+             exit();
+         } 
+         
+         $sql = "SHOW columns FROM ".$key;     //得到表头
+         $statement = $pdo_dbout->prepare($sql);
+         $statement->execute();
+         $dbout_table_columns = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+         $sql = "SELECT * FROM ".$key." WHERE " .$dbout_table_columns[0]["Field"]. "=" .$id;     //得到表头
+         $statement = $pdo_dbout->prepare($sql);
+         $statement->execute();
+         $dbout_table = $statement->fetchAll(PDO::FETCH_ASSOC);
+        //  dd($dbout_table);
+
+         return view('fuse/detail',compact('dbout_table_columns','dbout_table')); 
+     }
     
     public function safemanage()
     {

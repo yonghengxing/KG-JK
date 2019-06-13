@@ -1,4 +1,73 @@
  <?php $__env->startSection('content'); ?>
+<script>
+
+function onlyYesradio(i){
+ 	var domName = $('#onlyesradio'+i).attr('name');
+   	var $radio = $('#onlyesradio'+i);
+
+       // if this was previously checked
+       if ($radio.data('waschecked') == true){
+    	   $radio.prop('checked', false);
+           $("input:radio[name='" + domName + "']").data('waschecked',false);
+           
+       } else {
+    	   $radio.prop('checked', true);
+           $("input:radio[name='" + domName + "']").data('waschecked',false);
+           $radio.data('waschecked', true);
+       }
+}
+
+function onlyNoradio(i){
+ 	var domName = $('#onlynoradio'+i).attr('name');
+   	var $radio = $('#onlynoradio'+i);
+
+       // if this was previously checked
+       if ($radio.data('waschecked') == true){
+    	   $radio.prop('checked', false);
+           $("input:radio[name='" + domName + "']").data('waschecked',false);
+           
+       } else {
+    	   $radio.prop('checked', true);
+           $("input:radio[name='" + domName + "']").data('waschecked',false);
+           $radio.data('waschecked', true);
+       }
+}
+
+function cutYesradio(i){
+ 	var domName = $('#cutyesradio'+i).attr('name');
+   	var $radio = $('#cutyesradio'+i);
+
+       // if this was previously checked
+       if ($radio.data('waschecked') == true){
+    	   $radio.prop('checked', false);
+           $("input:radio[name='" + domName + "']").data('waschecked',false);
+           
+       } else {
+    	   $radio.prop('checked', true);
+           $("input:radio[name='" + domName + "']").data('waschecked',false);
+           $radio.data('waschecked', true);
+       }
+}
+
+function cutNoradio(i){
+ 	var domName = $('#cutnoradio'+i).attr('name');
+   	var $radio = $('#cutnoradio'+i);
+
+       // if this was previously checked
+       if ($radio.data('waschecked') == true){
+    	   $radio.prop('checked', false);
+           $("input:radio[name='" + domName + "']").data('waschecked',false);
+           
+       } else {
+    	   $radio.prop('checked', true);
+           $("input:radio[name='" + domName + "']").data('waschecked',false);
+           $radio.data('waschecked', true);
+       }
+}
+
+
+</script>
+
     <div class="row-content am-cf">
         <div class="row">
             <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
@@ -47,34 +116,33 @@
                                 //数据库选择改变
                                 $("#database").change(function(){
                                     var value = $(this).val();
-
-                    var type = $(this).attr('id');
-					var str1 = "<?php echo e(asset('database/getDB')); ?>";
-					var url1 = str1 + '/' + value;
-					console.log(url1);
-					var objectModel = {};
-					var csrf = "_token";
-          			var ctoken = "<?php echo e(csrf_token()); ?>";
-          			objectModel[type] =value;
-          			objectModel[csrf] = ctoken;
-          			$.ajax({
-              			url:url1,
-              			type:"post",
-              			dataType:"json",
-          				data: objectModel,//{_token:"<?php echo e(csrf_token()); ?>",_method:'PATCH',type:value},
-          				success:function(data){
-          					$("#DBtable").empty();
-              				var str = new Array;
-              				var strAll = " ";
-              				for(var i = 0;i < data.length;i++){
-                  				var table_name = data[i].table_name;
-                  				str[i] = "<option value = '"+table_name+"' name='"+table_name+"'>"+ table_name +"</option> ";
-                  				strAll = strAll.concat(str[i]);
-                  				}
-              				$("#DBtable").html(strAll);
-              				}
-              			})
-                     })
+                                    var type = $(this).attr('id');
+                					var str1 = "<?php echo e(asset('database/getDB')); ?>";
+                					var url1 = str1 + '/' + value;
+                					console.log(url1);
+                					var objectModel = {};
+                					var csrf = "_token";
+                          			var ctoken = "<?php echo e(csrf_token()); ?>";
+                          			objectModel[type] =value;
+                          			objectModel[csrf] = ctoken;
+                          			$.ajax({
+                              			url:url1,
+                              			type:"post",
+                              			dataType:"json",
+                          				data: objectModel,//{_token:"<?php echo e(csrf_token()); ?>",_method:'PATCH',type:value},
+                          				success:function(data){
+                          					$("#DBtable").empty();
+                              				var str = new Array;
+                              				var strAll = " ";
+                              				for(var i = 0;i < data.length;i++){
+                                  				var table_name = data[i].table_name;
+                                  				str[i] = "<option value = '"+table_name+"' name='"+table_name+"'>"+ table_name +"</option> ";
+                                  				strAll = strAll.concat(str[i]);
+                                  				}
+                              				$("#DBtable").html(strAll);
+                              				}
+                              			})
+                                 });
 
 
                                 //数据表改变
@@ -106,14 +174,14 @@
                                                 for(var i = 0;i < data.length;i++){
                                                     //var column_name = data[i].column_name;
                                                     var items = new Array;
-                                                    str[i] = "<tr><td> <label class='am-checkbox-inline'><input type='checkbox' name='items["+i+"]' value='"+data[i]["column_name"]+"'> "
+                                                    str[i] = "<tr><td> <label class='am-checkbox-inline'><input type='checkbox' class='qx' name='items["+i+"]' value='"+data[i]["column_name"]+"'> "
                                                         + data[i]["column_name"] + "("+ data[i]["column_comment"] +")"+"</label> </td>"
-                                                        + "<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' name='onlyradio["+i+"]"
-                                                        +"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' name='onlyradio["+i+"]"
+                                                        + "<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' class='oy' id='onlyesradio"+i+"' onclick='onlyYesradio("+i+")' name='onlyradio["+i+"]"
+                                                        +"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' class='on' id='onlynoradio"+i+"' onclick='onlyNoradio("+i+")' name='onlyradio["+i+"]"
                                                         +"'value='0' >否</label> </div> </td>"
                                                         +"<td> <label class='am-checkbox-inline' id='plevel"+i+"' name=='plevel"+i+"'></lable> </td>"
-                                                        +"<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' name='cutradio["+i+"]"
-                                                        +"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' name='cutradio["+i+"]"
+                                                        +"<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' class='cy' id='cutyesradio"+i+"' onclick='cutYesradio("+i+")' name='cutradio["+i+"]"
+                                                        +"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' class='cn' id='cutnoradio"+i+"' onclick='cutNoradio("+i+")' name='cutradio["+i+"]"
                                                         +"'value='0' >否</label> </div> </td> </tr>";
                                                     strAll = strAll.concat(str[i]);
                                                 }
@@ -126,17 +194,16 @@
                                                 for(var i = 0;i < data.length;i++){
 
                                                     var items = new Array;
-                                                    str[i] = "<tr><td> <label class='am-checkbox-inline'><input type='checkbox' name='items["+i+"]' value='"+data[i]+"'> "
+                                                    str[i] = "<tr><td> <label class='am-checkbox-inline'><input type='checkbox' class='qx' name='items["+i+"]' value='"+data[i]+"'> "
                                                         + data[i] + "("+ data[i] +")"+"</label> </td>"
-                                                        + "<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' name='onlyradio["+i+"]"
-                                                        +"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' name='onlyradio["+i+"]"
+                                                        + "<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' class='oy' id='onlyesradio"+i+"' onclick='onlyYesradio("+i+")' name='onlyradio["+i+"]"
+                                                        +"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' class='on' id='onlynoradio"+i+"' onclick='onlyNoradio("+i+")' name='onlyradio["+i+"]"
                                                         +"'value='0' >否</label> </div> </td>"
                                                         +"<td> <label class='am-checkbox-inline' id='plevel"+i+"' name=='plevel"+i+"'></lable> </td>"
-                                                        +"<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' name='cutradio["+i+"]"
-                                                        +"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' name='cutradio["+i+"]"
+                                                        +"<td> <div class='am-u-sm-3'> <label class='am-radio'> <input type='radio' class='cy' id='cutyesradio"+i+"' onclick='cutYesradio("+i+")' name='cutradio["+i+"]"
+                                                        +"'value='1' >是	 </label> <label class='am-radio'> <input type='radio' class='cn' id='cutnoradio"+i+"' onclick='cutNoradio("+i+")' name='cutradio["+i+"]"
                                                         +"'value='0' >否</label> </div> </td> </tr>";
-
-                                                    strAll = strAll.concat(str[i]);
+                                                    strAll = strAll.concat(str[i]);                                                    
 
                                                 }
                                                 $("tbody").html(strAll);
@@ -151,7 +218,7 @@
                                                     var str_level = "";
                                                     for (var k = 0;k<c.length;k++){
                                                         // str_level = str_level+"<option name='plevel123["+k+"]' value='"+c[k]["id"]+"'>"+c[k]["name"]+"</option>";
-                                                        str_level = str_level+"<label ><input name='plevel["+j+"]["+c[k]["id"]+"]' type='checkbox' value='1'>"+c[k]["name"]+"</lable><br>";
+                                                        str_level = str_level+"<label ><input name='plevel["+j+"]["+c[k]["id"]+"]' type='checkbox' class='qxqx' value='1'>"+c[k]["name"]+"</lable><br>";
                                                     }
                                                     //$("#plevel0").empty();
                                                     $("#plevel"+j+"").html(str_level);
@@ -163,19 +230,105 @@
 
                                         }
                                     })
-                                })
-                            })
-                        </script>
+                                });
+
+                                $("#quanxuan").click(function(){//给全选按钮加上点击事件
+                                    var xz = $(this).prop("checked");//判断全选按钮的选中状态
+                                    var ck = $(".qx").prop("checked",xz);  //让class名为qx的选项的选中状态和全选按钮的选中状态一致。  
+                                });
+
+                                $("#qxqx").click(function(){//给全选按钮加上点击事件
+                                    var xz1 = $(this).prop("checked");//判断全选按钮的选中状态
+                                    var ck1 = $(".qxqx").prop("checked",xz1);  //让class名为qx的选项的选中状态和全选按钮的选中状态一致。  
+                                });
+
+                                $("#onlyyes").click(function(){//给全选按钮加上点击事件
+                                 	var domName = $(this).attr('name');
+                                   	var $radio = $(this);
+
+                                       // if this was previously checked
+                                       if ($radio.data('waschecked') == true){
+                                    	   $radio.prop('checked', false);
+                                           $("input:radio[name='" + domName + "']").data('waschecked',false);
+                                           
+                                       } else {
+                                    	   $radio.prop('checked', true);
+                                           $("input:radio[name='" + domName + "']").data('waschecked',false);
+                                           $radio.data('waschecked', true);
+                                       }
+                                    var xz2 = $(this).prop("checked");//判断全选按钮的选中状态
+                                    var ck2 = $(".oy").prop("checked",xz2);  //让class名为qx的选项的选中状态和全选按钮的选中状态一致。  
+                                });
+
+                                $("#onlyno").click(function(){//给全选按钮加上点击事件
+                                 	var domName = $(this).attr('name');
+                                   	var $radio = $(this);
+
+                                       // if this was previously checked
+                                       if ($radio.data('waschecked') == true){
+                                    	   $radio.prop('checked', false);
+                                           $("input:radio[name='" + domName + "']").data('waschecked',false);
+                                           
+                                       } else {
+                                    	   $radio.prop('checked', true);
+                                           $("input:radio[name='" + domName + "']").data('waschecked',false);
+                                           $radio.data('waschecked', true);
+                                       }
+
+                                    var xz3 = $(this).prop("checked");//判断全选按钮的选中状态
+                                    var ck3 = $(".on").prop("checked",xz3);  //让class名为qx的选项的选中状态和全选按钮的选中状态一致。  
+                                });
+
+                                $("#cutyes").click(function(){//给全选按钮加上点击事件
+                                 	var domName = $(this).attr('name');
+                                   	var $radio = $(this);
+
+                                       // if this was previously checked
+                                       if ($radio.data('waschecked') == true){
+                                    	   $radio.prop('checked', false);
+                                           $("input:radio[name='" + domName + "']").data('waschecked',false);
+                                           
+                                       } else {
+                                    	   $radio.prop('checked', true);
+                                           $("input:radio[name='" + domName + "']").data('waschecked',false);
+                                           $radio.data('waschecked', true);
+                                       }
+                                    var xz2 = $(this).prop("checked");//判断全选按钮的选中状态
+                                    var ck2 = $(".cy").prop("checked",xz2);  //让class名为qx的选项的选中状态和全选按钮的选中状态一致。  
+                                });
+
+                                $("#cutno").click(function(){//给全选按钮加上点击事件
+                                 	var domName = $(this).attr('name');
+                                   	var $radio = $(this);
+
+                                       // if this was previously checked
+                                       if ($radio.data('waschecked') == true){
+                                    	   $radio.prop('checked', false);
+                                           $("input:radio[name='" + domName + "']").data('waschecked',false);
+                                           
+                                       } else {
+                                    	   $radio.prop('checked', true);
+                                           $("input:radio[name='" + domName + "']").data('waschecked',false);
+                                           $radio.data('waschecked', true);
+                                       }
+                                    var xz2 = $(this).prop("checked");//判断全选按钮的选中状态
+                                    var ck2 = $(".cn").prop("checked",xz2);  //让class名为qx的选项的选中状态和全选按钮的选中状态一致。  
+                                });
+
+                                
+                               
+                         });
+                       </script>
 
 
                         <div class="am-form-group am-u-sm-12">
                             <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
                                 <thead>
                                     <tr>
-                                        <th>数据项</th>
-                                        <th>是否唯一</th>
-                                        <th>数据权限</th>
-                                        <th>是否分割</th>
+                                        <th><input type="checkbox" id="quanxuan"> 数据项</th>
+                                        <th>是否唯一<br/><input type="radio" name="onlyyes" id="onlyyes">是  <input type="radio" name="onlyno" id="onlyno">否</th>
+                                        <th><input type="checkbox" id="qxqx"> 数据权限</th>
+                                        <th>是否分割<br/><input type="radio" name="cutyes" id="cutyes">是  <input type="radio" name="cutno" id="cutno">否</th>
                                     </tr>
                                 </thead>
 
@@ -209,6 +362,7 @@
             </div>
         </div>
     </div>
+    
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('template', \Illuminate\Support\Arr::except(get_defined_vars(), array('__data', '__path')))->render(); ?>

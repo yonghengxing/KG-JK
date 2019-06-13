@@ -33,7 +33,7 @@ class SchemaService extends BaseService
     }
 	
 	function deleteSchemaByName($databaseName){
-	//?????????????schema?
+
 	$this->model->where('slabel',$databaseName)->orwhere('slabel','like',$databaseName."_%")->delete();
     }
 
@@ -45,22 +45,28 @@ class SchemaService extends BaseService
         }
         return $res;
     }
+
+    //获取数据源的所有表名，没有view
+    public function get_table_list(){
+        $databaseName = config("properties")['database'];
+        $tableSql = "select table_name from information_schema.tables where table_type<>'view' and table_schema=?  ";
+        $tableNames = \DB::select($tableSql,[$databaseName]);
+        return $tableNames;
+    }
+
     public function  generate_schema_by_table($databaseName){
-        // ????????????,???table_type?????,???View,???????????
+
         $tableSql = "select table_name,table_comment  from information_schema.tables where table_type<>'view' and table_schema=?  ";
         $tableNames = \DB::select($tableSql,[$databaseName]);
-        // ?????????????schema,?????,???????
+
         $schemaName = $this->get_schema_list();
 
         foreach ($tableNames as $tableName){
-
             if(!in_array($tableName->table_name,$schemaName)){
 
-                // ?????,???????,???????;  ??????????string;
                 $sql = "select column_name,data_type ,IF(column_key='PRI','t','f') as pri from information_schema.columns where table_name=?";
                 $fields = \DB::select($sql,[$tableName->table_name]);
 
-                // ????????????
                 $property = array();
                 foreach ($fields as $value) {
                     if(!in_array($value->column_name,array('id','user_id','items_name'))){
@@ -73,7 +79,6 @@ class SchemaService extends BaseService
                     }
                 }
 
-                // ????schema????????
                 $mSchema = new Schema();
                 $mSchema->sname = $tableName->table_comment;
                 $mSchema->slabel = $tableName->table_name;
@@ -82,29 +87,48 @@ class SchemaService extends BaseService
                 $mSchema->createname = Auth::user()->name;
                 $mSchema->updatename = Auth::user()->name;
                 $ret = $this->append($mSchema);
-
             }
-
-
-
         }
     }
-
+    // 先得到所有的table集，然后对所有的view集合，遍历，是否包含table,如果包含，切割。
     public function generate_schema_by_view($databaseName,$pdo_me){
 
         $viewSql = "select table_name,table_comment  from information_schema.tables where table_type='view' and table_schema=?  ";
         $viewNames = \DB::select($viewSql,[$databaseName]);
         $schemaName = $this->get_schema_list();
         foreach ($viewNames as $tableName){
-            // ?????,???????,???????;  ??????????string;
-            if(!in_array($tableName->table_name,$schemaName)){
-                // ????????????
-                $property = array();
-                //?????schema,????????,?????????,????_????
-                $endLabel = explode("_",$tableName->table_name)[1];
-                $property[$endLabel] = "string;primary_id";
 
-                // ????schema????????
+            if(!in_array($tableName->table_name,$schemaName)){
+
+                $property = array();
+
+                //$endLabel = explode("_",$tableName->table_name)[1];
+                $viewName = $tableName->table_name;
+                //var_dump($viewName);
+                $tableList = $this->get_table_list();
+                $prefixView = "";
+                $postfixView = "";
+                foreach ($tableList as $item){
+                    $itemStr = $item->table_name;
+                    $index = strpos($viewName,$itemStr);
+                    var_dump($index);
+                    if($index !== false){
+                        $prefixView = $itemStr;
+                        $postfixView = substr($viewName,strlen($itemStr)+1);
+                        //var_dump($itemStr."这个是表明");
+                        //var_dump($postfixView."这个是列名");
+                        //var_dump(strlen($itemStr)+1);
+                        break;
+                    }
+
+                }
+
+
+                //在这分割VIEW,
+
+                //view的后缀，即原表的列名，录入schema;
+                $property[$postfixView] = "string;primary_id";
+
                 $mSchema = new Schema();
                 $mSchema->sname = $tableName->table_comment;
                 $mSchema->slabel = $tableName->table_name;
@@ -115,22 +139,21 @@ class SchemaService extends BaseService
                 $mSchema->updatename = Auth::user()->name;
                 $this->append($mSchema);
 
-                //????,????csv????
-                $this->generate_schema_csv($tableName->table_name,$pdo_me);
-                //????,???????????
-                $this->generate_relation_by_view($tableName->table_name);
-                //????,???????????csv????
-                $this->generate_relation_csv($tableName->table_name,$pdo_me);
+                $this->generate_schema_csv($viewName,$prefixView,$postfixView,$pdo_me);
+
+                $this->generate_relation_by_view($viewName,$prefixView,$postfixView);
+
+                $this->generate_relation_csv($viewName,$prefixView,$postfixView,$pdo_me);
             }
         }
+
     }
 
-    public function generate_schema_csv($viewName,$pdo_me){
-        //?????schema,????????,???????????????,???schema????
-        $viewFiled = explode("_",$viewName)[1];
-        $path = config("properties")['filePathLinux'].$viewName.".csv";
+    public function generate_schema_csv($viewName,$prefixView,$postfixView,$pdo_me){
 
-//        $pdo_me = new PDO(config("properties.PDO")['url'],config("properties.PDO")['username'],config("properties.PDO")['psw']);
+        $viewFiled = $postfixView;
+        $path = config("properties")['filePathLinux'].$viewName.".csv";
+//      $pdo_me = new PDO(config("properties.PDO")['url'],config("properties.PDO")['username'],config("properties.PDO")['psw']);
 
         $csv_export = "select '".$viewFiled."' union select * from ".$viewName." into outfile '".$path."' fields terminated by '&'";
 
@@ -139,9 +162,9 @@ class SchemaService extends BaseService
         $statement->execute();
     }
 
-    public function generate_relation_by_view($viewName){
-        //??????????????,?????????????
-        $startLabel = explode("_",$viewName)[0];
+    public function generate_relation_by_view($viewName,$prefixView,$postfixView){
+
+        $startLabel = $prefixView;
         $endLabel = $viewName;
         $mRelation = new Relation();
         $mRelation->typelabel = $viewName."_e";
@@ -155,15 +178,11 @@ class SchemaService extends BaseService
 
     }
 
-    public function  generate_relation_csv($viewName,$pdo_me){
-        // ?????????????????????,???????,??????????????csv??
-//        $pdo_me = new PDO(config("properties.PDO")['url'],config("properties.PDO")['username'],config("properties.PDO")['psw']);
+    public function  generate_relation_csv($viewName,$prefixView,$postfixView,$pdo_me){
 
-        //$tableSource = explode("_",$viewName)[0];
-        //$viewFiled = explode("_",$viewName)[1];
-        $pos = strpos($viewName,"_");
-        $tableSource = substr($viewName,0,$pos);
-        $viewFiled = substr($viewName,$pos+1);
+        $tableSource = $prefixView;
+        $viewFiled = $postfixView;
+
         $path = config("properties")['filePathLinux'].$viewName.'_e.csv';
         if(file_exists ($path)){
             unlink($path);

@@ -41,7 +41,7 @@
                      <div class="widget-body  am-fr">
                       <div class="am-g">
                           <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
-                              <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p tooltip" id="tooltip">
+                              <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p tooltip" id="tooltip"data-am-modal="{target: '#my-modal-loading'}">
                               	<a   href="{{asset('entity/add')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span>自动映射</a>
                       			@if($status==1)									 
 							 	<span class="tooltiptext">有新模型及数据，可自动映射</span>
@@ -49,8 +49,19 @@
 							 	<span class="tooltiptext">没有新信息，不可自动映射</span>
 							 	@endif
 							  </div>
+
                           </div>
                           
+							<div class="am-modal am-modal-loading am-modal-no-btn" tabindex="-1" id="my-modal-loading">
+                              <div class="am-modal-dialog" tabindex="5">
+                                <div class="am-modal-hd">正在载入...</div>
+                                <div class="am-modal-bd">
+                                  <span class="am-icon-spinner am-icon-spin"></span>
+                                </div>
+                              </div>
+                            </div>
+
+
                            <div  class="am-u-sm-12 am-u-md-3 am-u-end">
                                 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
                                     <input type="text" name= "searchText" class="am-form-field "  value="">
@@ -83,6 +94,7 @@
                                 <tr>
                                     <th>实体</th>
                                     <th>数据源</th>
+                                    <th>操作</th>
                                 </tr>
                                 </thead>
                             <tbody>
@@ -91,6 +103,7 @@
 									<tr class="gradeX">
 										<td>{{ $key }}</td>
 										<td>{{ $value }}</td>
+										<td><a href="{{ asset('/fuse/show/'.$key)}}" >详情</a></td>
 									</tr>
 									@endforeach
 								@endif

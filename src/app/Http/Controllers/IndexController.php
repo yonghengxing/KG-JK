@@ -16,7 +16,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UserService;
-
+use DB;
 use App\Services\ComponentService;
 
 use App\Models\ItechsProductIndex;
@@ -31,8 +31,21 @@ class IndexController extends BaseController
     }
 
     public function index(Request $request)
+	
     {
-        
+
+		//$request->setTrustedProxies($request->getClientIps()); //这个可以放入到中间件中  这样就不用更改代码了
+
+		$ip = $request->ip();
+		$uid = Auth::user()->id;
+		$results = DB::select('select * from itechs_kg_ip where ip = :ip', ['ip' => $ip]);
+		if(count($results)>0){
+			$affected = DB::update('update itechs_kg_ip set uid = ? where ip = ?', [$uid,$ip]);
+		}
+		else{
+			DB::insert('insert into itechs_kg_ip (ip, uid) values (?, ?)', [$ip, $uid]);
+		}
+
         return view('home');
     }
     

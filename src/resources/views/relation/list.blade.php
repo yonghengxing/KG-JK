@@ -46,7 +46,7 @@
                           </div>
 
 							<div class="am-u-sm-2 ">
-								<div class="am-input-group am-input-group-sm tpl-form-border-form cl-p tooltip" id="tooltip">
+								<div class="am-input-group am-input-group-sm tpl-form-border-form cl-p tooltip" id="tooltip" data-am-modal="{target: '#my-modal-loading'}">
 									<a   href="{{ asset('/relation/auto')}}" class="am-btn am-btn-default am-btn-success"></span>生成模型</a>
 										@if($status==1)									 
 									 	<span class="tooltiptext">有新信息，可生成模型</span>
@@ -56,7 +56,16 @@
 								</div>
 							</div>
 
-							<div  class="am-u-sm-3">
+<div class="am-modal am-modal-loading am-modal-no-btn" tabindex="-1" id="my-modal-loading">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">正在载入...</div>
+    <div class="am-modal-bd">
+      <span class="am-icon-spinner am-icon-spin"></span>
+    </div>
+  </div>
+</div>
+
+							<div  class="am-u-sm-3 am-u-sm-push-5">
 								<div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
 									<input type="text" name= "searchText" id="searchText" class="am-form-field "  value="@if(isset($text)){{$text}}@endif">
 									<span class="am-input-group-btn">
@@ -139,8 +148,18 @@
 								@endforeach
 							@endif
 							</tbody>
-						</table>
+	
+					</table>
+
 					</div>
+                   <div class="am-u-lg-12 am-cf">                          
+                        <div class="am-fr">
+                        	 <link rel="stylesheet" href="{{asset('css/app.css')}}">
+                    		{{ $relations->links() }}
+                        </div>
+                    </div>
+
+
 				</div>
 			</div>
 		</div>

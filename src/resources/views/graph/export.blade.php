@@ -5,7 +5,7 @@
            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                 <div class="widget am-cf" style = "height:600px">
 
-				<iframe name="myframe" src="http://api.kg.itechs.ac.cn/#/home" style="width:100%; height:100%;"></iframe>
+				<iframe name="myframe" src="{{ config("properties")['graphIP'] }}/#/home" style="width:100%; height:100%;"></iframe>
 
 			</div>
 		</div>

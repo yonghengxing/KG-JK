@@ -129,9 +129,18 @@
                         </table>
                      </div>                                
 
+                   <div class="am-u-lg-12 am-cf">                          
+                        <div class="am-fr">
+                        	 <link rel="stylesheet" href="<?php echo e(asset('css/app.css')); ?>">
+                    		<?php echo e($schemas->links()); ?>
+
+                        </div>
+                    </div>
+
 			</div>
 		</div>
 	</div>
 </div>
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('template', \Illuminate\Support\Arr::except(get_defined_vars(), array('__data', '__path')))->render(); ?>

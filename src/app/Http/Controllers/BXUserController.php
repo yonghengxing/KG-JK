@@ -36,11 +36,13 @@ class BXUserController extends Controller{
                 return back()->withErrors($validator)->withInput();
             }
             if (Auth::guard('web')->attempt($this->validateUser($request->input()))) {
+dd(111);
                 return Redirect::to('/index');
             }else {
                 return back()->with('error', '账号或密码错误')->withInput();
             }
         }
+						dd(111);
         return view('auth.login');
     }
     

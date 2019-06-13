@@ -129,6 +129,13 @@
                         </table>
                      </div>                                
 
+                   <div class="am-u-lg-12 am-cf">                          
+                        <div class="am-fr">
+                        	 <link rel="stylesheet" href="{{asset('css/app.css')}}">
+                    		{{ $schemas->links() }}
+                        </div>
+                    </div>
+
 			</div>
 		</div>
 	</div>

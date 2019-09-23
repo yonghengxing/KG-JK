@@ -9,7 +9,7 @@
         
         <div class="bg_mark"> </div>
         
-        <div class="tpl-page-state-title am-text-center tpl-error-title" style="color: #ffffff;font-size: 6.6rem;font-weight: normal;">中科院软件所科学信息中心
+        <div class="tpl-page-state-title am-text-center tpl-error-title" style="color: #ffffff;font-size: 6.6rem;font-weight: normal;">JKJ军事科学信息中心
 			</div>
 		<div class="tpl-error-title-info am-text-center"  style="color: #ffffff;font-size: 30px;">科技领域基础数据管理与服务系统
 			</div>

@@ -14,19 +14,15 @@
                  	<h2>
 						<span>●</span>动态知识图谱构建世界观、接入数据、建立数据世界
 					</h2>
-					<img class="am-u-sm-12" src="<?php echo e(asset('assets/img/WechatIMG88.9a4c13aa.png')); ?>" alt="">
+					<img class="am-u-sm-12" src="<?php echo e(asset('assets/img/diyi.jpg')); ?>" alt="">
 					<h2>
 						<span>●</span>实体配置构建世界观、数据配置构建数据世界
 					</h2> 
-					<img class="am-u-sm-12" src="<?php echo e(asset('assets/img/WechatIMG87.4f2d7c6d.png')); ?>" alt="">
-					<h2>
-						<span>●</span>实体映射、融合配置搭建实体和数据的桥梁
-					</h2>
-					<img class="am-u-sm-12" src="<?php echo e(asset('assets/img/WechatIMG89.49078d01.png')); ?>" alt="">
+					<img class="am-u-sm-12" src="<?php echo e(asset('assets/img/dier.png')); ?>" alt="">
 					<h2>
 						<span>●</span>动态知识图谱构建知识，支撑搜索、分析、战法等上层应用
 					</h2>
-					<img class="am-u-sm-12" src="<?php echo e(asset('assets/img/WechatIMG90.f7acc1b0.png')); ?>" alt="">
+					<img class="am-u-sm-12" src="<?php echo e(asset('assets/img/disan.png')); ?>" alt="">
                  
                  </div>
 		

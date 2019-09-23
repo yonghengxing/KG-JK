@@ -19,9 +19,10 @@
                             <thead>
                                 <tr>
                                     <th>起点实体</th>
+                                    <th>起点外键</th>
                                     <th>终点实体</th>
+                                    <th>终点主键</th>
                                     <th>关系类型</th>
-				                    <th>关联字段</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,6 +39,11 @@
                                             </select>
                                         </td>
                                         <td>
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationField" name="relationField" >
+                                                <option value="none">选择起点关联外键</option>
+                                            </select>
+                                        </td>
+                                        <td>
                                             <select data-am-selected="{searchBox: 1}" style="display: none;" id="toVertex" name="tovertex" >
                                             	<option value="none">选择终点实体</option>
                                                 <?php if(isset($schemas)): ?>
@@ -45,6 +51,11 @@
                                                         <option value="<?php echo e($schema->sid); ?>"><?php echo e($schema->slabel); ?></option>
                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 <?php endif; ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationToField" name="relationToField" >
+                                                <option value="none">选择终点关联主键</option>
                                             </select>
                                         </td>
                                         <td>
@@ -58,11 +69,7 @@
                                             </select>
 
                                         </td>
-                                        <td>
-                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="relationField" name="relationField" >
-												<option value="none">选择关联字段</option>
-                                            </select>
-                                        </td>
+
 									</tr>
                             </tbody>
                         </table>
@@ -83,7 +90,42 @@
                              }
                              return true;
                          }
-                        $(function(){
+
+                         $(function(){
+                             //数据库选择改变
+                             $("#toVertex").change(function(){
+                                 var value = $(this).val();
+                                 var str1 = "<?php echo e(asset('relation/getRelationField')); ?>";
+//                                 var text = $('#fromVertex option:selected').text();
+                                 var url1 = str1 + '/' + value;
+                                 console.log(url1);
+                                 var objectModel = {};
+                                 var csrf = "_token";
+                                 var ctoken = "<?php echo e(csrf_token()); ?>";
+                                 objectModel[csrf] = ctoken;
+                                 $.ajax({
+                                     url:url1,
+                                     type:"post",
+                                     dataType:"json",
+                                     data: objectModel,//{_token:"<?php echo e(csrf_token()); ?>",_method:'PATCH',type:value},
+                                     success:function(data){
+                                         $("#relationToField").empty();
+                                         var str = new Array;
+                                         var strAll = " ";
+                                         for(var i = 0;i < data.length;i++){
+                                             var table_name = data[i];
+                                             str[i] = "<option value = '"+table_name+"''>"+ table_name +"</option> ";
+                                             strAll = strAll.concat(str[i]);
+                                         }
+                                         $("#relationToField").html(strAll);
+                                     }
+                                 })
+                             })
+                         });
+
+
+
+                         $(function(){
                             //数据库选择改变
                             $("#fromVertex").change(function(){
                                 var value = $(this).val();

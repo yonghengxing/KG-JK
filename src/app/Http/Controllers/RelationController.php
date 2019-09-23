@@ -86,7 +86,6 @@ class RelationController extends BaseController
      */
   public function relation_new_do(Request $request)
     {
-
         $relationType = $request->post("relationType");
         $typelabel =  $this->relationtTypeService->getById($relationType)->rlabel;
 
@@ -94,11 +93,13 @@ class RelationController extends BaseController
         $startlabel  = $this->schemaService->getById($fromvertex)->slabel;
         $startAuto = $this->schemaService->getById($fromvertex)->isauto;
 
+        $relationFromField = $request->relationField;
+
         $tovertex = $request->post("tovertex");
         $endlabel  = $this->schemaService->getById($tovertex)->slabel;
         $endAuto = $this->schemaService->getById($tovertex)->isauto;
 
-        $relationField = $request->relationField;
+        $relationToField = $request->relationToField;
 
         $mRelation = new Relation();
         $mRelation->relationtype = $relationType;
@@ -112,13 +113,13 @@ class RelationController extends BaseController
 
         $ret = $this->relationService->append($mRelation);
         if($startAuto == "1" && $endAuto == "1" )
-            $this->generate_relation_csv($startlabel,$relationField,$typelabel,$endlabel);
+            $this->generate_relation_csv($startlabel,$relationFromField,$typelabel,$endlabel,$relationToField);
 
         return redirect()->action('RelationController@relation_list');
     }
 
 
-    public function generate_relation_csv($startLabel,$relationField,$typeLabel,$endLabel){
+    public function generate_relation_csv($startLabel,$relationField,$typeLabel,$endLabel,$relationToField){
         //数据库连接
 
         $pdo_me = new PDO(config("properties.PDO")['url'],config("properties.PDO")['username'],config("properties.PDO")['psw']);
@@ -127,11 +128,15 @@ class RelationController extends BaseController
         if(file_exists ($path)){
             unlink($path);
         }
-        $tableKey = config("properties")['defaultKeyId'];
-        $csv_export = "select '".$startLabel."','".$endLabel."' union select ".$tableKey.",".$relationField." from ".$startLabel." into outfile '".$path."' fields terminated by '&'";
-        $statement = $pdo_me->prepare($csv_export);
-        $statement->execute();
 
+        //SELECT 'xiangmu','hetong' UNION select xiangmu.me_id,hetong.me_id FROM xiangmu LEFT JOIN hetong on xiangmu.bianhao_kg = hetong.suoshuxiangmu_kg INTO OUTFILE "E:/logs/test123.csv"  fields terminated by '&'
+        $tableKey = config("properties")['defaultKeyId'];
+        //$csv_export = "select '".$startLabel."','".$endLabel."' union select ".$tableKey.",".$relationField." from ".$startLabel." into outfile '".$path."' fields terminated by '&'";
+        $csv_export = "select '".$startLabel."','".$endLabel."' union select ".$startLabel."." .$tableKey.",".$endLabel.".".$tableKey." from ".$startLabel." INNER JOIN ".$endLabel." ON ".$startLabel.".".$relationField." = ".$endLabel.".".$relationToField." into outfile '".$path."' fields terminated by '&'";
+        //dd($csv_export);
+        $statement = $pdo_me->prepare($csv_export);
+        $result =  $statement->execute();
+        //dd($result);
     }
 
     public function relation_new_auto(){
@@ -192,7 +197,6 @@ class RelationController extends BaseController
             )
         );
         file_get_contents($url, false, stream_context_create($opts));
-    
     }
     /**
      * 打开修改关系信息的页面

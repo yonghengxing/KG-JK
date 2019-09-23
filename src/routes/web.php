@@ -24,6 +24,7 @@ Route::get('/bxLogout', 'BXUserController@bxLogout');
 
 Route::get('/template', 'viewController@template');
 Route::get('/search', 'SchemaController@search');
+Route::post('/search', 'SearchController@search');
 Route::get('/test', 'EntityController@test');
 
 /**
@@ -147,7 +148,10 @@ Route::get('/database/search/{text?}', 'DatabaseController@database_search');
 Route::get('/datasource/search/{text?}', 'DatabaseController@datasource_search');
 Route::get('/datasource/show/{rid}', 'DatabaseController@DBsrc_show');
 Route::get('/DB_del/{rid}', 'DatabaseController@DB_del');
-
+Route::get('/datasource/userlist/{dbname}/{dbsname}', 'DatabaseController@DBSrcUser');
+Route::get('/datasource/userdelete/{dbname}/{dbsname}/{userid}', 'DatabaseController@DBSrcUserDelete');
+Route::get('/datasource/useradd/{dbname}/{dbsname}', 'DatabaseController@DBSrcUserAdd');
+Route::post('/datasource/useradd/{dbname}/{dbsname}', 'DatabaseController@DBSrcUserAdd_do');
 //数据库连接
 Route::get('/database/db_connect','DatabaseController@db_connect');
 

@@ -28,6 +28,7 @@
 <script src="<?php echo e(asset('assets/js/jquery.min.js')); ?>"></script>
 <script src="<?php echo e(asset('assets/js/jquery.fonticonpicker.min.js')); ?>"></script>
 <script src="<?php echo e(asset('assets/js/echarts.min.js')); ?>"></script>
+<script src="<?php echo e(asset('assets/js/amazeui.min.js')); ?>"></script>
 
 </head>
 
@@ -141,7 +142,10 @@
 								class="am-icon-dot-circle-o sidebar-nav-link-logo"></span> 图谱融合
 						</a></li>
 					<li class="sidebar-nav-link"><a href="<?php echo e(asset('/taskgraph')); ?>"> <span
-                               class="am-icon-picture-o sidebar-nav-link-logo"></span> 数据导入
+                               class="am-icon-picture-o sidebar-nav-link-logo"></span> 数据导入导出
+                        </a></li>
+                        					<li class="sidebar-nav-link" hidden><a href="<?php echo e(asset('/export')); ?>" > <span
+                               class="am-icon-picture-o sidebar-nav-link-logo"></span> 数据导出
                         </a></li>
 					</ul></li>	
 					
@@ -175,7 +179,7 @@
                                                 class="am-icon-search sidebar-nav-link-logo"></span> 图谱查询
                                 </a></li>
                                 <li class="sidebar-nav-link"><a href="<?php echo e(asset('/search')); ?>"> <span
-                                      class="am-icon-search sidebar-nav-link-logo"></span> 模糊搜索
+                                      class="am-icon-search sidebar-nav-link-logo"></span> 模糊查找
                                 </a></li>
                         </ul></li>
                  <?php if(Auth::user()->admin || config('app.admin_mode',false)): ?>       
@@ -212,7 +216,7 @@
       });
   });
         </script>
-	<script src="<?php echo e(asset('assets/js/amazeui.min.js')); ?>"></script>
+	
 	<script src="<?php echo e(asset('assets/js/amazeui.datatables.min.js')); ?>"></script>
 	<script src="<?php echo e(asset('assets/js/dataTables.responsive.min.js')); ?>"></script>
 	<script src="<?php echo e(asset('assets/js/app.js')); ?>"></script>

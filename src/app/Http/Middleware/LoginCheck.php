@@ -22,6 +22,7 @@ class LoginCheck
         if ($request->input('age')<18){
             return redirect()->route('user.test');
         }
+        
         return $next($request);
     }
 }

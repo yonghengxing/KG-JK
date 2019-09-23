@@ -30,7 +30,9 @@ use PHPExcel_Reader_Excel2007;
 use PHPExcel_Reader_Excel5;
 use PHPExcel_Cell;
 use PHPExcel_IOFactory;
-
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 //将中文转换成拼音
@@ -285,7 +287,8 @@ function add_privilege($request, $table_head){
    // echo 'iscas_itechs_privilege连接成功';
 
     //创建表
-    $sql = "CREATE TABLE ".$request["DBtable"]."(`id` int(255) NOT NULL COMMENT '主键ID',`items_name` varchar(255)  COMMENT '选择表项',`user_id` int(255)  COMMENT '用户ID') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; ALTER TABLE ".$request["DBtable"]." ADD PRIMARY KEY (`id`); ALTER TABLE ".$request["DBtable"]." MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;";
+    //$sql = "CREATE TABLE ".$request["DBtable"]."(`id` int(255) NOT NULL COMMENT '主键ID',`items_name` varchar(255)  COMMENT '选择表项',`user_id` int(255)  COMMENT '用户ID') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; ALTER TABLE ".$request["DBtable"]." ADD PRIMARY KEY (`id`); ALTER TABLE ".$request["DBtable"]." MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;";
+    $sql = "CREATE TABLE ".pinyin($request["DBtable"])."(`id` int(255) NOT NULL COMMENT '主键ID',`items_name` varchar(255)  COMMENT '选择表项',`user_id` int(255)  COMMENT '用户ID') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; ALTER TABLE ".pinyin($request["DBtable"])." ADD PRIMARY KEY (`id`); ALTER TABLE ".pinyin($request["DBtable"])." MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;";
     $statement = $pdo_privilege->prepare($sql);
     $statement->execute();
     $results = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -314,7 +317,7 @@ function add_privilege($request, $table_head){
 //            dd($request->plevel[$i],$i);
             for ($j=0;$j<$userID[count($userID)-1]["id"]+1;$j++){ //$userID[count($userID)-1]["id"]+1  是userid的最大值加一    遍历该列的所有用户
                 if (isset($request->plevel[$i][$j])){
-                    $sql_insert = "INSERT INTO " . $request["DBtable"] . " (`id`, `items_name`, `user_id`) VALUES (NULL,'".pinyin($request->items[$i])."_kg','".$j."')";
+                    $sql_insert = "INSERT INTO " . pinyin($request["DBtable"]) . " (`id`, `items_name`, `user_id`) VALUES (NULL,'".pinyin($request->items[$i])."_kg','".$j."')";
                     $statement = $pdo_privilege->prepare($sql_insert);
                     $statement->execute();
                     $results = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -336,6 +339,7 @@ class DatabaseController extends Controller{
  	    $this->schemaService = $schemaService;
         $this->relationService = $relationService;
         $this->statusService = $statusService;
+        $this->userService = $userService;
 
     }
 
@@ -734,6 +738,7 @@ class DatabaseController extends Controller{
             //dd($request);
             //要导入的数据库的内容
             //$data_content_real = new Array_();
+//dd($data_content_selected);
             if(isset($data_content_selected[1])){//多个sheet页
                 for($i = 0;$i<count($data_content_selected);$i++){
                     for($j = 0;$j<count($table_head);$j++){
@@ -1147,7 +1152,7 @@ class DatabaseController extends Controller{
         return view('database/list', compact('databaseMsg','text'));
     }
 
-    function DBsrc_show($rid){
+    function DBsrc_show(Request $request, $rid){
 
         $dbname_real = Kg_datasrc::select("dbname_real")->where("rid",$rid)->get();
 
@@ -1162,8 +1167,6 @@ class DatabaseController extends Controller{
            // echo 'database connection failed';
             exit();
         }
-       // echo '连接成功';
-
 
 
         $sql = "SELECT `items_name`,`user_id` FROM ".$dbname_real[0]->dbname_real;
@@ -1182,7 +1185,7 @@ class DatabaseController extends Controller{
             $results_userId[$i] = $results[$i]["user_id"];
             $results_name[$i]["name"][0] = User::select("name")->where("id",$results[$i]["user_id"])->get()[0]["name"];
         }
-//        dd($results2,$results_name);
+
         for ($i = 0;$i<count($results2);$i++){
             for ($j=0;$j<count($results_name);$j++){
                 if ($results2[$i]["items_name"]==$results_name[$j]["items_name"]){
@@ -1199,7 +1202,19 @@ class DatabaseController extends Controller{
                 }
             }
         }
-        return view('datasource/show',compact('results2'));
+
+        //分页
+        $perPage = 15;
+        $collection = new Collection($results2);
+        $currentPage = $request->input('page', 1);
+        $offset = ($currentPage - 1) * $perPage;
+        $total = $collection->count();
+        $result = $collection->forPage($currentPage, $perPage);
+        $dbsrc = new LengthAwarePaginator($result,$total,$perPage,$currentPage,[
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => 'page']);
+
+        return view('datasource/show',compact('results2','dbsrc','dbname_real'));
 
     }
 
@@ -1210,6 +1225,10 @@ class DatabaseController extends Controller{
             $path_road = $file["IP"].$file["dbname"];
             $path_file = storage_path($path_road);
             $path = storage_path($file["IP"]);
+//	    $path_file = iconv('utf-8','gdk',$path_file);
+//dd($path_file);
+            if(file_exists($path_file))
+{
             if (!unlink($path_file))
             {
                 Log::info("Error deleting $path_file");
@@ -1218,6 +1237,12 @@ class DatabaseController extends Controller{
             {
                 Log::info("Error deleting $path");
             }
+}
+else{
+$msg = '文件不存在，请联系管理员修改数据库';
+$url = 'database';
+return view('error', compact("url","msg"));
+}
             $result = $this->dbService->delete($dbId);
         }elseif ($type == "MySQL"){
             $result = $this->dbService->delete($dbId);
@@ -1229,5 +1254,123 @@ class DatabaseController extends Controller{
 
         return redirect()->action('DatabaseController@database');
     }
+    
+    function DBSrcUser($dbname,$dbsname){
+        
+        //连接数据库
+        try {
+            $pdo_privilege = new PDO(
+                'mysql:host=127.0.0.1;dbname=iscas_itechs_privilege;port=3306;charset=utf8',
+                'root',
+                ''
+                );
+        } catch (PDOException $ex) {
+            // echo 'database connection failed';
+            exit();
+        }
+        
+        $sql = 'SELECT user_id FROM '.$dbname.' WHERE items_name="'.$dbsname.'"';
+        $statement = $pdo_privilege->prepare($sql);
+        $statement->execute();
+        $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+        for ($i = 0;$i<count($results);$i++){
+            $results_name[$i]["user_id"] = $results[$i]["user_id"];
+            $results_name[$i]["name"][0] = User::select("name")->where("id",$results[$i]["user_id"])->get()[0]["name"];
+        }
+        
+        for ($i = 0;$i<count($results_name);$i++){
+            $name[$i]["user_id"] = $results_name[$i]["user_id"];
+            $name[$i]["name"] = $results_name[$i]["name"][0];
+        }
+            
+        $user_name = new Collection($name);
+//         dd($dbname, $sql, $results, $results_name,$user_name);
+        return view('datasource/userlist',compact("dbname","user_name","dbsname"));
+    }
+    
+    public function DBSrcUserDelete($dbname,$dbsname,$userid){
+        
+        try {
+            $pdo_privilege = new PDO(
+                'mysql:host=127.0.0.1;dbname=iscas_itechs_privilege;port=3306;charset=utf8',
+                'root',
+                ''
+                );
+        } catch (PDOException $ex) {
+            // echo 'database connection failed';
+            exit();
+        }
+
+        $sql = 'DELETE FROM '.$dbname.' WHERE user_id="'.$userid.'" AND items_name="'.$dbsname.'"';
+        $statement = $pdo_privilege->prepare($sql);
+        $statement->execute();              
+        $url = "/datasource/userlist/".$dbname."/".$dbsname;
+        return view('success', compact("url"));
+    }
+ 
+    public function DBSrcUserAdd($dbname,$dbsname){       
+        $users = $this->userService->getAll();
+        return view('datasource/useradd', compact("users","dbname","dbsname"));
+    }
+    
+    
+    public function DBSrcUserAdd_do($dbname,$dbsname,Request $request){
+        $appendNum = $request->get("user_num");
+        $userAppend = array();
+        for ($idx=1; $idx <= $appendNum; $idx++){
+            $userKey = "user_" . $idx;
+            if (!$request->has($userKey)){
+                $url = "/datasource/userlist/".$dbname."/".$dbsname;
+                $msg = "上传信息缺失错误！";
+                return view('error', compact("url","msg"));
+                break;
+            }
+            $userAppend[] = $request->get($userKey);
+        }
+        $userAppend = array_unique($userAppend);        //去重
+        $user_Append = new Collection($userAppend);
+//         dd($dbsname);        
+        try {
+            $pdo_privilege = new PDO(
+                'mysql:host=127.0.0.1;dbname=iscas_itechs_privilege;port=3306;charset=utf8',
+                'root',
+                ''
+                );
+        } catch (PDOException $ex) {
+            // echo 'database connection failed';
+            exit();
+        }
+        $count = false;
+        foreach($user_Append as $userid){ 
+
+            $sql = 'SELECT * FROM '.$dbname.' WHERE user_id="'.$userid.'" AND items_name="'.$dbsname.'"';
+            $statement = $pdo_privilege->prepare($sql);
+            $statement->execute();
+            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+            if(!$results){
+                $count = true;
+                $sql = "INSERT INTO ".$dbname." (items_name, user_id) VALUES ('".$dbsname."', '".$userid."')";
+                $statement = $pdo_privilege->prepare($sql);
+                $statement->execute();
+                $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+        }
+        
+        if($count==false){
+            $msg = '用户权限添加失败';
+            $url = "/datasource/userlist/".$dbname."/".$dbsname;
+            return view('error', compact("url","msg"));
+        }
+        elseif($count==true)
+        {
+            $url = "/datasource/userlist/".$dbname."/".$dbsname;
+            return view('success', compact("url"));
+        }
+
+    }
+
+    
     
 }

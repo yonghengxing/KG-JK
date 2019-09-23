@@ -64,11 +64,48 @@ class EntityController extends BaseController
 		//$uid = Auth::user()->id;
 		//dd($uid);
 		//$uid = 4;
-        $pdo = new PDO('mysql:host=127.0.0.1;dbname=iscas_itechs_privilege;port=3306;charset=utf8', 'root', '');
+		//$files是点的列表
+		$file_list=[];
+        $filePath = config("properties")['filePathLinux'];
+        $handler = opendir($filePath);
+
+        while(($filename = readdir($handler))!=false){
+            if($filename != '.' && $filename!='..'){
+                $file_list[] = $filename;
+            }
+        }
+		$files = array();
+        foreach ($file_list as $file) {
+            $schema = explode(".",$file)[0];
+			if(!strstr($schema, "_e")){
+				  $files[] = $schema;
+			}
+          
+        }
+		$res = array();
+		//dd($files);
+		//获取所有的dbout里面的点，和获取所有kg，将存在的从files里面删了。
+		$databaseName = config("properties")['database'];
+        $tableSql = "select table_name from information_schema.tables where table_schema=?  ";
+        $tableNames = \DB::select($tableSql,[$databaseName]);
+		//dd($tableNames[0]);
+		$tempdata = array();
+		foreach ($tableNames as $tableName){
+            //if(in_array($tableName->table_name,$files)){
+				$tempdata[] = $tableName->table_name;
+			//}
+        }
+		foreach ($files as $file){
+            if(!in_array($file,$tempdata)){
+				$res[] = $file;
+			}
+        }
+		//dd($perData);
+		$pdo = new PDO('mysql:host=127.0.0.1;dbname=iscas_itechs_privilege;port=3306;charset=utf8', 'root', '');
         $databaseName = 'iscas_itechs_privilege';
         $tableSql = "select table_name,table_comment  from information_schema.tables where table_schema=?  ";
         $tableNames = \DB::select($tableSql,[$databaseName]);
-        $res =  array();
+        //$res =  array();
         $schemas = $this->schemaService->getSchemaTable();
 		foreach($schemas as $schema){
 			$res[] =$schema->slabel;
@@ -83,7 +120,7 @@ class EntityController extends BaseController
                 $res[]  = $tn."_".$item['items_name'];
             }
         }
-		
+		//dd($res);
         return $res;
     }
 //

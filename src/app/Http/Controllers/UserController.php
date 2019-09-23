@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use App\User;
 use Carbon\Carbon;
 use Log;
+use PDO;
 
 class UserController extends BaseController
 {
@@ -92,6 +93,34 @@ class UserController extends BaseController
      */
     public function user_delete($user_id)
     {
+
+        //删除priveledge库
+        try {
+            $pdo_privilege = new PDO(
+                'mysql:host=127.0.0.1;dbname=iscas_itechs_privilege;port=3306;charset=utf8',
+                'root',
+                ''
+                );
+        } catch (PDOException $ex) {
+            // echo 'database connection failed';
+            exit();
+        }
+        $sql = "SHOW tables FROM iscas_itechs_privilege";
+        $statement = $pdo_privilege->prepare($sql);
+        $statement->execute();
+        $table_name = $statement->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($table_name as $tables){
+            $name = $tables["Tables_in_iscas_itechs_privilege"];
+            $sql = 'DELETE FROM '.$name.' WHERE user_id="'.$user_id.'"';
+            $statement = $pdo_privilege->prepare($sql);
+            $statement->execute();
+            $result= $statement->fetchAll(PDO::FETCH_ASSOC);
+//             dd($sql, $result,$name);
+        }
+        
+//         dd($sql,$table_name);
+        
+        //删除user表
         $ret = $this->userService->delete($user_id);
         $url = "user/list";
         if ($ret) {

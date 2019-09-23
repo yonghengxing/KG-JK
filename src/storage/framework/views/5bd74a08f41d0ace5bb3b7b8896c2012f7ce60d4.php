@@ -1,4 +1,12 @@
  <?php $__env->startSection('content'); ?>
+
+<style type="text/css"> 
+.AutoNewline 
+{ 
+  Word-break: break-all;/*必须*/ 
+} 
+</style> 
+
 <div class="row-content am-cf">
     <div class="row">
         <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
@@ -11,24 +19,39 @@
                 <hr/>
                 
                 <div class="am-form-group am-u-sm-12">
+                	<input type="text" name= "searchText" id="searchText" value= "<?php echo e($dbname_real); ?>" hidden>
                     <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
                         <thead>
                             <tr>
                                 <th>数据项</th>
                                 <th>数据权限</th>
+                                <th>操作</th>
                             </tr>
-                            <?php for ($i=0;$i<count($results2);$i++){  ?>
-                            <tr>
-                                <td><?php echo e($results2[$i]["items_name"]); ?></td>
-                                <td><?php for ($j=0;$j<count($results2[$i]["name"]);$j++){ ?>
-                                        <?php echo e($results2[$i]["name"][$j]); ?><br>
-                                    <?php } ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
                         </thead>
+                        <tbody>
+                        <?php $__currentLoopData = $dbsrc; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dbsrcs): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <tr>
+    							    <th><?php echo e($dbsrcs["items_name"]); ?></th>
+    							    <th>
+    							    <?php $__currentLoopData = $dbsrcs["name"]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $name): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+    							    	<li><?php echo e($name); ?></li>    							    
+    							    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    							    </th>
+                                    <th><a href="<?php echo e(asset('/datasource/userlist')); ?>/<?php echo e($dbname_real[0]->dbname_real); ?>/<?php echo e($dbsrcs['items_name']); ?>">编辑</a> | <a href="<?php echo e(asset('#')); ?>">删除</a></th>                                
+                            </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </tbody>
                     </table>
      			</div>
+     			
+     			
+        		    <div class="am-u-lg-12 am-cf">                          
+                        <div class="am-fr">
+                        	 <link rel="stylesheet" href="<?php echo e(asset('css/app.css')); ?>">
+                    		<?php echo e($dbsrc->links()); ?>
+
+                        </div>
+                    </div>
                 
             </div>
         </div>

@@ -98,7 +98,7 @@
         </script>
 
         <div class="widget-body" style="overflow-y:auto;overflow-x:auto;">
-    		<iframe id="myframe" style="width:100%;" allowfullscreen mozallowfullscreen webkitallowfullscreen src="http://api.kg.itechs.ac.cn/#/query-editor" scrolling="no" onload="changeFrame()" frameborder="0">
+    		<iframe id="myframe" style="width:100%;" allowfullscreen mozallowfullscreen webkitallowfullscreen src="<?php echo e(config("properties")['graphIP']); ?>/#/query-editor" scrolling="no" onload="changeFrame()" frameborder="0">
     		</iframe>
 		</div>
 			

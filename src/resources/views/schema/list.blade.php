@@ -49,7 +49,7 @@
 
 							 <div class="am-u-sm-2 ">
 								 <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p tooltip" id="tooltip">
-									 <a href="{{ asset('/schema/auto')}}" class="am-btn am-btn-default am-btn-success"> 自动生成实体</a>
+									 <a href="{{ asset('/schema/auto')}}" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 自动生成实体</a>
 									 	@if($status==1)
 									 	
 									 	<span class="tooltiptext">有新数据源信息，可生成实体</span>

@@ -15,6 +15,7 @@ use App\Services\StatusService;
 use PDO;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Chumper\Zipper\Zipper;
 
 class viewController extends Controller
 {
@@ -30,16 +31,16 @@ class viewController extends Controller
     public function ontologymap()
     {   
         $file_list=[];
-        $filePath = "/home/fengbs/tigergraph/loadingData/";
+		
+        $filePath = config("properties")['filePathLinux'];
         $handler = opendir($filePath);
 
         while(($filename = readdir($handler))!=false){
             if($filename != '.' && $filename!='..'){
                 $file_list[] = $filename;
-
             }
         }
-	$data = array();
+		$data = array();
         foreach ($file_list as $file) {
             $schema = explode(".",$file)[0];
             $data[$schema] = $file;
@@ -53,7 +54,7 @@ class viewController extends Controller
     }
     public function fuseShow($key,Request $request)
      {
-         //dbout����
+         //dbout连接
          try {
              $pdo_dbout = new PDO(
                  'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
@@ -65,8 +66,8 @@ class viewController extends Controller
              exit();
          }         
 
-         //�õ�ǰ������Ϣ
-         $sql = "SHOW columns FROM ".$key;     //�õ���ͷ
+         //得到前四列信息
+         $sql = "SHOW columns FROM ".$key;     //得到表头
          $statement = $pdo_dbout->prepare($sql);
          $statement->execute();
          $dbout_table_columns = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -93,7 +94,7 @@ class viewController extends Controller
              
          }
 
-         //��ҳ
+         //分页
          $perPage = 15;
          if ($request->has('page')) {
              $current_page = $request->input('page');
@@ -101,10 +102,10 @@ class viewController extends Controller
          } else {
              $current_page = 1;
          }
-         $item = array_slice($dbout_table, ($current_page-1)*$perPage, $perPage); //ע��1
+         $item = array_slice($dbout_table, ($current_page-1)*$perPage, $perPage); //注释1
          $total = count($dbout_table);
          $tablePaginator =new LengthAwarePaginator($item, $total, $perPage, $current_page , [
-             'path' => Paginator::resolveCurrentPath(), //ע��2
+             'path' => Paginator::resolveCurrentPath(), //注释2
              'pageName' => 'page',
          ]);
 
@@ -115,7 +116,7 @@ class viewController extends Controller
      
      public function fuseDetail($key,$id)
      {
-         //dbout����
+         //dbout连接
          try {
              $pdo_dbout = new PDO(
                  'mysql:host=127.0.0.1;dbname=iscas_itechs_dbout;port=3306;charset=utf8',
@@ -127,12 +128,12 @@ class viewController extends Controller
              exit();
          } 
          
-         $sql = "SHOW columns FROM ".$key;     //�õ���ͷ
+         $sql = "SHOW columns FROM ".$key;     //得到表头
          $statement = $pdo_dbout->prepare($sql);
          $statement->execute();
          $dbout_table_columns = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-         $sql = "SELECT * FROM ".$key." WHERE " .$dbout_table_columns[0]["Field"]. "=" .$id;     //�õ���ͷ
+         $sql = "SELECT * FROM ".$key." WHERE " .$dbout_table_columns[0]["Field"]. "=" .$id;     //得到表头
          $statement = $pdo_dbout->prepare($sql);
          $statement->execute();
          $dbout_table = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -178,6 +179,21 @@ class viewController extends Controller
     
     public function export()
     {
-        return view('graph/export');
+        
+        $zip=new Zipper();
+        $filePathLinux = config("properties")['filePathLinux'];
+        $zipPath = $filePathLinux . 'data.zip';
+        $zip->make($zipPath)->add($filePathLinux);
+        $zip->close();
+        
+        header("Cache-Control: public"); 
+        header("Content-Description: File Transfer"); 
+        header('Content-disposition: attachment; filename='.basename($zipPath)); //文件名    
+        header("Content-Type: application/zip"); //zip格式的    
+        header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件   
+        header('Content-Length: '.filesize($zipPath)); //告诉浏览器，文件大小
+        @readfile($zipPath);
+        @unlink($zipPath);
     }
+
 }

@@ -711,6 +711,7 @@ class DatabaseController extends Controller{
 
             $data = Excel::load($filePath, function ($reader) {}, 'GBK');
             $data_content = $data->get()->toArray();
+//            dd($data_content);
             
             //得到sheet页号
             $tableName = $data->getSheetNames();
@@ -724,8 +725,7 @@ class DatabaseController extends Controller{
 
             //选中的sheet表的内容
             $data_content_selected = $data_content[$table_num];
-            
-           
+
             $index = 0;
             //dd($table_head);
             while($data->getSheet($table_num)->getCellByColumnAndRow($index, 1)->getValue()){
